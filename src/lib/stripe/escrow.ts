@@ -219,6 +219,7 @@ export async function cancelAndRefund(
       // 全額返金: PaymentIntent をキャンセル（オーソリ解除）
       await stripe.paymentIntents.cancel(
         quest.paymentIntentId,
+        undefined,
         { idempotencyKey: `cancel_${questId}` }
       );
       refundId = `cancel_${quest.paymentIntentId}`;

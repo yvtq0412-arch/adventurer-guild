@@ -81,7 +81,6 @@ export async function POST(request: NextRequest) {
     await questRef.set(questData);
 
     return NextResponse.json({
-      questId: questRef.id,
       ...questData,
       message: '新しいクエストが掲示板に登録されました',
     });
