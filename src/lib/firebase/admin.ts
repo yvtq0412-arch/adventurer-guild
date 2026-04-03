@@ -4,17 +4,25 @@
  * セキュリティルールをバイパスして直接Firestoreを操作する
  */
 
-import { initializeApp, getApps, cert, getApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import { getAuth } from 'firebase-admin/auth';
-import { getStorage } from 'firebase-admin/storage';
+import { initializeApp, getApps, cert, getApp, type App } from 'firebase-admin/app';
+import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getAuth, type Auth } from 'firebase-admin/auth';
+import { getStorage, type Storage } from 'firebase-admin/storage';
 
-function getAdminApp() {
+let _adminApp: App | null = null;
+let _adminDb: Firestore | null = null;
+let _adminAuth: Auth | null = null;
+let _adminStorage: Storage | null = null;
+
+function getAdminApp(): App {
+  if (_adminApp) return _adminApp;
+
   if (getApps().length > 0) {
-    return getApp();
+    _adminApp = getApp();
+    return _adminApp;
   }
 
-  return initializeApp({
+  _adminApp = initializeApp({
     credential: cert({
       projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
       clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
@@ -22,17 +30,32 @@ function getAdminApp() {
     }),
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   });
+
+  return _adminApp;
 }
 
-const adminApp = getAdminApp();
-
 /** Firestore (Admin) - セキュリティルールバイパス */
-export const adminDb = getFirestore(adminApp);
+export const adminDb: Firestore = new Proxy({} as Firestore, {
+  get(_, prop) {
+    if (!_adminDb) _adminDb = getFirestore(getAdminApp());
+    return (_adminDb as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
 
 /** Firebase Auth (Admin) - トークン検証用 */
-export const adminAuth = getAuth(adminApp);
+export const adminAuth: Auth = new Proxy({} as Auth, {
+  get(_, prop) {
+    if (!_adminAuth) _adminAuth = getAuth(getAdminApp());
+    return (_adminAuth as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
 
 /** Firebase Storage (Admin) - PDF保存用 */
-export const adminStorage = getStorage(adminApp);
+export const adminStorage: Storage = new Proxy({} as Storage, {
+  get(_, prop) {
+    if (!_adminStorage) _adminStorage = getStorage(getAdminApp());
+    return (_adminStorage as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
 
-export default adminApp;
+export default getAdminApp;
