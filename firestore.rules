@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ヘルパー関数
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // ===== users コレクション =====
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      // プロフィール情報のみクライアント側で更新可能
+      // Stripe関連フィールドはAdmin SDK経由でのみ更新
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId)
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['stripeConnectAccountId', 'stripeCustomerId', 'stripeOnboardingComplete']);
+      allow delete: if false;
+    }
+
+    // ===== quests コレクション =====
+    match /quests/{questId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+                    && request.resource.data.clientId == request.auth.uid
+                    && request.resource.data.status == 'PENDING';
+      // ステータス変更はAPI Routes（Admin SDK）経由
+      // クライアント側での直接更新は制限
+      allow update: if false; // Admin SDK のみ
+      allow delete: if false;
+    }
+
+    // ===== transactions コレクション =====
+    // 金融データ: Admin SDK 経由でのみ書き込み可能
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated()
+                  && (resource.data.clientId == request.auth.uid
+                      || resource.data.adventurerId == request.auth.uid);
+      allow write: if false; // Admin SDK のみ
+    }
+
+    // ===== invoices コレクション =====
+    match /invoices/{invoiceId} {
+      allow read: if isAuthenticated()
+                  && (resource.data.recipientId == request.auth.uid
+                      || resource.data.issuerId == request.auth.uid);
+      allow write: if false; // Admin SDK のみ
+    }
+
+    // ===== guild_config コレクション =====
+    match /guild_config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Admin SDK のみ
+    }
+  }
+}
