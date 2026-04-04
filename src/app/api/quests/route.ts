@@ -17,8 +17,8 @@ const CreateQuestSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(5000),
   category: z.enum([
-    'design', 'writing', 'development', 'consulting',
-    'translation', 'photography', 'video', 'marketing', 'other',
+    'yard_work', 'cleaning', 'moving', 'repair', 'shopping',
+    'pet_care', 'childcare', 'eldercare', 'cooking', 'errands', 'other',
   ]),
   totalAmount: z.number().int().positive(),
   deadline: z.string().optional(),

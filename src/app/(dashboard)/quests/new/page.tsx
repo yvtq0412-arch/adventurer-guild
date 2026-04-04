@@ -14,7 +14,7 @@ export default function NewQuestPage() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<QuestCategory>('development');
+  const [category, setCategory] = useState<QuestCategory>('yard_work');
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [deadline, setDeadline] = useState('');
   const [error, setError] = useState('');
@@ -79,7 +79,7 @@ export default function NewQuestPage() {
             required
             maxLength={100}
             className="w-full bg-stone-900 border border-stone-600 rounded-lg px-4 py-3 text-white focus:border-amber-500 focus:outline-none transition"
-            placeholder="例: コーポレートサイトのデザインリニューアル"
+            placeholder="例: 庭の草取りをお願いしたい"
           />
         </div>
 

@@ -2,14 +2,16 @@ import { Timestamp } from 'firebase/firestore';
 
 /** クエストカテゴリ */
 export type QuestCategory =
-  | 'design'        // デザイン
-  | 'writing'       // ライティング
-  | 'development'   // 開発
-  | 'consulting'    // コンサルティング
-  | 'translation'   // 翻訳
-  | 'photography'   // 撮影
-  | 'video'         // 動画制作
-  | 'marketing'     // マーケティング
+  | 'yard_work'     // 庭仕事・草取り
+  | 'cleaning'      // 掃除・片付け
+  | 'moving'        // 引っ越し・運搬
+  | 'repair'        // 修理・メンテナンス
+  | 'shopping'      // 買い物代行
+  | 'pet_care'      // ペットの世話
+  | 'childcare'     // 子守り・送迎
+  | 'eldercare'     // 高齢者サポート
+  | 'cooking'       // 料理・家事
+  | 'errands'       // 各種手続き代行
   | 'other';        // その他
 
 /** クエストステータス（依頼ステートマシン） */
