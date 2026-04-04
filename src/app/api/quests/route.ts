@@ -16,9 +16,12 @@ import type { QuestCategory } from '@/types/quest';
 const CreateQuestSchema = z.object({
   title: z.string().min(1).max(100),
   description: z.string().min(1).max(5000),
+  questType: z.enum(['personal', 'business']),
   category: z.enum([
     'yard_work', 'cleaning', 'moving', 'repair', 'shopping',
-    'pet_care', 'childcare', 'eldercare', 'cooking', 'errands', 'other',
+    'pet_care', 'childcare', 'eldercare', 'cooking', 'errands',
+    'office_cleaning', 'warehouse', 'event_setup', 'delivery',
+    'signage', 'inventory', 'facility', 'other',
   ]),
   totalAmount: z.number().int().positive(),
   deadline: z.string().optional(),
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { title, description, category, totalAmount, deadline } = parsed.data;
+  const { title, description, questType, category, totalAmount, deadline } = parsed.data;
 
   try {
     validateAmount(totalAmount);
@@ -56,6 +59,7 @@ export async function POST(request: NextRequest) {
       questId: questRef.id,
       title,
       description,
+      questType,
       category,
       clientId: user.uid,
       adventurerId: null,

@@ -1,18 +1,30 @@
 import { Timestamp } from 'firebase/firestore';
 
+/** 依頼タイプ */
+export type QuestType = 'personal' | 'business';
+
 /** クエストカテゴリ */
 export type QuestCategory =
-  | 'yard_work'     // 庭仕事・草取り
-  | 'cleaning'      // 掃除・片付け
-  | 'moving'        // 引っ越し・運搬
-  | 'repair'        // 修理・メンテナンス
-  | 'shopping'      // 買い物代行
-  | 'pet_care'      // ペットの世話
-  | 'childcare'     // 子守り・送迎
-  | 'eldercare'     // 高齢者サポート
-  | 'cooking'       // 料理・家事
-  | 'errands'       // 各種手続き代行
-  | 'other';        // その他
+  // 個人向け
+  | 'yard_work'         // 庭仕事・草取り
+  | 'cleaning'          // 掃除・片付け
+  | 'moving'            // 引っ越し・運搬
+  | 'repair'            // 修理・メンテナンス
+  | 'shopping'          // 買い物代行
+  | 'pet_care'          // ペットの世話
+  | 'childcare'         // 子守り・送迎
+  | 'eldercare'         // 高齢者サポート
+  | 'cooking'           // 料理・家事
+  | 'errands'           // 各種手続き代行
+  // 企業向け
+  | 'office_cleaning'   // オフィス・店舗清掃
+  | 'warehouse'         // 倉庫整理・棚卸し
+  | 'event_setup'       // イベント設営・撤去
+  | 'delivery'          // 配達・集荷
+  | 'signage'           // 看板・POP設置
+  | 'inventory'         // 在庫管理・検品
+  | 'facility'          // 施設メンテナンス
+  | 'other';            // その他
 
 /** クエストステータス（依頼ステートマシン） */
 export type QuestStatus =
@@ -40,6 +52,7 @@ export interface Quest {
   questId: string;
   title: string;
   description: string;
+  questType: QuestType;
   category: QuestCategory;
 
   // 参加者
@@ -74,6 +87,7 @@ export interface Quest {
 export interface CreateQuestInput {
   title: string;
   description: string;
+  questType: QuestType;
   category: QuestCategory;
   totalAmount: number;
   deadline?: string; // ISO 8601
