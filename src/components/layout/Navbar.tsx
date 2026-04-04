@@ -1,10 +1,34 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+
+  return (
+    <Link
+      href={href}
+      className={`px-3 py-2 rounded-lg text-sm transition ${
+        isActive
+          ? 'text-indigo-600 bg-indigo-50 font-medium'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
 
 export function Navbar() {
   const { user, member, loading, signOut } = useAuth();
+  const pathname = usePathname();
+
+  function isActive(href: string) {
+    return pathname === href || (href !== '/' && pathname.startsWith(href));
+  }
 
   return (
     <nav className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
@@ -20,25 +44,17 @@ export function Navbar() {
           <div className="hidden sm:flex items-center gap-1">
             {user ? (
               <>
-                <Link href="/quests" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                  依頼掲示板
-                </Link>
                 {member?.role !== 'adventurer' && (
-                  <Link href="/my-quests" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                    依頼する
-                  </Link>
+                  <NavLink href="/my-quests">依頼する</NavLink>
                 )}
                 {member?.role !== 'client' && (
-                  <Link href="/my-adventures" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                    受注する
-                  </Link>
+                  <NavLink href="/quests">受注する</NavLink>
                 )}
-                <Link href="/wallet" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                  金庫
-                </Link>
-                <Link href="/invoices" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                  請求書
-                </Link>
+                {member?.role !== 'client' && (
+                  <NavLink href="/my-adventures">受注一覧</NavLink>
+                )}
+                <NavLink href="/wallet">金庫</NavLink>
+                <NavLink href="/invoices">請求書</NavLink>
                 <div className="flex items-center gap-3 ml-3 pl-3 border-l border-gray-200">
                   <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
                     <span className="text-indigo-600 text-xs font-medium">
@@ -52,28 +68,35 @@ export function Navbar() {
               </>
             ) : (
               !loading && (
-                <div className="flex items-center gap-2">
-                  <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                <div className="flex items-center gap-1">
+                  <Link href="/" className={`px-3 py-2 rounded-lg text-sm transition ${
+                    isActive('/') && pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}>
                     TOP
                   </Link>
-                  <Link href="/quests" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
-                    依頼を探す
-                  </Link>
-                  <Link href="/my-quests" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                  <Link href="/my-quests" className={`px-3 py-2 rounded-lg text-sm transition ${
+                    isActive('/my-quests') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}>
                     依頼する
                   </Link>
-                  <Link href="/my-adventures" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                  <Link href="/quests" className={`px-3 py-2 rounded-lg text-sm transition ${
+                    isActive('/quests') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}>
                     受注する
                   </Link>
-                  <Link href="/about" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                  <Link href="/about" className={`px-3 py-2 rounded-lg text-sm transition ${
+                    isActive('/about') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}>
                     Guildについて
                   </Link>
-                  <Link href="/login" className="text-gray-600 hover:text-gray-900 px-4 py-2 text-sm transition">
-                    ログイン
-                  </Link>
-                  <Link href="/register" className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
-                    無料登録
-                  </Link>
+                  <div className="ml-2 pl-2 border-l border-gray-200 flex items-center gap-2">
+                    <Link href="/login" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                      ログイン
+                    </Link>
+                    <Link href="/register" className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                      無料登録
+                    </Link>
+                  </div>
                 </div>
               )
             )}
