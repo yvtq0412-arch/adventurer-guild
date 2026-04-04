@@ -23,14 +23,14 @@ export function Navbar() {
                 <Link href="/quests" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
                   依頼掲示板
                 </Link>
-                {member?.role !== 'client' && (
-                  <Link href="/my-adventures" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                    冒険記録
-                  </Link>
-                )}
                 {member?.role !== 'adventurer' && (
                   <Link href="/my-quests" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
-                    発注依頼
+                    依頼する
+                  </Link>
+                )}
+                {member?.role !== 'client' && (
+                  <Link href="/my-adventures" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
+                    受注する
                   </Link>
                 )}
                 <Link href="/wallet" className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm transition">
@@ -55,6 +55,15 @@ export function Navbar() {
                 <div className="flex items-center gap-2">
                   <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
                     TOP
+                  </Link>
+                  <Link href="/quests" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                    依頼を探す
+                  </Link>
+                  <Link href="/my-quests" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                    依頼する
+                  </Link>
+                  <Link href="/my-adventures" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                    受注する
                   </Link>
                   <Link href="/about" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
                     Guildについて
