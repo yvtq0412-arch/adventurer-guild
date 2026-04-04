@@ -143,10 +143,26 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* もっと詳しく */}
+      <section className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <p className="text-gray-500 mb-4">サービスの仕組みや手数料についてもっと詳しく知りたい方は</p>
+        <Link href="/about" className="inline-flex items-center gap-1 text-indigo-500 hover:text-indigo-600 font-medium text-sm transition">
+          Guildについて詳しく見る
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </section>
+
       {/* フッター */}
-      <footer className="border-t border-gray-100 mt-16 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-gray-400">
-          Guild - エスクロー決済プラットフォーム
+      <footer className="border-t border-gray-100 mt-8 py-8">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="text-sm text-gray-400">Guild - エスクロー決済プラットフォーム</div>
+          <div className="flex gap-6 text-sm">
+            <Link href="/about" className="text-gray-400 hover:text-gray-600 transition">Guildについて</Link>
+            <Link href="/quests" className="text-gray-400 hover:text-gray-600 transition">依頼掲示板</Link>
+            <Link href="/register" className="text-gray-400 hover:text-gray-600 transition">無料登録</Link>
+          </div>
         </div>
       </footer>
     </div>
