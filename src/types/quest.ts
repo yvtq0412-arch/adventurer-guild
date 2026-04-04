@@ -55,6 +55,10 @@ export interface Quest {
   questType: QuestType;
   category: QuestCategory;
 
+  // 作業場所
+  prefecture: string;
+  city: string;
+
   // 参加者
   clientId: string;
   adventurerId?: string;
