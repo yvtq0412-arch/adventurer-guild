@@ -50,31 +50,31 @@ export default function QuestBoardPage() {
   }, [selectedCategory]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-5xl mx-auto px-4 py-8">
       {/* ヘッダー */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-amber-400">依頼掲示板</h1>
-          <p className="text-stone-400 mt-1">冒険者を募集中のクエスト一覧</p>
+          <h1 className="text-2xl font-bold text-gray-900">受注する</h1>
+          <p className="text-sm text-gray-500 mt-1">募集中の依頼一覧</p>
         </div>
         {member && (member.role === 'client' || member.role === 'both') && (
           <Link
             href="/quests/new"
-            className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold transition"
+            className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition"
           >
-            + 新しい依頼を作成
+            + 新しい依頼
           </Link>
         )}
       </div>
 
       {/* カテゴリフィルター */}
-      <div className="flex gap-2 overflow-x-auto pb-4 mb-6">
+      <div className="flex gap-1 overflow-x-auto pb-4 mb-6">
         <button
           onClick={() => setSelectedCategory('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition ${
             selectedCategory === 'all'
-              ? 'bg-amber-600 text-white'
-              : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
           }`}
         >
           すべて
@@ -83,10 +83,10 @@ export default function QuestBoardPage() {
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition ${
               selectedCategory === cat.id
-                ? 'bg-amber-600 text-white'
-                : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
+                ? 'bg-indigo-500 text-white'
+                : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
             }`}
           >
             {cat.icon} {cat.label}
@@ -96,16 +96,16 @@ export default function QuestBoardPage() {
 
       {/* クエスト一覧 */}
       {loading ? (
-        <div className="text-center py-20 text-stone-500">
-          依頼を読み込み中...
+        <div className="text-center py-20 text-gray-400">
+          読み込み中...
         </div>
       ) : quests.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-4xl mb-4">📋</div>
-          <p className="text-stone-500">現在募集中のクエストはありません</p>
+          <p className="text-gray-400">現在募集中の依頼はありません</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {quests.map((quest) => (
             <QuestCard key={quest.questId} quest={quest} />
           ))}
