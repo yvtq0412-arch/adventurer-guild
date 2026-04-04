@@ -23,6 +23,25 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ===== guild_cards コレクション =====
+    // ギルドカード（冒険者の公開プロフィール＋審査情報）
+    match /guild_cards/{uid} {
+      // 公開プロフィールは全認証ユーザーが読み取り可能
+      allow read: if isAuthenticated();
+      // 本人のみ申請（新規作成）可能・初期ステータスは PENDING のみ
+      allow create: if isOwner(uid)
+                    && request.resource.data.status == 'PENDING'
+                    && request.resource.data.uid == uid;
+      // 本人はプロフィール情報のみ更新可
+      // ステータス・ランク・実績は Admin SDK のみ変更可
+      allow update: if isOwner(uid)
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['status', 'rank', 'rankPoints', 'completedQuestsCount',
+                                 'totalEarnings', 'averageRating', 'ratingCount',
+                                 'reviewedAt', 'reviewedBy', 'rejectedReason']);
+      allow delete: if false;
+    }
+
     // ===== quests コレクション =====
     match /quests/{questId} {
       allow read: if isAuthenticated();

@@ -251,13 +251,22 @@ export default function QuestDetailPage() {
               <p className="text-indigo-700 font-medium mb-1">この依頼を受注しますか？</p>
               <p className="text-sm text-indigo-500 mb-4">受諾すると作業エリアでの対応が必要です</p>
               {user ? (
-                <button
-                  onClick={() => handleAction(`/api/quests/${questId}/accept`)}
-                  disabled={actionLoading}
-                  className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition disabled:opacity-50"
-                >
-                  ⚔️ 受注する
-                </button>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => handleAction(`/api/quests/${questId}/accept`)}
+                    disabled={actionLoading}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition disabled:opacity-50"
+                  >
+                    ⚔️ 受注する
+                  </button>
+                  <p className="text-xs text-indigo-400">
+                    ※ 受注には
+                    <Link href="/guild-card/apply" className="underline hover:text-indigo-600">
+                      ギルドカード
+                    </Link>
+                    が必要です
+                  </p>
+                </div>
               ) : (
                 <Link
                   href="/login"

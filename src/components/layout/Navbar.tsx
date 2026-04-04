@@ -53,6 +53,9 @@ export function Navbar() {
                 {member?.role !== 'client' && (
                   <NavLink href="/my-adventures">受注一覧</NavLink>
                 )}
+                {member?.role !== 'client' && (
+                  <NavLink href="/guild-card/apply">ギルドカード</NavLink>
+                )}
                 <NavLink href="/wallet">金庫</NavLink>
                 <NavLink href="/invoices">請求書</NavLink>
                 <div className="flex items-center gap-3 ml-3 pl-3 border-l border-gray-200">

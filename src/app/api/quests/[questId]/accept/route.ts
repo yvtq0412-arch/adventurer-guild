@@ -55,6 +55,20 @@ export async function POST(
         );
       }
 
+      // ギルドカードの確認（承認済みのみ受注可能）
+      const guildCardDoc = await transaction.get(
+        adminDb.collection('guild_cards').doc(user.uid)
+      );
+      if (!guildCardDoc.exists || guildCardDoc.data()?.status !== 'APPROVED') {
+        return NextResponse.json(
+          {
+            error: 'クエストを受注するにはギルドカードが必要です。まずギルドカードを申請・取得してください。',
+            redirectTo: '/guild-card/apply',
+          },
+          { status: 403 }
+        );
+      }
+
       // ステートマシンで遷移を検証
       const { nextStatus } = executeTransition(
         quest.status,
