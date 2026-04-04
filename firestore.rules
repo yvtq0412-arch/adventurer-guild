@@ -35,6 +35,30 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ===== chats コレクション =====
+    // チャットスレッドのメタデータ
+    match /chats/{questId} {
+      // 依頼者または受注者のみ読み取り可能
+      allow read: if isAuthenticated()
+                  && (resource.data.clientId == request.auth.uid
+                      || resource.data.adventurerId == request.auth.uid);
+      // 書き込みはAPI Routes経由（Admin SDKなし、クライアントSDKで直接書き込みは不可）
+      allow write: if false;
+    }
+
+    // チャットメッセージ（サブコレクション）
+    match /chats/{questId}/messages/{messageId} {
+      // 依頼者または受注者のみ読み取り可能
+      // questドキュメントを参照してアクセス制御
+      allow read: if isAuthenticated()
+                  && (
+                    get(/databases/$(database)/documents/quests/$(questId)).data.clientId == request.auth.uid
+                    || get(/databases/$(database)/documents/quests/$(questId)).data.adventurerId == request.auth.uid
+                  );
+      // 書き込みはAPI Routes経由
+      allow write: if false;
+    }
+
     // ===== transactions コレクション =====
     // 金融データ: Admin SDK 経由でのみ書き込み可能
     match /transactions/{transactionId} {
