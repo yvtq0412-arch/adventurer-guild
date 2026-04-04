@@ -53,6 +53,9 @@ export function Navbar() {
             ) : (
               !loading && (
                 <div className="flex items-center gap-2">
+                  <Link href="/" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
+                    TOP
+                  </Link>
                   <Link href="/about" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
                     Guildについて
                   </Link>
