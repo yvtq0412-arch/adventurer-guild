@@ -1,13 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signUpWithEmail, signInWithGoogle } from '@/lib/firebase/auth';
 import type { GuildRole } from '@/types/user';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  // Google リダイレクト後に認証済みになったら /quests へ遷移
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace('/quests');
+    }
+  }, [user, authLoading, router]);
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,11 +42,12 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
+      // signInWithRedirect を使用しているため、ここでリダイレクトが発生する。
+      // 認証後は Firebase が元のページに戻り、useAuthProvider が結果を処理する。
       await signInWithGoogle(role);
-      router.push('/quests');
+      // ↑ リダイレクトが発生するため以下には到達しないが、念のため残す
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Google登録に失敗しました');
-    } finally {
       setLoading(false);
     }
   }
