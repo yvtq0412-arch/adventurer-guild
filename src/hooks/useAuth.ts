@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import type { User } from 'firebase/auth';
-import { onAuthChange, getUserDocument, signOut, handleGoogleRedirectResult } from '@/lib/firebase/auth';
+import { onAuthChange, getUserDocument, signOut } from '@/lib/firebase/auth';
 import type { GuildMember } from '@/types/user';
 
 interface AuthContextValue {
@@ -33,9 +33,6 @@ export function useAuthProvider(): AuthContextValue {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Googleリダイレクト後の結果を処理する（エラーは握り潰してOK）
-    handleGoogleRedirectResult().catch(() => {});
-
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {

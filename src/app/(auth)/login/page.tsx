@@ -1,21 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signInWithEmail, signInWithGoogle } from '@/lib/firebase/auth';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
-
-  // Google リダイレクト後に認証済みになったら /quests へ遷移
-  useEffect(() => {
-    if (!authLoading && user) {
-      router.replace('/quests');
-    }
-  }, [user, authLoading, router]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,12 +30,11 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      // signInWithRedirect を使用しているため、ここでリダイレクトが発生する。
-      // 認証後は Firebase が元のページに戻り、useAuthProvider が結果を処理する。
       await signInWithGoogle();
-      // ↑ リダイレクトが発生するため以下には到達しないが、念のため残す
+      router.push('/quests');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Googleログインに失敗しました');
+    } finally {
       setLoading(false);
     }
   }

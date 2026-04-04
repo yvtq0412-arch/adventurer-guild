@@ -6,8 +6,7 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
   onAuthStateChanged,
@@ -18,6 +17,8 @@ import { auth, db } from './client';
 import type { GuildMember, GuildRole } from '@/types/user';
 
 const googleProvider = new GoogleAuthProvider();
+// ログイン済みアカウントも含めて毎回アカウント選択画面を表示
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 /** メール/パスワードでサインアップ */
 export async function signUpWithEmail(
@@ -37,40 +38,19 @@ export async function signInWithEmail(email: string, password: string) {
   return credential.user;
 }
 
-/** Googleでサインイン（リダイレクト開始）
- *  呼び出し後はGoogleの認証画面にリダイレクトされる。
- *  認証後のリダイレクト先で handleGoogleRedirectResult() を呼び出すこと。
- */
+/** Googleでサインイン */
 export async function signInWithGoogle(role?: GuildRole) {
-  // roleをsessionStorageに保存し、リダイレクト後に参照できるようにする
-  if (role) {
-    sessionStorage.setItem('pendingGoogleRole', role);
-  }
-  await signInWithRedirect(auth, googleProvider);
-}
-
-/** Googleリダイレクト後の結果を処理する
- *  useAuthProvider の useEffect 内で呼び出す。
- *  新規ユーザーであればFirestoreにドキュメントを作成する。
- */
-export async function handleGoogleRedirectResult(): Promise<User | null> {
-  const result = await getRedirectResult(auth);
-  if (!result) return null;
-
-  const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+  const credential = await signInWithPopup(auth, googleProvider);
+  // 初回ログインの場合はユーザードキュメント作成
+  const userDoc = await getDoc(doc(db, 'users', credential.user.uid));
   if (!userDoc.exists()) {
-    const role = (sessionStorage.getItem('pendingGoogleRole') as GuildRole | null) || 'adventurer';
-    sessionStorage.removeItem('pendingGoogleRole');
     await createUserDocument(
-      result.user,
-      result.user.displayName || '冒険者',
-      role
+      credential.user,
+      credential.user.displayName || '冒険者',
+      role || 'adventurer'
     );
-  } else {
-    sessionStorage.removeItem('pendingGoogleRole');
   }
-
-  return result.user;
+  return credential.user;
 }
 
 /** サインアウト */
