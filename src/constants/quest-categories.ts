@@ -34,10 +34,12 @@ export const BUSINESS_CATEGORIES: QuestCategoryInfo[] = [
   { id: 'signage', label: '看板・POP設置', description: '店舗看板の設置、POPの貼り替え、旗の設置など', icon: '🪧', type: 'business', withholdingRequired: false },
   { id: 'inventory', label: '在庫管理・検品', description: '商品の検品、数量チェック、ラベル貼りなど', icon: '📋', type: 'business', withholdingRequired: false },
   { id: 'facility', label: '施設メンテナンス', description: '建物の簡易清掃、駐車場整備、除草作業など', icon: '🔨', type: 'business', withholdingRequired: false },
+  { id: 'sns_promotion', label: 'SNS投稿・口コミ', description: '商品体験＋SNS投稿、レビュー投稿、来店＋写真投稿など', icon: '📱', type: 'business', withholdingRequired: false },
 ];
 
 /** 共通カテゴリ（両方で表示） */
 const COMMON_CATEGORIES: QuestCategoryInfo[] = [
+  { id: 'consultation', label: '相談・アドバイス', description: '専門知識の相談、経験者へのアドバイス依頼など', icon: '💬', type: 'personal', withholdingRequired: false },
   { id: 'other', label: 'その他', description: '上記に該当しない依頼', icon: '💡', type: 'personal', withholdingRequired: false },
 ];
 

@@ -25,6 +25,9 @@ export type QuestCategory =
   | 'signage'           // 看板・POP設置
   | 'inventory'         // 在庫管理・検品
   | 'facility'          // 施設メンテナンス
+  | 'sns_promotion'     // SNS投稿・口コミ
+  // 共通（個人・企業どちらでも）
+  | 'consultation'      // 相談・アドバイス
   | 'other';            // その他
 
 /** クエストステータス（依頼ステートマシン） */

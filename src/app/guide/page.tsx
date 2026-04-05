@@ -630,6 +630,166 @@ export default function GuidePage() {
         </div>
       </section>
 
+      {/* ========== シナリオ別：SNS投稿 ========== */}
+      <section className="mb-20">
+        <SectionHeading
+          icon="📱"
+          title="シナリオ例 4：SNS投稿・口コミ（飲食店の集客）"
+          sub="飲食店がフォロワーの多いSNSユーザーに来店＋投稿を依頼するパターン"
+        />
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">依頼者（飲食店）が投稿する内容</p>
+          <MockQuestForm
+            category="SNS投稿・口コミ"
+            categoryIcon="📱"
+            title="当店のバーガーを食べてSNSに投稿してください！"
+            description="渋谷の当店にご来店いただき、看板メニューのハンバーガーを実食＋写真付きでご自身のSNS（Instagram or X）に投稿してください。投稿にはお店の位置情報タグを含めてください。投稿URLをチャットで送っていただければ完了です。※フォロワー3万人以上の方限定です。"
+            amount="¥10,000"
+            prefecture="東京都"
+            city="渋谷区"
+          />
+        </div>
+
+        <div className="mb-3">
+          <div className="bg-purple-50 border border-purple-100 rounded-lg p-3 flex gap-2">
+            <span className="text-purple-500 flex-shrink-0">🎯</span>
+            <div className="text-xs text-purple-700 leading-relaxed">
+              <span className="font-semibold">ポイント：</span>
+              「フォロワー3万人以上限定」のような条件は依頼内容に明記しましょう。
+              冒険者が受注前に自分が条件を満たしているか確認できます。
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+            <ChatSystem>冒険者「アヤカ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+              SNS投稿の依頼を拝見しました！Instagramフォロワー4.2万人です。グルメ系の投稿がメインなのでちょうど合うと思います。アカウントはこちらです → @ayaka_gourmet
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              アカウント拝見しました！雰囲気ぴったりです。来店はいつ頃ご都合いいですか？ランチタイム（11:30〜14:00）だと一番映えるメニューをお出しできます。
+            </ChatBubble>
+            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+              今週金曜の12時頃伺えます！投稿内容に何かNGワードやハッシュタグの指定はありますか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              ハッシュタグは #渋谷ランチ #ハンバーガー を入れていただけると助かります。NGは特にないですが、競合店の名前は避けてください。あと位置情報タグを忘れずにお願いします！
+            </ChatBubble>
+            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+              了解です！金曜に伺って、翌日までに投稿しますね。それでは受注させていただきます。
+            </ChatBubble>
+            <ChatSystem>アヤカさんがクエストを受注しました ⚔️</ChatSystem>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold text-gray-600 mb-3">この後の流れ</p>
+          <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+            <FlowStep emoji="⚔️" title="受注確定">
+              アヤカさんが受注。金曜のランチに来店予定。
+            </FlowStep>
+            <FlowStep emoji="🍔" title="来店・実食">
+              金曜12時に来店。ハンバーガーを実食し、写真を撮影。
+            </FlowStep>
+            <FlowStep emoji="📱" title="SNS投稿＋URL送付">
+              翌日までにInstagramに写真付き投稿。投稿URLをチャットで送信。
+            </FlowStep>
+            <FlowStep emoji="✅" title="完了報告">
+              アヤカさんが完了報告を送信。
+            </FlowStep>
+            <FlowStep emoji="🎉" title="承認・報酬分配">
+              投稿内容を確認して承認 → アヤカさんに ¥9,000 が自動送金。
+            </FlowStep>
+            <FlowStep emoji="⭐" title="相互評価" isLast>
+              「写真がとても綺麗で、来客数が増えました！」★5
+            </FlowStep>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== シナリオ別：相談・アドバイス ========== */}
+      <section className="mb-20">
+        <SectionHeading
+          icon="💬"
+          title="シナリオ例 5：相談・アドバイス"
+          sub="経験者に直接相談して具体的なアドバイスをもらうパターン"
+        />
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">依頼者が投稿する内容</p>
+          <MockQuestForm
+            category="相談・アドバイス"
+            categoryIcon="💬"
+            title="副業の確定申告について経験者に相談したい"
+            description="副業を始めて初めての確定申告を迎えます。何を準備すればいいか、経費の考え方、青色申告と白色申告の違いなど、経験者に相談したいです。1回の相談で疑問を解消できればOKです。オンライン（Zoom等）でお願いします。"
+            amount="¥3,000"
+            prefecture="東京都"
+            city="オンライン"
+          />
+        </div>
+
+        <div className="mb-3">
+          <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 flex gap-2">
+            <span className="text-amber-500 flex-shrink-0">💡</span>
+            <div className="text-xs text-amber-700 leading-relaxed">
+              <span className="font-semibold">ポイント：</span>
+              相談系の依頼は「時給」ではなく<strong>「1回の相談あたり」</strong>の報酬にしましょう。
+              弁護士や税理士の相談料と同じ考え方で、業務委託として適切です。
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+            <ChatSystem>冒険者「ケンジ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+              確定申告の相談依頼を拝見しました。自分はフリーランスエンジニア7年目で、青色申告を毎年やっています。副業の種類はどのようなものですか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              ウーバーイーツの配達と、知人から頼まれたWebサイト制作です。年間の副業収入は80万円くらいです。
+            </ChatBubble>
+            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+              なるほど、2種類の副業ですね。それぞれ経費の考え方が少し違うので、その辺りもお話しできます。Zoomで30〜40分くらいあれば一通り解説できると思いますが、いつ頃がいいですか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              今週の木曜の20時以降ならOKです。事前に聞きたいことリストを送っても大丈夫ですか？
+            </ChatBubble>
+            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+              もちろんです！事前にリストをもらえると準備ができるのでありがたいです。では受注しますね。ZoomのURLは前日にチャットで送ります。
+            </ChatBubble>
+            <ChatSystem>ケンジさんがクエストを受注しました ⚔️</ChatSystem>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold text-gray-600 mb-3">この後の流れ</p>
+          <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+            <FlowStep emoji="⚔️" title="受注確定">
+              ケンジさんが受注。木曜20時にZoom相談予定。
+            </FlowStep>
+            <FlowStep emoji="📝" title="事前準備">
+              依頼者が質問リストをチャットで送信。ケンジさんが回答を準備。
+            </FlowStep>
+            <FlowStep emoji="💬" title="Zoom相談">
+              木曜20時にZoomで相談。約40分で疑問を解消。
+            </FlowStep>
+            <FlowStep emoji="✅" title="完了報告">
+              ケンジさんが完了報告。「確定申告相談完了。追加の質問があればチャットでどうぞ」
+            </FlowStep>
+            <FlowStep emoji="🎉" title="承認・報酬分配">
+              承認 → ケンジさんに ¥2,700 が自動送金。
+            </FlowStep>
+            <FlowStep emoji="⭐" title="相互評価" isLast>
+              「とても分かりやすく、具体的なアドバイスでした」★5
+            </FlowStep>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="text-center py-12 border-t border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-3">準備はできましたか？</h2>
