@@ -5,9 +5,6 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function ProfilePage() {
   const { user, member, getIdToken } = useAuth();
@@ -70,31 +67,12 @@ export default function ProfilePage() {
         const data = await res.json();
         throw new Error(data.error || '本人確認セッションの作成に失敗しました');
       }
-      const data = await res.json();
-      const { clientSecret, url } = data;
-      console.log('[Identity] session data:', {
-        clientSecretPrefix: clientSecret?.slice(0, 20),
-        hasUrl: !!url,
-        urlPrefix: url?.slice(0, 40),
-      });
+      const { url } = await res.json();
 
-      const stripe = await stripePromise;
-      if (!stripe || !stripe.verifyIdentity) {
-        // stripe.verifyIdentity が使えない場合はStripeのホスト画面にリダイレクト
-        console.log('[Identity] verifyIdentity not available, redirecting to url');
-        if (url) {
-          window.location.href = url;
-          return;
-        }
-        throw new Error('Stripeの読み込みに失敗しました');
-      }
-
-      console.log('[Identity] calling verifyIdentity with clientSecret...');
-      const { error } = await stripe.verifyIdentity(clientSecret);
-      if (error) {
-        throw new Error(error.message || '本人確認に失敗しました');
-      }
-      // verifyIdentity完了後はWebhookがidentityStatusを更新する
+      // Stripeのホスト画面にリダイレクトして本人確認
+      if (!url) throw new Error('本人確認URLの取得に失敗しました');
+      window.location.href = url;
+      // リダイレクト後はWebhookがidentityStatusを更新する
     } catch (err) {
       setIdentityError(err instanceof Error ? err.message : '本人確認に失敗しました');
     } finally {
