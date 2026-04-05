@@ -26,6 +26,9 @@ export interface GuildMember {
   isQualifiedInvoiceIssuer: boolean;
   withholdingTaxApplicable: boolean;
 
+  // 利用規約同意
+  termsAgreedAt?: Timestamp;
+
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { QuestStatusBadge } from '@/components/quest/QuestStatusBadge';
 import { PaymentBreakdown } from '@/components/payment/PaymentBreakdown';
 import { ChatPanel } from '@/components/chat/ChatPanel';
+import { TermsAgreementModal } from '@/components/terms/TermsAgreementModal';
 import { getQuestCategoryInfo, isWithholdingRequired } from '@/constants/quest-categories';
 import { getAvailableActions } from '@/lib/quest-state-machine';
 import type { Quest } from '@/types/quest';
@@ -24,6 +25,8 @@ export default function QuestDetailPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{ endpoint: string; body: object } | null>(null);
 
   async function loadQuest() {
     try {
@@ -42,6 +45,16 @@ export default function QuestDetailPage() {
     loadQuest();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questId]);
+
+  function handleAcceptWithTermsCheck(endpoint: string, body?: object) {
+    // 受注前に利用規約同意チェック
+    if (!member?.termsAgreedAt) {
+      setPendingAction({ endpoint, body: body || {} });
+      setShowTermsModal(true);
+      return;
+    }
+    handleAction(endpoint, body);
+  }
 
   async function handleAction(endpoint: string, body?: object) {
     setActionLoading(true);
@@ -210,10 +223,14 @@ export default function QuestDetailPage() {
                       return null;
                   }
 
+                  const onClickHandler = action.action === 'accept_quest'
+                    ? () => handleAcceptWithTermsCheck(endpoint, body)
+                    : () => handleAction(endpoint, body);
+
                   return (
                     <button
                       key={action.action}
-                      onClick={() => handleAction(endpoint, body)}
+                      onClick={onClickHandler}
                       disabled={actionLoading}
                       className={`w-full py-3 px-4 rounded-xl font-medium text-sm transition disabled:opacity-50 ${buttonClass}`}
                     >
@@ -253,7 +270,7 @@ export default function QuestDetailPage() {
               {user ? (
                 <div className="space-y-2">
                   <button
-                    onClick={() => handleAction(`/api/quests/${questId}/accept`)}
+                    onClick={() => handleAcceptWithTermsCheck(`/api/quests/${questId}/accept`)}
                     disabled={actionLoading}
                     className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition disabled:opacity-50"
                   >
@@ -332,6 +349,23 @@ export default function QuestDetailPage() {
           </div>
         </div>
       </div>
+
+      {showTermsModal && (
+        <TermsAgreementModal
+          mode="accept"
+          onAgreed={() => {
+            setShowTermsModal(false);
+            if (pendingAction) {
+              handleAction(pendingAction.endpoint, pendingAction.body);
+              setPendingAction(null);
+            }
+          }}
+          onCancel={() => {
+            setShowTermsModal(false);
+            setPendingAction(null);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -6,11 +6,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { getCategoriesByType, isWithholdingRequired } from '@/constants/quest-categories';
 import { PREFECTURES } from '@/constants/areas';
 import { PaymentBreakdown } from '@/components/payment/PaymentBreakdown';
+import { TermsAgreementModal } from '@/components/terms/TermsAgreementModal';
 import type { QuestCategory, QuestType } from '@/types/quest';
 
 export default function NewQuestPage() {
   const router = useRouter();
-  const { getIdToken } = useAuth();
+  const { getIdToken, member } = useAuth();
 
   const [questType, setQuestType] = useState<QuestType>('personal');
   const [title, setTitle] = useState('');
@@ -22,6 +23,7 @@ export default function NewQuestPage() {
   const [deadline, setDeadline] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const categories = getCategoriesByType(questType);
 
@@ -31,8 +33,7 @@ export default function NewQuestPage() {
     if (firstCat) setCategory(firstCat.id);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function doSubmit() {
     setError('');
     setLoading(true);
 
@@ -66,6 +67,16 @@ export default function NewQuestPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // 規約未同意の場合はモーダルを表示
+    if (!member?.termsAgreedAt) {
+      setShowTermsModal(true);
+      return;
+    }
+    doSubmit();
   }
 
   return (
@@ -178,6 +189,17 @@ export default function NewQuestPage() {
           {loading ? '作成中...' : '依頼を登録する'}
         </button>
       </form>
+
+      {showTermsModal && (
+        <TermsAgreementModal
+          mode="post"
+          onAgreed={() => {
+            setShowTermsModal(false);
+            doSubmit();
+          }}
+          onCancel={() => setShowTermsModal(false)}
+        />
+      )}
     </div>
   );
 }
