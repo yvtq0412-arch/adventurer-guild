@@ -39,6 +39,30 @@ export interface GuildCard {
   availableAreas: string[];     // 対応可能エリア（都道府県）
   availableCategories: string[]; // 対応可能カテゴリ
 
+  // --- 詳細プロフィール（依頼者向けの安心情報） ---
+  /** 職歴・経歴のPR（例: 元庭師5年・清掃業10年） */
+  workHistory?: string;
+  /** 保有資格・免許（例: 2級造園施工管理技士） */
+  certifications?: string[];
+  /** 実績のポイントPR（例: "庭の草刈り 200件以上"） */
+  achievementNote?: string;
+  /** 得意な作業スタイル */
+  workStyle?: ('careful' | 'speedy' | 'cost_effective' | 'communicative' | 'flexible')[];
+  /** 作業可能な曜日 */
+  availableDays?: ('mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun')[];
+  /** 作業可能な時間帯 */
+  availableTimeSlots?: ('morning' | 'daytime' | 'evening' | 'night')[];
+  /** 週あたり最大稼働日数 */
+  maxWorkDaysPerWeek?: number;
+  /** ポートフォリオURL */
+  portfolioUrl?: string;
+  /** SNS URL（Twitter/Instagramなど） */
+  snsUrl?: string;
+  /** 一言メッセージ（依頼者へのPR） */
+  messageToClients?: string;
+  /** 最低受注金額（¥） */
+  minimumFee?: number;
+
   // --- ランクシステム ---
   rank: GuildRank;
   rankPoints: number;           // ランクポイント（自動集計）
@@ -79,6 +103,19 @@ export interface ApplyGuildCardInput {
   skills: string[];
   availableAreas: string[];
   availableCategories: string[];
+
+  // 詳細プロフィール（任意）
+  workHistory?: string;
+  certifications?: string[];
+  achievementNote?: string;
+  workStyle?: GuildCard['workStyle'];
+  availableDays?: GuildCard['availableDays'];
+  availableTimeSlots?: GuildCard['availableTimeSlots'];
+  maxWorkDaysPerWeek?: number;
+  portfolioUrl?: string;
+  snsUrl?: string;
+  messageToClients?: string;
+  minimumFee?: number;
 
   // 本人確認
   realName: string;

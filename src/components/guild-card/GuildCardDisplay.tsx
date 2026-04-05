@@ -113,19 +113,158 @@ export function GuildCardDisplay({ card, isOwn = false, compact = false }: Guild
           </div>
         )}
 
+        {/* 依頼者へのメッセージ */}
+        {card.messageToClients && (
+          <div className="mb-5 p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+            <p className="text-xs text-indigo-400 font-medium mb-1">💬 依頼者へのメッセージ</p>
+            <p className="text-sm text-indigo-700 leading-relaxed">{card.messageToClients}</p>
+          </div>
+        )}
+
+        {/* 実績PR */}
+        {card.achievementNote && (
+          <div className="mb-4">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1.5">実績</h3>
+            <p className="text-sm text-gray-600 font-medium">🏆 {card.achievementNote}</p>
+          </div>
+        )}
+
+        {/* 作業スタイル */}
+        {card.workStyle && card.workStyle.length > 0 && (
+          <div className="mb-5">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">作業スタイル</h3>
+            <div className="flex flex-wrap gap-1.5">
+              {card.workStyle.map((style) => {
+                const labels: Record<string, { label: string; icon: string }> = {
+                  careful:        { label: '丁寧・確実',   icon: '🎯' },
+                  speedy:         { label: 'スピード重視', icon: '⚡' },
+                  cost_effective: { label: 'コスパ重視',   icon: '💰' },
+                  communicative:  { label: 'こまめな連絡', icon: '💬' },
+                  flexible:       { label: '柔軟対応',     icon: '🔄' },
+                };
+                const info = labels[style];
+                return info ? (
+                  <span key={style} className="text-xs px-3 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-100 font-medium">
+                    {info.icon} {info.label}
+                  </span>
+                ) : null;
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 保有資格 */}
+        {card.certifications && card.certifications.length > 0 && (
+          <div className="mb-5">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">保有資格・免許</h3>
+            <div className="flex flex-wrap gap-1.5">
+              {card.certifications.map((cert) => (
+                <span key={cert} className="text-xs px-2.5 py-1 bg-green-50 text-green-700 rounded-full border border-green-100">
+                  🏅 {cert}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 職歴 */}
+        {card.workHistory && (
+          <div className="mb-5">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">職歴・経歴</h3>
+            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{card.workHistory}</p>
+          </div>
+        )}
+
         {/* スキルタグ */}
         {card.skills && card.skills.length > 0 && (
           <div className="mb-5">
             <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">スキル</h3>
             <div className="flex flex-wrap gap-1.5">
               {card.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="text-xs px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100"
-                >
+                <span key={skill} className="text-xs px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100">
                   {skill}
                 </span>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* 稼働情報 */}
+        {((card.availableDays && card.availableDays.length > 0) ||
+          (card.availableTimeSlots && card.availableTimeSlots.length > 0) ||
+          card.maxWorkDaysPerWeek ||
+          card.minimumFee) && (
+          <div className="mb-5 p-4 bg-gray-50 rounded-xl border border-gray-100">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">稼働情報</h3>
+            <div className="space-y-2">
+              {card.availableDays && card.availableDays.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-20 shrink-0">対応曜日</span>
+                  <div className="flex gap-1">
+                    {(['mon','tue','wed','thu','fri','sat','sun'] as const).map((d) => {
+                      const dayLabels = { mon:'月', tue:'火', wed:'水', thu:'木', fri:'金', sat:'土', sun:'日' };
+                      const active = card.availableDays!.includes(d);
+                      return (
+                        <span key={d} className={`text-xs w-6 h-6 flex items-center justify-center rounded-md font-medium ${
+                          active
+                            ? (d === 'sat' || d === 'sun' ? 'bg-red-100 text-red-600' : 'bg-indigo-100 text-indigo-600')
+                            : 'bg-gray-100 text-gray-300'
+                        }`}>
+                          {dayLabels[d]}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {card.availableTimeSlots && card.availableTimeSlots.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-20 shrink-0">対応時間帯</span>
+                  <div className="flex gap-1 flex-wrap">
+                    {card.availableTimeSlots.map((slot) => {
+                      const slotLabels: Record<string, string> = { morning:'早朝', daytime:'日中', evening:'夕方', night:'夜間' };
+                      return (
+                        <span key={slot} className="text-xs px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md">
+                          {slotLabels[slot]}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {card.maxWorkDaysPerWeek && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-20 shrink-0">週最大稼働</span>
+                  <span className="text-gray-700 text-sm">週{card.maxWorkDaysPerWeek}日まで</span>
+                </div>
+              )}
+              {card.minimumFee && (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-xs w-20 shrink-0">最低金額</span>
+                  <span className="text-gray-700 text-sm font-medium">¥{card.minimumFee.toLocaleString()}〜</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 外部リンク */}
+        {(card.portfolioUrl || card.snsUrl) && (
+          <div className="mb-5">
+            <h3 className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">外部リンク</h3>
+            <div className="flex flex-wrap gap-2">
+              {card.portfolioUrl && (
+                <a href={card.portfolioUrl} target="_blank" rel="noopener noreferrer"
+                  className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full border border-gray-100 hover:border-gray-300 hover:bg-gray-100 transition">
+                  🔗 ポートフォリオ
+                </a>
+              )}
+              {card.snsUrl && (
+                <a href={card.snsUrl} target="_blank" rel="noopener noreferrer"
+                  className="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-full border border-gray-100 hover:border-gray-300 hover:bg-gray-100 transition">
+                  📱 SNS
+                </a>
+              )}
             </div>
           </div>
         )}

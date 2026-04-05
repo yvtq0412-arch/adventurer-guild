@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
@@ -248,6 +249,29 @@ export default function ProfilePage() {
           </div>
         </dl>
       </div>
+
+      {/* ギルドカードプロフィール編集 */}
+      <Link
+        href="/profile/guild-card"
+        className="block bg-white border border-gray-200 rounded-xl p-6 hover:border-indigo-300 hover:bg-indigo-50/30 transition group"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0">
+              <span className="text-xl">⚔️</span>
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">ギルドカード・プロフィール詳細</h2>
+              <p className="text-xs text-gray-400 mt-0.5">
+                実績・資格・稼働情報・作業スタイルなどを設定
+              </p>
+            </div>
+          </div>
+          <svg className="w-4 h-4 text-gray-300 group-hover:text-indigo-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </Link>
     </div>
   );
 }
