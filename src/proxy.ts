@@ -22,7 +22,7 @@ const PROTECTED_PREFIXES = [
 // ログイン済みのユーザーがアクセスしたらリダイレクトするパス
 const AUTH_ONLY_PATHS = ['/login', '/register'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Firebase Auth が発行するセッションCookieを確認
