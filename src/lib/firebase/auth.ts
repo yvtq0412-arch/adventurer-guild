@@ -88,3 +88,17 @@ export async function getUserDocument(uid: string): Promise<GuildMember | null> 
 export function onAuthChange(callback: (user: User | null) => void) {
   return onAuthStateChanged(auth, callback);
 }
+
+/**
+ * Firestoreドキュメントがなければ作成して返す
+ * Googleログインで初回ドキュメント作成が失敗した場合のフォールバック
+ */
+export async function ensureUserDocument(user: User): Promise<GuildMember | null> {
+  try {
+    const displayName = user.displayName || user.email?.split('@')[0] || '冒険者';
+    await createUserDocument(user, displayName);
+    return getUserDocument(user.uid);
+  } catch {
+    return null;
+  }
+}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import type { User } from 'firebase/auth';
-import { onAuthChange, getUserDocument, signOut } from '@/lib/firebase/auth';
+import { onAuthChange, getUserDocument, signOut, ensureUserDocument } from '@/lib/firebase/auth';
 import type { GuildMember } from '@/types/user';
 
 interface AuthContextValue {
@@ -36,8 +36,12 @@ export function useAuthProvider(): AuthContextValue {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
-        const doc = await getUserDocument(firebaseUser.uid);
-        setMember(doc);
+        // ドキュメントがなければ自動作成（Googleログイン初回など）
+        let memberDoc = await getUserDocument(firebaseUser.uid);
+        if (!memberDoc) {
+          memberDoc = await ensureUserDocument(firebaseUser);
+        }
+        setMember(memberDoc);
       } else {
         setMember(null);
       }
