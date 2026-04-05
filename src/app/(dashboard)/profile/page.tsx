@@ -34,11 +34,12 @@ export default function ProfilePage() {
     }
   }
 
-  const roleLabel = {
-    adventurer: 'ワーカー（受注者）',
-    client: 'クライアント（依頼者）',
-    both: '両方（受発注）',
-  }[member?.role ?? 'adventurer'];
+  const identityLabel = {
+    unverified: '未確認',
+    pending: '審査中',
+    verified: '本人確認済み',
+    failed: '確認失敗',
+  }[member?.identityStatus ?? 'unverified'];
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -70,7 +71,7 @@ export default function ProfilePage() {
             <p className="font-semibold text-gray-900 text-lg">{member?.displayName || user?.displayName}</p>
             <p className="text-sm text-gray-400 mt-0.5">{user?.email}</p>
             <span className="inline-block mt-2 text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-medium">
-              {roleLabel}
+              {identityLabel}
             </span>
           </div>
         </div>
@@ -120,7 +121,7 @@ export default function ProfilePage() {
           </div>
           <div className="flex justify-between py-2 border-b border-gray-50">
             <dt className="text-sm text-gray-500">役割</dt>
-            <dd className="text-sm text-gray-900 font-medium">{roleLabel}</dd>
+            <dd className="text-sm text-gray-900 font-medium">{identityLabel}</dd>
           </div>
           <div className="flex justify-between py-2">
             <dt className="text-sm text-gray-500">ユーザーID</dt>

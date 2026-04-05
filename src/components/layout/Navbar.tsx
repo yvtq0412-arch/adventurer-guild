@@ -86,18 +86,16 @@ function UserAvatar() {
               </svg>
               アカウント設定
             </Link>
-            {member?.role !== 'client' && (
-              <Link
-                href="/guild-card/apply"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
-              >
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
-                </svg>
-                ギルドカード
-              </Link>
-            )}
+            <Link
+              href="/guild-card/apply"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+            >
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
+              </svg>
+              ギルドカード
+            </Link>
           </div>
 
           {/* ログアウト */}
@@ -140,15 +138,9 @@ export function Navbar() {
           <div className="hidden sm:flex items-center gap-1">
             {user ? (
               <>
-                {member?.role !== 'adventurer' && (
-                  <NavLink href="/my-quests">依頼する</NavLink>
-                )}
-                {member?.role !== 'client' && (
-                  <NavLink href="/quests">受注する</NavLink>
-                )}
-                {member?.role !== 'client' && (
-                  <NavLink href="/my-adventures">受注一覧</NavLink>
-                )}
+                <NavLink href="/my-quests">依頼する</NavLink>
+                <NavLink href="/quests">受注する</NavLink>
+                <NavLink href="/my-adventures">受注一覧</NavLink>
                 <NavLink href="/wallet">金庫</NavLink>
                 <NavLink href="/invoices">請求書</NavLink>
                 <div className="ml-3 pl-3 border-l border-gray-200">

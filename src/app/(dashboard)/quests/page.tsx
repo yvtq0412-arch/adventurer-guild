@@ -70,7 +70,7 @@ export default function QuestBoardPage() {
           <h1 className="text-2xl font-bold text-gray-900">受注する</h1>
           <p className="text-sm text-gray-500 mt-1">募集中の依頼一覧</p>
         </div>
-        {member && (member.role === 'client' || member.role === 'both') && (
+        {member && (
           <Link href="/quests/new" className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition">
             + 新しい依頼
           </Link>

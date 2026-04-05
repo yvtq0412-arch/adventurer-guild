@@ -1,29 +1,33 @@
 import { Timestamp } from 'firebase/firestore';
 
-/** ギルドメンバーの役割 */
-export type GuildRole = 'adventurer' | 'client' | 'both';
+/** 本人確認ステータス（Stripe Identity） */
+export type IdentityStatus = 'unverified' | 'pending' | 'verified' | 'failed';
 
 /** ギルドメンバー（ユーザー） */
 export interface GuildMember {
   uid: string;
   displayName: string;
   email: string;
-  role: GuildRole;
   avatarUrl?: string;
 
-  // Stripe Connect（冒険者のみ）
+  // 電話番号（SMS認証済み）
+  phoneNumber?: string;
+  phoneVerified: boolean;
+
+  // 本人確認（Stripe Identity）
+  identityStatus: IdentityStatus;
+  stripeVerificationSessionId?: string;
+
+  // Stripe Connect（受注時に必要）
   stripeConnectAccountId?: string;
   stripeOnboardingComplete: boolean;
 
-  // Stripe Customer（依頼者のみ）
+  // Stripe Customer（発注時に必要）
   stripeCustomerId?: string;
 
   // 税務情報
-  /** 適格請求書発行事業者登録番号 (T + 13桁) */
   taxRegistrationNumber?: string;
-  /** 適格請求書発行事業者かどうか */
   isQualifiedInvoiceIssuer: boolean;
-  /** 源泉徴収対象かどうか */
   withholdingTaxApplicable: boolean;
 
   createdAt: Timestamp;
@@ -34,5 +38,14 @@ export interface GuildMember {
 export interface CreateGuildMemberInput {
   displayName: string;
   email: string;
-  role: GuildRole;
+}
+
+/** 発注できる条件 */
+export function canPost(member: GuildMember): boolean {
+  return member.identityStatus === 'verified' && !!member.stripeCustomerId;
+}
+
+/** 受注できる条件 */
+export function canAccept(member: GuildMember): boolean {
+  return member.identityStatus === 'verified' && member.stripeOnboardingComplete;
 }

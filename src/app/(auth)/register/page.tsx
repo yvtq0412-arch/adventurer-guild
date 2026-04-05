@@ -4,14 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signUpWithEmail, signInWithGoogle } from '@/lib/firebase/auth';
-import type { GuildRole } from '@/types/user';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<GuildRole>('adventurer');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +18,7 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await signUpWithEmail(email, password, displayName, role);
+      await signUpWithEmail(email, password, displayName);
       router.push('/quests');
     } catch (err) {
       setError(err instanceof Error ? err.message : '登録に失敗しました');
@@ -33,7 +31,7 @@ export default function RegisterPage() {
     setError('');
     setLoading(true);
     try {
-      await signInWithGoogle(role);
+      await signInWithGoogle();
       router.push('/quests');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Google登録に失敗しました');
@@ -56,27 +54,6 @@ export default function RegisterPage() {
         {error && (
           <div className="bg-red-50 border border-red-100 text-red-600 rounded-lg p-3 mb-6 text-sm">{error}</div>
         )}
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">役割を選択</label>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { value: 'adventurer' as const, label: 'ワーカー', desc: '依頼を受ける' },
-              { value: 'client' as const, label: 'クライアント', desc: '依頼を出す' },
-              { value: 'both' as const, label: '両方', desc: '受発注両方' },
-            ].map((option) => (
-              <button key={option.value} type="button" onClick={() => setRole(option.value)}
-                className={`p-3 rounded-lg border text-center transition ${
-                  role === option.value
-                    ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }`}>
-                <div className="text-sm font-medium">{option.label}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{option.desc}</div>
-              </button>
-            ))}
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

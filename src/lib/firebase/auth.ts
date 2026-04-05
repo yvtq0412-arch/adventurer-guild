@@ -14,7 +14,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from './client';
-import type { GuildMember, GuildRole } from '@/types/user';
+import type { GuildMember } from '@/types/user';
 
 const googleProvider = new GoogleAuthProvider();
 // ログイン済みアカウントも含めて毎回アカウント選択画面を表示
@@ -25,10 +25,9 @@ export async function signUpWithEmail(
   email: string,
   password: string,
   displayName: string,
-  role: GuildRole
 ) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
-  await createUserDocument(credential.user, displayName, role);
+  await createUserDocument(credential.user, displayName);
   return credential.user;
 }
 
@@ -39,7 +38,7 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 /** Googleでサインイン */
-export async function signInWithGoogle(role?: GuildRole) {
+export async function signInWithGoogle() {
   const credential = await signInWithPopup(auth, googleProvider);
   // 初回ログインの場合はユーザードキュメント作成
   const userDoc = await getDoc(doc(db, 'users', credential.user.uid));
@@ -47,7 +46,6 @@ export async function signInWithGoogle(role?: GuildRole) {
     await createUserDocument(
       credential.user,
       credential.user.displayName || '冒険者',
-      role || 'adventurer'
     );
   }
   return credential.user;
@@ -59,11 +57,7 @@ export async function signOut() {
 }
 
 /** ユーザードキュメントを作成 */
-async function createUserDocument(
-  user: User,
-  displayName: string,
-  role: GuildRole
-) {
+async function createUserDocument(user: User, displayName: string) {
   const memberData: Omit<GuildMember, 'createdAt' | 'updatedAt'> & {
     createdAt: ReturnType<typeof serverTimestamp>;
     updatedAt: ReturnType<typeof serverTimestamp>;
@@ -71,8 +65,9 @@ async function createUserDocument(
     uid: user.uid,
     displayName,
     email: user.email || '',
-    role,
     avatarUrl: user.photoURL || undefined,
+    phoneVerified: false,
+    identityStatus: 'unverified',
     stripeOnboardingComplete: false,
     isQualifiedInvoiceIssuer: false,
     withholdingTaxApplicable: false,
