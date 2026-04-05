@@ -10,8 +10,10 @@ import { verifyAuth, unauthorizedResponse } from '@/lib/api-auth';
 import { adminDb } from '@/lib/firebase/admin';
 import { calculateGuildSplit, validateAmount } from '@/lib/guild-economics';
 import { calculateWithholdingForQuest } from '@/lib/withholding-tax';
+import { canPost } from '@/types/user';
 import { FieldValue } from 'firebase-admin/firestore';
 import type { QuestCategory } from '@/types/quest';
+import type { GuildMember } from '@/types/user';
 
 const CreateQuestSchema = z.object({
   title: z.string().min(1).max(100),
@@ -33,6 +35,23 @@ const CreateQuestSchema = z.object({
 export async function POST(request: NextRequest) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
+
+  // 発注資格チェック（本人確認済み + Stripe Customer登録済み）
+  const userDoc = await adminDb.collection('users').doc(user.uid).get();
+  if (!userDoc.exists) {
+    return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
+  }
+  const memberData = userDoc.data() as GuildMember;
+  if (!canPost(memberData)) {
+    return NextResponse.json(
+      {
+        error: '発注するには本人確認とStripe決済登録が必要です',
+        identityStatus: memberData.identityStatus,
+        hasStripeCustomer: !!memberData.stripeCustomerId,
+      },
+      { status: 403 }
+    );
+  }
 
   const body = await request.json();
   const parsed = CreateQuestSchema.safeParse(body);

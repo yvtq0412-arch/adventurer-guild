@@ -9,7 +9,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth, unauthorizedResponse } from '@/lib/api-auth';
 import { adminDb } from '@/lib/firebase/admin';
 import { executeTransition } from '@/lib/quest-state-machine';
+import { canAccept } from '@/types/user';
 import { FieldValue } from 'firebase-admin/firestore';
+import type { GuildMember } from '@/types/user';
 
 export async function POST(
   request: NextRequest,
@@ -42,28 +44,19 @@ export async function POST(
         );
       }
 
-      // 冒険者の Stripe Connect 確認
+      // 受注資格チェック（本人確認済み + Stripe Connect完了）
       const adventurerDoc = await transaction.get(
         adminDb.collection('users').doc(user.uid)
       );
-      const adventurerData = adventurerDoc.data();
+      const adventurerData = adventurerDoc.data() as GuildMember;
 
-      if (!adventurerData?.stripeOnboardingComplete) {
-        return NextResponse.json(
-          { error: 'Stripe アカウントのオンボーディングを完了してください' },
-          { status: 400 }
-        );
-      }
-
-      // ギルドカードの確認（承認済みのみ受注可能）
-      const guildCardDoc = await transaction.get(
-        adminDb.collection('guild_cards').doc(user.uid)
-      );
-      if (!guildCardDoc.exists || guildCardDoc.data()?.status !== 'APPROVED') {
+      if (!canAccept(adventurerData)) {
         return NextResponse.json(
           {
-            error: 'クエストを受注するにはギルドカードが必要です。まずギルドカードを申請・取得してください。',
-            redirectTo: '/guild-card/apply',
+            error: '受注するには本人確認とStripe Connectの設定が必要です',
+            identityStatus: adventurerData.identityStatus,
+            stripeOnboardingComplete: adventurerData.stripeOnboardingComplete,
+            redirectTo: '/profile',
           },
           { status: 403 }
         );
