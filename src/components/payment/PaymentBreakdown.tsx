@@ -44,7 +44,7 @@ export function PaymentBreakdown({ totalAmount, isWithholdingApplicable = false,
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500 flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />手数料 (10%)
+            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />手数料 (15%)
           </span>
           <span className="text-indigo-600 font-semibold">{formatYen(breakdown.guildFee)}</span>
         </div>

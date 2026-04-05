@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "冒険者ギルド - Adventurer's Guild",
-  description: "手数料10%の透明な決済基盤を持つフリーランスプラットフォーム",
+  description: "エスクロー決済で安心。手数料15%〜（ランクで最低10%）のフリーランスプラットフォーム",
 };
 
 export default function RootLayout({

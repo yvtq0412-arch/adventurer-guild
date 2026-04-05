@@ -332,7 +332,7 @@ export default function GuidePage() {
             <p>高い評価を積み重ねることで：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>ランクが上がる（F → E → D → C → B → A → S）</li>
-              <li>手数料が下がる（10% → 最低7%）</li>
+              <li>手数料が下がる（15% → 最低10%）</li>
               <li>上位ランク限定クエストが受注可能に</li>
               <li>掲示板での検索優先度がアップ</li>
             </ul>
