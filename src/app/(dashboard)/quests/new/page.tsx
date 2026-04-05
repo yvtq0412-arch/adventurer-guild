@@ -157,8 +157,23 @@ export default function NewQuestPage() {
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} required rows={5} maxLength={5000}
             className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm resize-none"
             placeholder={questType === 'personal'
-              ? '依頼の詳細を記入してください（作業内容、希望日時など）'
-              : '依頼の詳細を記入してください（必要な人数、作業内容、日時など）'} />
+              ? '例: 庭の草取りと落ち葉の袋詰め（45ℓ袋×3袋分）をお願いします'
+              : '例: 倉庫内の商品をカテゴリ別に仕分け・棚入れ（約200点）をお願いします'} />
+          {/* 時間指定キーワード検出警告 */}
+          {/\d+\s*時(間|〜|から|まで)|終日|丸\d+日|〜\d+時|\d+時〜/.test(description) && (
+            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex gap-2">
+              <span className="text-amber-500 text-base flex-shrink-0">⚠️</span>
+              <div className="text-xs text-amber-700 leading-relaxed">
+                <span className="font-semibold">時間指定の表現が含まれています。</span>
+                「○時から○時まで作業」のような記載は、労働基準法上の<span className="font-semibold">雇用契約と見なされる恐れ</span>があります。
+                作業内容・量（例：「草取り 45ℓ袋×2袋分」「棚入れ 約200点」）で記載するようにしてください。
+              </div>
+            </div>
+          )}
+          {/* 常時表示の注意書き */}
+          <p className="text-xs text-gray-400 mt-1.5">
+            💡 依頼内容は<span className="font-medium">作業の内容・量</span>で記載してください。「○時から○時まで」のような時間指定のみの記載はお避けください。
+          </p>
         </div>
 
         {/* 金額 */}
