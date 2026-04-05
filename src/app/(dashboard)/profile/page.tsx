@@ -64,7 +64,6 @@ export default function ProfilePage() {
         headers: { Authorization: `Bearer ${idToken}` },
       });
       const responseText = await res.text();
-      console.log(`[Identity] API response status=${res.status} body=${responseText}`);
       if (!res.ok) {
         let errMsg = '本人確認セッションの作成に失敗しました';
         try { errMsg = JSON.parse(responseText).error ?? errMsg; } catch { errMsg = responseText || errMsg; }

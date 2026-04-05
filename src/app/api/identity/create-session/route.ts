@@ -3,7 +3,8 @@
  * POST /api/identity/create-session
  *
  * ログイン中のユーザーに対して本人確認セッションを作成する。
- * フロントエンドはclientSecretを使ってStripe.jsのUIを起動する。
+ * フロントエンドは返却された url にリダイレクトしてStripeホスト画面で本人確認を行う。
+ * 完了後はWebhookが identityStatus を verified に更新する。
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -57,8 +58,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`[Identity] Session created: id=${session.id} status=${session.status} hasUrl=${!!session.url} hasSecret=${!!session.client_secret}`);
-
     // Firestoreにsessionidを保存し、状態をpendingに
     await adminDb.collection('users').doc(uid).update({
       identityStatus: 'pending',
@@ -73,8 +72,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : '不明なエラー';
-    const code = (err as { code?: string }).code ?? 'unknown';
-    console.error(`[Identity] VerificationSession作成エラー: code=${code} message=${message}`);
+    console.error('[Identity] VerificationSession作成エラー:', err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
