@@ -63,11 +63,14 @@ export default function ProfilePage() {
         method: 'POST',
         headers: { Authorization: `Bearer ${idToken}` },
       });
+      const responseText = await res.text();
+      console.log(`[Identity] API response status=${res.status} body=${responseText}`);
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || '本人確認セッションの作成に失敗しました');
+        let errMsg = '本人確認セッションの作成に失敗しました';
+        try { errMsg = JSON.parse(responseText).error ?? errMsg; } catch { errMsg = responseText || errMsg; }
+        throw new Error(`[${res.status}] ${errMsg}`);
       }
-      const { url } = await res.json();
+      const { url } = JSON.parse(responseText);
 
       // Stripeのホスト画面にリダイレクトして本人確認
       if (!url) throw new Error('本人確認URLの取得に失敗しました');
