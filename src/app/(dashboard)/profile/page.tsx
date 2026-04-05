@@ -70,11 +70,18 @@ export default function ProfilePage() {
         const data = await res.json();
         throw new Error(data.error || '本人確認セッションの作成に失敗しました');
       }
-      const { clientSecret, url } = await res.json();
+      const data = await res.json();
+      const { clientSecret, url } = data;
+      console.log('[Identity] session data:', {
+        clientSecretPrefix: clientSecret?.slice(0, 20),
+        hasUrl: !!url,
+        urlPrefix: url?.slice(0, 40),
+      });
 
       const stripe = await stripePromise;
       if (!stripe || !stripe.verifyIdentity) {
         // stripe.verifyIdentity が使えない場合はStripeのホスト画面にリダイレクト
+        console.log('[Identity] verifyIdentity not available, redirecting to url');
         if (url) {
           window.location.href = url;
           return;
@@ -82,6 +89,7 @@ export default function ProfilePage() {
         throw new Error('Stripeの読み込みに失敗しました');
       }
 
+      console.log('[Identity] calling verifyIdentity with clientSecret...');
       const { error } = await stripe.verifyIdentity(clientSecret);
       if (error) {
         throw new Error(error.message || '本人確認に失敗しました');
