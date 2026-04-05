@@ -15,7 +15,6 @@ export default function WalletPage() {
     async function fetchTransactions() {
       if (!user) return;
       try {
-        // 自分に関連するトランザクションを取得
         const q = query(
           collection(db, 'transactions'),
           where('adventurerId', '==', user.uid),
@@ -68,20 +67,23 @@ export default function WalletPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-amber-400 mb-8">金庫</h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">金庫</h1>
+        <p className="text-sm text-gray-500 mt-1">出金設定と取引履歴</p>
+      </div>
 
       {/* Stripe Connect ステータス */}
-      <div className="bg-stone-800/40 border border-stone-700 rounded-xl p-6 mb-8">
-        <h2 className="text-lg font-semibold text-white mb-4">出金設定</h2>
+      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">出金設定</h2>
         {member?.stripeOnboardingComplete ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500" />
-              <span className="text-green-400">出金設定完了</span>
+              <span className="text-sm text-green-600 font-medium">出金設定完了</span>
             </div>
             <button
               onClick={handleOpenDashboard}
-              className="bg-stone-700 hover:bg-stone-600 text-white px-4 py-2 rounded-lg text-sm transition"
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
             >
               Stripeダッシュボードを開く
             </button>
@@ -89,14 +91,14 @@ export default function WalletPage() {
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-orange-500" />
-              <span className="text-orange-400">
+              <span className="w-2 h-2 rounded-full bg-orange-400" />
+              <span className="text-sm text-orange-600">
                 出金を受け取るにはStripeアカウントの設定が必要です
               </span>
             </div>
             <button
               onClick={handleSetupStripe}
-              className="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
             >
               設定を開始
             </button>
@@ -105,25 +107,25 @@ export default function WalletPage() {
       </div>
 
       {/* トランザクション履歴 */}
-      <div className="bg-stone-800/40 border border-stone-700 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-stone-700">
-          <h2 className="text-lg font-semibold text-white">取引履歴</h2>
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">取引履歴</h2>
         </div>
 
         {loading ? (
-          <div className="p-6 text-center text-stone-500">読み込み中...</div>
+          <div className="p-6 text-center text-gray-400">読み込み中...</div>
         ) : transactions.length === 0 ? (
           <div className="p-12 text-center">
             <div className="text-4xl mb-4">💰</div>
-            <p className="text-stone-500">まだ取引がありません</p>
+            <p className="text-gray-400">まだ取引がありません</p>
           </div>
         ) : (
-          <div className="divide-y divide-stone-700">
+          <div className="divide-y divide-gray-100">
             {transactions.map((tx) => (
               <div key={tx.transactionId} className="p-4 flex justify-between items-center">
                 <div>
-                  <span className="text-sm text-stone-400">{tx.type}</span>
-                  <div className="text-white font-medium">
+                  <span className="text-xs text-gray-400">{tx.type}</span>
+                  <div className="text-gray-900 font-medium mt-0.5">
                     {tx.type === 'distribution'
                       ? formatYen(tx.adventurerRewardAmount)
                       : tx.type.includes('refund')
@@ -132,15 +134,15 @@ export default function WalletPage() {
                   </div>
                 </div>
                 <span
-                  className={`text-xs px-2 py-0.5 rounded ${
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                     tx.status === 'succeeded'
-                      ? 'bg-green-900/50 text-green-400'
+                      ? 'bg-green-50 text-green-600'
                       : tx.status === 'refunded'
-                        ? 'bg-red-900/50 text-red-400'
-                        : 'bg-stone-700 text-stone-400'
+                        ? 'bg-red-50 text-red-500'
+                        : 'bg-gray-100 text-gray-500'
                   }`}
                 >
-                  {tx.status}
+                  {tx.status === 'succeeded' ? '完了' : tx.status === 'refunded' ? '返金済み' : tx.status}
                 </span>
               </div>
             ))}
