@@ -56,6 +56,12 @@ export default function QuestDetailPage() {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ endpoint: string; body: object } | null>(null);
 
+  // 通報UI用状態
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  const [reportLoading, setReportLoading] = useState(false);
+
   // 評価UI用状態
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
@@ -102,6 +108,31 @@ export default function QuestDetailPage() {
       loadReviewStatus();
     }
   }, [quest?.status, loadReviewStatus]);
+
+  async function handleSubmitReport() {
+    if (!quest || !reportReason || reportDescription.length < 10) return;
+    setReportLoading(true);
+    try {
+      const token = await getIdToken();
+      const reportedUserId = isClient ? quest.adventurerId : quest.clientId;
+      const res = await fetch('/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ questId, reportedUserId, reason: reportReason, description: reportDescription }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setShowReportModal(false);
+      setMessage('通報を受け付けました。対象ユーザーのアカウントは停止されました。');
+      setMessageType('success');
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : '通報の送信に失敗しました');
+      setMessageType('error');
+      setShowReportModal(false);
+    } finally {
+      setReportLoading(false);
+    }
+  }
 
   async function handleSubmitReview() {
     if (reviewRating === 0) return;
@@ -528,6 +559,17 @@ export default function QuestDetailPage() {
               報酬はギルドが安全に預かります。作業完了後に確認・承認してから冒険者に支払われます。
             </p>
           </div>
+
+          {/* 通報ボタン */}
+          {(isClient || isAdventurer) && quest.adventurerId && (
+            <button
+              type="button"
+              onClick={() => setShowReportModal(true)}
+              className="w-full text-xs text-gray-400 hover:text-red-500 hover:bg-red-50 py-2.5 rounded-lg transition flex items-center justify-center gap-1"
+            >
+              🚨 相手を通報する
+            </button>
+          )}
         </div>
       </div>
 
@@ -546,6 +588,75 @@ export default function QuestDetailPage() {
             setPendingAction(null);
           }}
         />
+      )}
+
+      {/* 通報モーダル */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-gray-900 mb-1">🚨 ユーザーを通報する</h3>
+            <p className="text-xs text-gray-400 mb-4">
+              悪質な行為を確認した場合は通報してください。通報が受理されると、対象ユーザーのアカウントは<strong className="text-red-500">即座に停止</strong>されます。
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">通報理由（必須）</label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-red-400 focus:ring-1 focus:ring-red-400 focus:outline-none bg-white"
+                >
+                  <option value="">選択してください</option>
+                  <option value="fraud">詐欺・不正行為</option>
+                  <option value="harassment">ハラスメント・嫌がらせ</option>
+                  <option value="no_show">無断キャンセル・すっぽかし</option>
+                  <option value="false_completion">虚偽の完了報告</option>
+                  <option value="inappropriate">不適切な内容</option>
+                  <option value="safety_concern">安全上の懸念</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  詳細（必須・10文字以上）
+                </label>
+                <textarea
+                  value={reportDescription}
+                  onChange={(e) => setReportDescription(e.target.value)}
+                  rows={4}
+                  maxLength={1000}
+                  placeholder="具体的に何が起きたか記載してください..."
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-red-400 focus:ring-1 focus:ring-red-400 focus:outline-none resize-none"
+                />
+                <p className="text-xs text-gray-300 text-right">{reportDescription.length}/1000</p>
+              </div>
+
+              <div className="bg-red-50 border border-red-100 rounded-lg p-3 text-xs text-red-600 leading-relaxed">
+                ⚠️ 通報が受理されると、対象ユーザーは<strong>即座にアカウント停止（BAN）</strong>となり、二度と依頼・受注ができなくなります。虚偽の通報は利用規約違反となります。
+              </div>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setShowReportModal(false); setReportReason(''); setReportDescription(''); }}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-sm font-medium transition"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmitReport}
+                  disabled={!reportReason || reportDescription.length < 10 || reportLoading}
+                  className="flex-1 bg-red-500 hover:bg-red-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-2.5 rounded-xl text-sm font-medium transition"
+                >
+                  {reportLoading ? '送信中...' : '通報する'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -29,6 +29,11 @@ export interface GuildMember {
   // 利用規約同意
   termsAgreedAt?: Timestamp;
 
+  // BAN情報
+  isBanned?: boolean;
+  bannedAt?: Timestamp;
+  bannedReason?: string;
+
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
@@ -39,12 +44,19 @@ export interface CreateGuildMemberInput {
   email: string;
 }
 
+/** BANされているか */
+export function isBanned(member: GuildMember): boolean {
+  return !!member.isBanned;
+}
+
 /** 発注できる条件 */
 export function canPost(member: GuildMember): boolean {
+  if (isBanned(member)) return false;
   return member.identityStatus === 'verified' && !!member.stripeCustomerId;
 }
 
 /** 受注できる条件 */
 export function canAccept(member: GuildMember): boolean {
+  if (isBanned(member)) return false;
   return member.identityStatus === 'verified' && member.stripeOnboardingComplete;
 }

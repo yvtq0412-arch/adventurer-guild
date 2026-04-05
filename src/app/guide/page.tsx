@@ -216,7 +216,7 @@ export default function GuidePage() {
             </div>
           </StepCard>
 
-          <StepCard step={4} title="冒険者からの応募を待つ・チャットで詳細を詰める" color="indigo">
+          <StepCard step={4} title="冒険者（受注者）からの応募を待つ・チャットで詳細を詰める" color="indigo">
             <p>クエストが掲示板に公開されると、興味を持った冒険者からチャットが届きます。</p>
             <p>投稿時に<strong>希望日時の候補</strong>を入れておくと、日程調整がスムーズです。</p>
             <p className="mt-1">この段階で以下の点をすり合わせてください：</p>
@@ -233,7 +233,7 @@ export default function GuidePage() {
             </Tip>
           </StepCard>
 
-          <StepCard step={5} title="冒険者が受注 → 作業開始" color="indigo">
+          <StepCard step={5} title="冒険者（受注者）が受注 → 作業開始" color="indigo">
             <p>冒険者が「受注する」ボタンを押すと、正式に契約成立（業務委託契約）となります。</p>
             <p>作業中もチャットでやり取りできるので、進捗確認や追加の質問があれば気軽に連絡できます。</p>
           </StepCard>
@@ -263,7 +263,7 @@ export default function GuidePage() {
       <section className="mb-20">
         <SectionHeading
           icon="⚔️"
-          title="冒険者としての使い方"
+          title="冒険者（受注者）としての使い方"
           sub="スキルを活かして報酬を得る流れ"
         />
 
@@ -288,7 +288,7 @@ export default function GuidePage() {
             </div>
           </StepCard>
 
-          <StepCard step={3} title="クエスト掲示板から依頼を探す" color="emerald">
+          <StepCard step={3} title="クエスト（依頼）掲示板から依頼を探す" color="emerald">
             <p>掲示板で自分のスキル・エリアに合ったクエストを探します。</p>
             <p>カテゴリ・エリア・報酬金額で絞り込めます。</p>
             <p>気になるクエストを見つけたら、まず<strong>依頼者にチャットで連絡</strong>しましょう。</p>
@@ -397,7 +397,7 @@ export default function GuidePage() {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-700 mb-3">冒険者が確認すること</h3>
+              <h3 className="text-sm font-bold text-gray-700 mb-3">冒険者（受注者）が確認すること</h3>
               <ul className="space-y-2">
                 {[
                   '作業範囲を正確に理解した',
@@ -665,7 +665,7 @@ export default function GuidePage() {
             <div className="text-xs text-purple-700 leading-relaxed">
               <span className="font-semibold">ポイント：</span>
               「フォロワー3万人以上限定」のような条件は依頼内容に明記しましょう。
-              冒険者が受注前に自分が条件を満たしているか確認できます。
+              冒険者（受注者）が受注前に自分が条件を満たしているか確認できます。
             </div>
           </div>
         </div>

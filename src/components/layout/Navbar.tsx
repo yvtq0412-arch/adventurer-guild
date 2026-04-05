@@ -138,38 +138,83 @@ export function Navbar() {
           <div className="hidden sm:flex items-center gap-1">
             {user ? (
               <>
-                <NavLink href="/my-quests">依頼する</NavLink>
-                <NavLink href="/quests">受注する</NavLink>
+                {/* TOP */}
+                <Link href="/" className={`px-3 py-2 rounded-lg text-sm transition ${
+                  pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                }`}>
+                  TOP
+                </Link>
+
+                {/* 依頼する（オレンジ系・大きめ） */}
+                <Link href="/my-quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                  isActive('/my-quests')
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
+                }`}>
+                  📋 依頼する
+                </Link>
+
+                {/* 受注する（グリーン系・大きめ） */}
+                <Link href="/quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                  isActive('/quests')
+                    ? 'bg-emerald-500 text-white shadow-sm'
+                    : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                }`}>
+                  ⚔️ 受注する
+                </Link>
+
                 <NavLink href="/my-adventures">受注一覧</NavLink>
                 <NavLink href="/wallet">金庫</NavLink>
                 <NavLink href="/invoices">請求書</NavLink>
-                <div className="ml-3 pl-3 border-l border-gray-200">
+
+                <div className="ml-1 pl-1 border-l border-gray-200 flex items-center gap-1">
+                  <NavLink href="/guide">📖 ガイド</NavLink>
+                  <NavLink href="/about">ℹ️ About</NavLink>
+                </div>
+
+                <div className="ml-2 pl-2 border-l border-gray-200">
                   <UserAvatar />
                 </div>
               </>
             ) : (
               !loading && (
                 <div className="flex items-center gap-1">
+                  {/* TOP */}
                   <Link href="/" className={`px-3 py-2 rounded-lg text-sm transition ${
-                    isActive('/') && pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                   }`}>
                     TOP
                   </Link>
-                  <Link href="/my-quests" className={`px-3 py-2 rounded-lg text-sm transition ${
-                    isActive('/my-quests') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+
+                  {/* 依頼する（オレンジ系・大きめ） */}
+                  <Link href="/my-quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                    isActive('/my-quests')
+                      ? 'bg-orange-500 text-white shadow-sm'
+                      : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
                   }`}>
-                    依頼する
+                    📋 依頼する
                   </Link>
-                  <Link href="/quests" className={`px-3 py-2 rounded-lg text-sm transition ${
-                    isActive('/quests') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+
+                  {/* 受注する（グリーン系・大きめ） */}
+                  <Link href="/quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                    isActive('/quests')
+                      ? 'bg-emerald-500 text-white shadow-sm'
+                      : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                   }`}>
-                    受注する
+                    ⚔️ 受注する
+                  </Link>
+
+                  <Link href="/guide" className={`px-3 py-2 rounded-lg text-sm transition ${
+                    isActive('/guide') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                  }`}>
+                    📖 ご利用ガイド
                   </Link>
                   <Link href="/about" className={`px-3 py-2 rounded-lg text-sm transition ${
-                    isActive('/about') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    isActive('/about') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                   }`}>
-                    Guildについて
+                    ℹ️ Guildについて
                   </Link>
+
                   <div className="ml-2 pl-2 border-l border-gray-200 flex items-center gap-2">
                     <Link href="/login" className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm transition">
                       ログイン
