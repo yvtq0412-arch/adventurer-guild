@@ -1,26 +1,13 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
-import { auth } from '@/lib/firebase/client';
-import {
-  PhoneAuthProvider,
-  RecaptchaVerifier,
-  linkWithCredential,
-  unlink,
-} from 'firebase/auth';
 import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-
-declare global {
-  interface Window {
-    recaptchaVerifier?: RecaptchaVerifier;
-  }
-}
 
 export default function ProfilePage() {
   const { user, member, getIdToken } = useAuth();
@@ -32,16 +19,6 @@ export default function ProfilePage() {
   // Stripe Identity ステート
   const [identityLoading, setIdentityLoading] = useState(false);
   const [identityError, setIdentityError] = useState('');
-
-  // SMS認証ステート
-  const [phoneNumber, setPhoneNumber] = useState(member?.phoneNumber || '');
-  const [smsSent, setSmsSent] = useState(false);
-  const [smsCode, setSmsCode] = useState('');
-  const [verificationId, setVerificationId] = useState('');
-  const [smsLoading, setSmsLoading] = useState(false);
-  const [smsError, setSmsError] = useState('');
-  const [smsSuccess, setSmsSuccess] = useState(false);
-  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
 
   const avatarUrl = user?.photoURL || member?.avatarUrl;
 
@@ -101,7 +78,6 @@ export default function ProfilePage() {
         throw new Error(error.message || '本人確認に失敗しました');
       }
       // verifyIdentity完了後はWebhookがidentityStatusを更新する
-      // UIにはペンディング中と表示（ページリロードで最新状態を反映）
     } catch (err) {
       setIdentityError(err instanceof Error ? err.message : '本人確認に失敗しました');
     } finally {
@@ -109,86 +85,11 @@ export default function ProfilePage() {
     }
   }
 
-  async function handleSendSms() {
-    if (!user) return;
-    setSmsError('');
-    setSmsLoading(true);
-
-    try {
-      // 既存のRecaptchaVerifierをクリア
-      if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = undefined;
-      }
-
-      // RecaptchaVerifierをコンテナに初期化
-      const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'normal',
-        callback: () => {
-          // reCAPTCHA解決済み
-        },
-      });
-      window.recaptchaVerifier = verifier;
-
-      const provider = new PhoneAuthProvider(auth);
-      // 日本の電話番号を +81 形式に変換
-      let formattedPhone = phoneNumber.trim();
-      if (formattedPhone.startsWith('0')) {
-        formattedPhone = '+81' + formattedPhone.slice(1);
-      }
-
-      const vid = await provider.verifyPhoneNumber(formattedPhone, verifier);
-      setVerificationId(vid);
-      setSmsSent(true);
-    } catch (err) {
-      setSmsError(err instanceof Error ? err.message : 'SMS送信に失敗しました');
-    } finally {
-      setSmsLoading(false);
-    }
-  }
-
-  async function handleVerifySms() {
-    if (!user || !verificationId) return;
-    setSmsError('');
-    setSmsLoading(true);
-
-    try {
-      const credential = PhoneAuthProvider.credential(verificationId, smsCode);
-
-      // 電話番号が既にリンクされている場合は先にunlink
-      const hasPhone = user.providerData.some((p) => p.providerId === 'phone');
-      if (hasPhone) {
-        await unlink(user, 'phone');
-      }
-
-      await linkWithCredential(user, credential);
-
-      // Firestoreを更新
-      let formattedPhone = phoneNumber.trim();
-      if (formattedPhone.startsWith('0')) {
-        formattedPhone = '+81' + formattedPhone.slice(1);
-      }
-      await updateDoc(doc(db, 'users', user.uid), {
-        phoneNumber: formattedPhone,
-        phoneVerified: true,
-        updatedAt: serverTimestamp(),
-      });
-
-      setSmsSuccess(true);
-      setSmsSent(false);
-      setSmsCode('');
-    } catch (err) {
-      setSmsError(err instanceof Error ? err.message : '認証に失敗しました');
-    } finally {
-      setSmsLoading(false);
-    }
-  }
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">アカウント設定</h1>
 
-      {/* アバター */}
+      {/* プロフィール */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">プロフィール</h2>
         <div className="flex items-center gap-5">
@@ -298,82 +199,7 @@ export default function ProfilePage() {
                 </>
               )}
             </button>
-            <p className="text-xs text-gray-400">※ Stripeの安全な画面で処理されます（$1.5/回）</p>
-          </div>
-        )}
-      </div>
-
-      {/* SMS認証 */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">電話番号認証</h2>
-        <p className="text-xs text-gray-400 mb-4">本人確認に使用します。SMSが受信できる番号を登録してください。</p>
-
-        {member?.phoneVerified || smsSuccess ? (
-          <div className="flex items-center gap-2 text-green-600">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm font-medium">電話番号が認証済みです</span>
-            <span className="text-xs text-gray-400">({member?.phoneNumber})</span>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {!smsSent ? (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
-                  <input
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="09012345678"
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
-                  />
-                  <p className="text-xs text-gray-400 mt-1">ハイフンなし（例: 09012345678）</p>
-                </div>
-                {/* reCAPTCHAコンテナ */}
-                <div id="recaptcha-container" ref={recaptchaContainerRef} />
-                {smsError && <p className="text-sm text-red-500">{smsError}</p>}
-                <button
-                  onClick={handleSendSms}
-                  disabled={smsLoading || !phoneNumber}
-                  className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white px-5 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  {smsLoading ? '送信中...' : 'SMSを送信'}
-                </button>
-              </>
-            ) : (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">確認コード（6桁）</label>
-                  <input
-                    type="text"
-                    value={smsCode}
-                    onChange={(e) => setSmsCode(e.target.value)}
-                    placeholder="123456"
-                    maxLength={6}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm font-mono"
-                  />
-                  <p className="text-xs text-gray-400 mt-1">{phoneNumber} に送信されました</p>
-                </div>
-                {smsError && <p className="text-sm text-red-500">{smsError}</p>}
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleVerifySms}
-                    disabled={smsLoading || smsCode.length !== 6}
-                    className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white px-5 py-2 rounded-lg text-sm font-medium transition"
-                  >
-                    {smsLoading ? '確認中...' : '認証する'}
-                  </button>
-                  <button
-                    onClick={() => { setSmsSent(false); setSmsCode(''); setSmsError(''); }}
-                    className="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 transition"
-                  >
-                    番号を変更
-                  </button>
-                </div>
-              </>
-            )}
+            <p className="text-xs text-gray-400">※ Stripeの安全な画面で処理されます</p>
           </div>
         )}
       </div>
@@ -393,18 +219,9 @@ export default function ProfilePage() {
             </dd>
           </div>
           <div className="flex justify-between py-2 border-b border-gray-50">
-            <dt className="text-sm text-gray-500">電話番号認証</dt>
-            <dd className="text-sm font-medium">
-              {(member?.phoneVerified || smsSuccess)
-                ? <span className="text-green-600">認証済み</span>
-                : <span className="text-gray-400">未認証</span>
-              }
-            </dd>
-          </div>
-          <div className="flex justify-between py-2 border-b border-gray-50">
             <dt className="text-sm text-gray-500">本人確認</dt>
-            <dd className={`text-sm font-medium ${identityColor.replace('bg-', '').split(' ')[0] ? '' : ''}`}>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${identityColor}`}>{identityLabel}</span>
+            <dd>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${identityColor}`}>{identityLabel}</span>
             </dd>
           </div>
           <div className="flex justify-between py-2">

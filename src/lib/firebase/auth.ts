@@ -66,7 +66,6 @@ async function createUserDocument(user: User, displayName: string) {
     displayName,
     email: user.email || '',
     avatarUrl: user.photoURL || undefined,
-    phoneVerified: false,
     identityStatus: 'unverified',
     stripeOnboardingComplete: false,
     isQualifiedInvoiceIssuer: false,

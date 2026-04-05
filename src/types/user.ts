@@ -10,10 +10,6 @@ export interface GuildMember {
   email: string;
   avatarUrl?: string;
 
-  // 電話番号（SMS認証済み）
-  phoneNumber?: string;
-  phoneVerified: boolean;
-
   // 本人確認（Stripe Identity）
   identityStatus: IdentityStatus;
   stripeVerificationSessionId?: string;
