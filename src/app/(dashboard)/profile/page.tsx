@@ -1,14 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/client';
 
 export default function ProfilePage() {
-  const { user, member, getIdToken } = useAuth();
-  const [displayName, setDisplayName] = useState(member?.displayName || '');
+  const { user, member, loading, getIdToken } = useAuth();
+
+  // memberがonSnapshotで後から届くため、useEffectで同期する
+  const [displayName, setDisplayName] = useState('');
+  useEffect(() => {
+    if (member?.displayName) {
+      setDisplayName(member.displayName);
+    }
+  }, [member?.displayName]);
+
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -19,19 +27,21 @@ export default function ProfilePage() {
 
   const avatarUrl = user?.photoURL || member?.avatarUrl;
 
+  const identityStatus = member?.identityStatus ?? 'unverified';
+
   const identityLabel = {
     unverified: '未確認',
     pending: '審査中',
     verified: '本人確認済み',
     failed: '確認失敗',
-  }[member?.identityStatus ?? 'unverified'];
+  }[identityStatus];
 
   const identityColor = {
     unverified: 'bg-gray-100 text-gray-500',
     pending: 'bg-yellow-50 text-yellow-600',
     verified: 'bg-green-50 text-green-600',
     failed: 'bg-red-50 text-red-600',
-  }[member?.identityStatus ?? 'unverified'];
+  }[identityStatus];
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -82,6 +92,17 @@ export default function ProfilePage() {
     }
   }
 
+  // memberロード中はスピナー
+  if (loading || !member) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">アカウント設定</h1>
@@ -109,7 +130,7 @@ export default function ProfilePage() {
             )}
           </div>
           <div>
-            <p className="font-semibold text-gray-900 text-lg">{member?.displayName || user?.displayName}</p>
+            <p className="font-semibold text-gray-900 text-lg">{member.displayName || user?.displayName}</p>
             <p className="text-sm text-gray-400 mt-0.5">{user?.email}</p>
             <span className={`inline-block mt-2 text-xs px-2 py-0.5 rounded-full font-medium ${identityColor}`}>
               {identityLabel}
@@ -153,14 +174,14 @@ export default function ProfilePage() {
           発注・受注には本人確認が必要です。運転免許証またはパスポートで確認します（1回のみ）。
         </p>
 
-        {member?.identityStatus === 'verified' ? (
+        {identityStatus === 'verified' ? (
           <div className="flex items-center gap-2 text-green-600">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="text-sm font-medium">本人確認済みです</span>
           </div>
-        ) : member?.identityStatus === 'pending' ? (
+        ) : identityStatus === 'pending' ? (
           <div className="flex items-center gap-2 text-yellow-600">
             <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 8v4M4 12h4m8 0h4" />
@@ -170,7 +191,7 @@ export default function ProfilePage() {
         ) : (
           <div className="space-y-3">
             {identityError && <p className="text-sm text-red-500">{identityError}</p>}
-            {member?.identityStatus === 'failed' && (
+            {identityStatus === 'failed' && (
               <div className="bg-red-50 border border-red-100 rounded-lg p-3 text-sm text-red-600 mb-2">
                 確認に失敗しました。書類を確認して再度お試しください。
               </div>
@@ -192,7 +213,7 @@ export default function ProfilePage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                   </svg>
-                  {member?.identityStatus === 'failed' ? '再度確認する' : '本人確認を開始'}
+                  {identityStatus === 'failed' ? '再度確認する' : '本人確認を開始'}
                 </>
               )}
             </button>
