@@ -41,6 +41,111 @@ function Tip({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** チャット風吹き出し */
+function ChatBubble({
+  from,
+  role,
+  children,
+}: {
+  from: string;
+  role: 'client' | 'adventurer';
+  children: React.ReactNode;
+}) {
+  const isClient = role === 'client';
+  return (
+    <div className={`flex gap-2 ${isClient ? 'justify-end' : 'justify-start'}`}>
+      {!isClient && (
+        <div className="w-7 h-7 bg-emerald-100 rounded-full flex items-center justify-center text-xs shrink-0 mt-1">⚔️</div>
+      )}
+      <div className={`max-w-[80%] ${isClient ? 'order-first' : ''}`}>
+        <p className={`text-[10px] mb-0.5 ${isClient ? 'text-right text-indigo-400' : 'text-emerald-500'}`}>{from}</p>
+        <div className={`rounded-2xl px-3 py-2 text-xs leading-relaxed ${
+          isClient
+            ? 'bg-indigo-500 text-white rounded-tr-sm'
+            : 'bg-gray-100 text-gray-700 rounded-tl-sm'
+        }`}>
+          {children}
+        </div>
+      </div>
+      {isClient && (
+        <div className="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center text-xs shrink-0 mt-1">📋</div>
+      )}
+    </div>
+  );
+}
+
+/** チャットシステムメッセージ */
+function ChatSystem({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="text-center">
+      <span className="text-[10px] text-gray-400 bg-gray-50 px-3 py-0.5 rounded-full">{children}</span>
+    </div>
+  );
+}
+
+/** モック依頼フォームカード */
+function MockQuestForm({
+  category,
+  categoryIcon,
+  title,
+  description,
+  amount,
+  prefecture,
+  city,
+}: {
+  category: string;
+  categoryIcon: string;
+  title: string;
+  description: string;
+  amount: string;
+  prefecture: string;
+  city: string;
+}) {
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{categoryIcon} {category}</span>
+        <span className="text-xs text-gray-400">個人の依頼</span>
+      </div>
+      <div className="space-y-2 text-xs">
+        <div><span className="text-gray-400 w-16 inline-block">タイトル</span><span className="text-gray-800 font-medium">{title}</span></div>
+        <div><span className="text-gray-400 w-16 inline-block">場所</span><span className="text-gray-800">{prefecture} {city}</span></div>
+        <div className="bg-gray-50 rounded-lg p-2 text-gray-600 leading-relaxed">{description}</div>
+        <div className="flex justify-between items-center pt-1 border-t border-gray-100">
+          <span className="text-gray-400">報酬金額</span>
+          <span className="text-lg font-bold text-gray-900">{amount}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** フローステップ（シナリオ用の縦線付き） */
+function FlowStep({
+  emoji,
+  title,
+  children,
+  isLast,
+}: {
+  emoji: string;
+  title: string;
+  children: React.ReactNode;
+  isLast?: boolean;
+}) {
+  return (
+    <div className="flex gap-3">
+      <div className="flex flex-col items-center">
+        <div className="w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center text-sm shrink-0">{emoji}</div>
+        {!isLast && <div className="w-px flex-1 bg-gray-200 mt-1" />}
+      </div>
+      <div className={`flex-1 ${isLast ? '' : 'pb-6'}`}>
+        <p className="text-xs font-bold text-gray-800 mb-1">{title}</p>
+        <div className="text-xs text-gray-500 leading-relaxed">{children}</div>
+      </div>
+    </div>
+  );
+}
+
 function SectionHeading({ icon, title, sub }: { icon: string; title: string; sub: string }) {
   return (
     <div className="mb-8">
@@ -308,6 +413,219 @@ export default function GuidePage() {
                 ))}
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== シナリオ別：草刈り ========== */}
+      <section className="mb-20">
+        <SectionHeading
+          icon="🌿"
+          title="シナリオ例 1：庭の草刈り"
+          sub="最も多い依頼パターン。具体的な流れを見てみましょう"
+        />
+
+        {/* 依頼フォーム入力例 */}
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">依頼者が投稿する内容</p>
+          <MockQuestForm
+            category="庭仕事・草取り"
+            categoryIcon="🌿"
+            title="自宅の庭の草取り＋袋詰めをお願いしたい"
+            description="庭（約20平米）の草取りと、抜いた草の45Lゴミ袋への袋詰めをお願いします。袋は3〜4袋分の想定です。ゴミ袋・軍手はこちらで用意します。"
+            amount="¥5,000"
+            prefecture="埼玉県"
+            city="さいたま市"
+          />
+        </div>
+
+        {/* チャット例 */}
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+            <ChatSystem>冒険者「タケシ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+              はじめまして！草刈りの依頼を拝見しました。20平米で45L袋3〜4袋とのことですが、草の高さはどのくらいですか？膝丈くらいまで伸びてる場合は少し時間がかかるかもしれません。
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              こんにちは！膝丈まではいかないです。足首〜すね位です。前回の草取りから2ヶ月くらい放置してしまいました。
+            </ChatBubble>
+            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+              なるほど、それなら大丈夫です！道具は鎌とレーキを持参します。ゴミ袋と軍手はお借りできるとのことでありがたいです。駐車場はありますか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              駐車スペース1台分あります。日時は今週の土曜日の午前中が希望なのですが、ご都合いかがですか？
+            </ChatBubble>
+            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+              土曜の9時スタートで大丈夫です！天気が雨の場合は翌日に延期でいいですか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              はい、雨天時は日曜に変更でお願いします。それでは受注よろしくお願いします！
+            </ChatBubble>
+            <ChatSystem>タケシさんがクエストを受注しました ⚔️</ChatSystem>
+          </div>
+        </div>
+
+        {/* フロー */}
+        <div>
+          <p className="text-xs font-bold text-gray-600 mb-3">この後の流れ</p>
+          <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+            <FlowStep emoji="⚔️" title="受注確定">
+              タケシさんが受注ボタンを押し、契約成立。
+            </FlowStep>
+            <FlowStep emoji="🌿" title="作業当日">
+              土曜9時にタケシさんが訪問。草取り＋袋詰めを実施。
+            </FlowStep>
+            <FlowStep emoji="✅" title="完了報告">
+              タケシさんが作業完了報告を送信。「45L袋 × 4袋分完了しました」
+            </FlowStep>
+            <FlowStep emoji="🎉" title="承認・報酬分配">
+              あなたが承認ボタンを押す → タケシさんに ¥4,500（手数料10%差引後）が自動送金。
+            </FlowStep>
+            <FlowStep emoji="⭐" title="相互評価" isLast>
+              お互いに星評価とコメントを送信。タケシさんのランクポイントがアップ！
+            </FlowStep>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== シナリオ別：行列代行 ========== */}
+      <section className="mb-20">
+        <SectionHeading
+          icon="🪑"
+          title="シナリオ例 2：行列の並び代行"
+          sub="人気店や整理券の列に代わりに並んでもらうパターン"
+        />
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">依頼者が投稿する内容</p>
+          <MockQuestForm
+            category="行列・順番待ち代行"
+            categoryIcon="🪑"
+            title="人気ラーメン店の並び代行（整理券受取まで）"
+            description="〇〇駅前の△△ラーメンに並んで整理券を受け取ってほしいです。開店30分前（10:30頃）に到着し、整理券を受け取ったら写真で確認を送ってください。整理券受取後に完了です。"
+            amount="¥2,000"
+            prefecture="東京都"
+            city="渋谷区"
+          />
+        </div>
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+            <ChatSystem>冒険者「ミサキ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+              行列代行の依頼を見ました！渋谷なら対応できます。整理券は番号制ですか？それとも先着順で席に案内されるタイプですか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              番号の書いてある紙を渡されるタイプです。開店前に並んで、配布されたら写真を送ってもらえれば大丈夫です。
+            </ChatBubble>
+            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+              了解です！10:30に店の前にいればOKですね？万が一、配布が遅れたりして長引いた場合はどうしましょう？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              11:30までに整理券がもらえなかったら、その時点で終了で大丈夫です。報酬はお支払いします。
+            </ChatBubble>
+            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+              ありがとうございます！では受注させていただきます。
+            </ChatBubble>
+            <ChatSystem>ミサキさんがクエストを受注しました ⚔️</ChatSystem>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold text-gray-600 mb-3">この後の流れ</p>
+          <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+            <FlowStep emoji="⚔️" title="受注確定">
+              ミサキさんが受注。当日の並びを待つ。
+            </FlowStep>
+            <FlowStep emoji="🪑" title="当日：行列に並ぶ">
+              ミサキさんが10:30に到着し、列に並ぶ。
+            </FlowStep>
+            <FlowStep emoji="📸" title="整理券を受け取り、写真送付">
+              整理券の写真をチャットで送信。
+            </FlowStep>
+            <FlowStep emoji="✅" title="完了報告">
+              ミサキさんが完了報告を送信。
+            </FlowStep>
+            <FlowStep emoji="🎉" title="承認・報酬分配">
+              写真を確認して承認 → ミサキさんに ¥1,800 が自動送金。
+            </FlowStep>
+            <FlowStep emoji="⭐" title="相互評価" isLast>
+              「時間通りに並んでくれて助かりました！」★5
+            </FlowStep>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== シナリオ別：企業の倉庫作業 ========== */}
+      <section className="mb-20">
+        <SectionHeading
+          icon="🏭"
+          title="シナリオ例 3：企業の倉庫作業"
+          sub="企業案件で多い棚卸し・仕分けの依頼パターン"
+        />
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">依頼者（企業）が投稿する内容</p>
+          <MockQuestForm
+            category="倉庫整理・棚卸し"
+            categoryIcon="🏭"
+            title="倉庫内の商品仕分け＋棚入れ（約300点）"
+            description="弊社倉庫にて、入荷された商品（段ボール約30箱 / 合計300点）をカテゴリ別に仕分けし、指定の棚に配置してください。仕分けルールの一覧表は当日お渡しします。安全靴をお持ちの方歓迎。"
+            amount="¥12,000"
+            prefecture="千葉県"
+            city="船橋市"
+          />
+        </div>
+
+        <div className="mb-6">
+          <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
+          <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+            <ChatSystem>冒険者「コウタ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+              倉庫作業の依頼を拝見しました。段ボール30箱で300点とのことですが、1箱あたり10点くらいの計算ですね。商品の重量はどのくらいですか？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              1箱5〜8kgくらいです。中身は日用品なので特別重いものはありません。仕分け先は棚がA〜Dの4エリアに分かれていて、ルール表を見ながら振り分けてもらう形です。
+            </ChatBubble>
+            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+              了解です。安全靴は持っています。台車は倉庫にありますか？あとフォークリフトの作業はなしですよね？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              台車は2台あります。フォークリフトの操作は不要です。手作業の仕分けと棚入れだけです。日時は来週の水曜、9時に倉庫入口集合でお願いできますか？
+            </ChatBubble>
+            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+              水曜9時で大丈夫です。駐車場はありますか？あと、お昼休憩はどうしましょう？
+            </ChatBubble>
+            <ChatBubble from="あなた（依頼者）" role="client">
+              駐車場あります。お昼は近くにコンビニがあるのでそちらで。作業量的に午前中で終わりそうなら休憩なしでも構いません。終わった時点で完了で大丈夫です。
+            </ChatBubble>
+            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+              了解しました！では受注します。よろしくお願いします。
+            </ChatBubble>
+            <ChatSystem>コウタさんがクエストを受注しました ⚔️</ChatSystem>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-bold text-gray-600 mb-3">この後の流れ</p>
+          <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+            <FlowStep emoji="⚔️" title="受注確定">
+              コウタさんが受注。来週水曜の作業に備える。
+            </FlowStep>
+            <FlowStep emoji="🏭" title="作業当日">
+              9時に倉庫到着。ルール表を受け取り、仕分け・棚入れを実施。
+            </FlowStep>
+            <FlowStep emoji="✅" title="完了報告">
+              「30箱 / 300点の仕分け＋棚入れ完了しました」と報告。
+            </FlowStep>
+            <FlowStep emoji="🎉" title="承認・報酬分配">
+              企業担当者が確認・承認 → コウタさんに ¥10,800 が自動送金。
+            </FlowStep>
+            <FlowStep emoji="⭐" title="相互評価" isLast>
+              「手際よく作業してくれました。またお願いしたいです」★5
+            </FlowStep>
           </div>
         </div>
       </section>
