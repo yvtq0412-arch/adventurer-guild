@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { doc, getDoc } from 'firebase/firestore';
@@ -15,6 +15,34 @@ import { getAvailableActions } from '@/lib/quest-state-machine';
 import type { Quest } from '@/types/quest';
 import type { ActorRole } from '@/lib/quest-state-machine';
 
+/** 星評価コンポーネント */
+function StarRating({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <button
+          key={star}
+          type="button"
+          onClick={() => onChange(star)}
+          onMouseEnter={() => setHovered(star)}
+          onMouseLeave={() => setHovered(0)}
+          className="text-2xl transition-transform hover:scale-110 focus:outline-none"
+          aria-label={`${star}星`}
+        >
+          {star <= (hovered || value) ? '⭐' : '☆'}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function QuestDetailPage() {
   const params = useParams();
   const questId = params.questId as string;
@@ -28,7 +56,14 @@ export default function QuestDetailPage() {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ endpoint: string; body: object } | null>(null);
 
-  async function loadQuest() {
+  // 評価UI用状態
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [counterpartHasReviewed, setCounterpartHasReviewed] = useState(false);
+
+  const loadQuest = useCallback(async () => {
     try {
       const questDoc = await getDoc(doc(db, 'quests', questId));
       if (questDoc.exists()) {
@@ -39,12 +74,60 @@ export default function QuestDetailPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [questId]);
+
+  const loadReviewStatus = useCallback(async () => {
+    try {
+      const token = await getIdToken();
+      if (!token) return;
+      const res = await fetch(`/api/quests/${questId}/rate`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setHasReviewed(data.hasReviewed);
+        setCounterpartHasReviewed(data.counterpartHasReviewed);
+      }
+    } catch {
+      // 評価ステータス取得失敗は無視
+    }
+  }, [questId, getIdToken]);
 
   useEffect(() => {
     loadQuest();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [questId]);
+  }, [loadQuest]);
+
+  useEffect(() => {
+    if (quest?.status === 'DISTRIBUTED') {
+      loadReviewStatus();
+    }
+  }, [quest?.status, loadReviewStatus]);
+
+  async function handleSubmitReview() {
+    if (reviewRating === 0) return;
+    setReviewLoading(true);
+    try {
+      const token = await getIdToken();
+      const res = await fetch(`/api/quests/${questId}/rate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ rating: reviewRating, comment: reviewComment || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setHasReviewed(true);
+      setMessage('評価を送信しました！');
+      setMessageType('success');
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : '評価の送信に失敗しました');
+      setMessageType('error');
+    } finally {
+      setReviewLoading(false);
+    }
+  }
 
   function handleAcceptWithTermsCheck(endpoint: string, body?: object) {
     // 受注前に利用規約同意チェック
@@ -259,6 +342,70 @@ export default function QuestDetailPage() {
                 adventurerId={quest.adventurerId}
                 isAvailable={chatAvailable}
               />
+            </div>
+          )}
+
+          {/* 評価UI（DISTRIBUTED後、当事者のみ） */}
+          {quest.status === 'DISTRIBUTED' && (isClient || isAdventurer) && (
+            <div className="bg-white border border-gray-100 rounded-xl p-6">
+              <h2 className="text-base font-semibold text-gray-700 mb-1 flex items-center gap-2">
+                ⭐ 評価
+              </h2>
+              <p className="text-xs text-gray-400 mb-4">
+                {isClient ? '冒険者の仕事ぶりを評価してください' : '依頼者を評価してください'}
+              </p>
+
+              {hasReviewed ? (
+                <div className="bg-green-50 border border-green-100 rounded-lg p-4 text-center">
+                  <div className="text-2xl mb-1">✅</div>
+                  <p className="text-sm font-medium text-green-700">評価済みです</p>
+                  {!counterpartHasReviewed && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      {isClient ? '冒険者' : '依頼者'}からの評価を待っています
+                    </p>
+                  )}
+                  {counterpartHasReviewed && (
+                    <p className="text-xs text-gray-400 mt-1">双方の評価が完了しました</p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2 font-medium">評価（必須）</p>
+                    <StarRating value={reviewRating} onChange={setReviewRating} />
+                    {reviewRating > 0 && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        {['', '残念でした', 'もう一息', '普通', '良かった', '素晴らしい！'][reviewRating]}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1 font-medium">コメント（任意・最大300文字）</p>
+                    <textarea
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      rows={3}
+                      maxLength={300}
+                      placeholder="作業内容や対応について一言..."
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:outline-none resize-none"
+                    />
+                    <p className="text-xs text-gray-300 text-right">{reviewComment.length}/300</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSubmitReview}
+                    disabled={reviewRating === 0 || reviewLoading}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-2.5 rounded-xl font-medium text-sm transition"
+                  >
+                    {reviewLoading ? '送信中...' : '評価を送信する'}
+                  </button>
+                  {counterpartHasReviewed && (
+                    <p className="text-xs text-indigo-500 text-center">
+                      {isClient ? '冒険者' : '依頼者'}はすでに評価を送信しています
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
