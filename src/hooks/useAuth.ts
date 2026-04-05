@@ -55,7 +55,7 @@ export function useAuthProvider(): AuthContextValue {
 
   const getIdToken = useCallback(async () => {
     if (!user) return null;
-    return user.getIdToken();
+    return user.getIdToken(true); // 強制リフレッシュで常に有効なトークンを取得
   }, [user]);
 
   return {

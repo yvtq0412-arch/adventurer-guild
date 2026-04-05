@@ -24,8 +24,10 @@ export async function POST(request: NextRequest) {
   try {
     const decoded = await adminAuth.verifyIdToken(idToken);
     uid = decoded.uid;
-  } catch {
-    return NextResponse.json({ error: '無効なトークンです' }, { status: 401 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[Identity] トークン検証失敗: ${message}`);
+    return NextResponse.json({ error: `認証エラー: ${message}` }, { status: 401 });
   }
 
   // 既にverified済みなら再作成不要

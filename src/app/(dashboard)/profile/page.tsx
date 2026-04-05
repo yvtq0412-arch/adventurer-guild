@@ -59,10 +59,12 @@ export default function ProfilePage() {
     setIdentityError('');
     setIdentityLoading(true);
     try {
+      if (!user) throw new Error('ログインが必要です');
       const idToken = await getIdToken();
+      if (!idToken) throw new Error('認証トークンの取得に失敗しました。再ログインしてください。');
       const res = await fetch('/api/identity/create-session', {
         method: 'POST',
-        headers: { authorization: `Bearer ${idToken}` },
+        headers: { Authorization: `Bearer ${idToken}` },
       });
       if (!res.ok) {
         const data = await res.json();
