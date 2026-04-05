@@ -461,6 +461,40 @@ export default function QuestDetailPage() {
             </div>
           )}
 
+          {/* 希望日時候補 */}
+          {quest.preferredDates && quest.preferredDates.length > 0 && (
+            <div className="bg-white border border-gray-100 rounded-xl p-4">
+              <div className="text-xs text-gray-400 mb-2">📅 希望日時の候補</div>
+              <div className="space-y-1.5">
+                {quest.preferredDates.map((pd, idx) => {
+                  const timeLabels: Record<string, string> = {
+                    morning: '午前',
+                    afternoon: '午後',
+                    evening: '夕方以降',
+                    anytime: '終日OK',
+                  };
+                  return (
+                    <div key={idx} className="flex items-center justify-between text-sm">
+                      <span className="text-gray-700">
+                        {new Date(pd.date + 'T00:00:00').toLocaleDateString('ja-JP', {
+                          month: 'long', day: 'numeric', weekday: 'short',
+                        })}
+                      </span>
+                      {pd.timeSlot && (
+                        <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">
+                          {timeLabels[pd.timeSlot] || pd.timeSlot}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-gray-400 mt-2">
+                ※ 日時はチャットで最終調整してください
+              </p>
+            </div>
+          )}
+
           <div className="bg-white border border-gray-100 rounded-xl p-4 space-y-3">
             <div className="text-xs text-gray-400 uppercase tracking-wide">詳細情報</div>
             <div className="space-y-2 text-sm">

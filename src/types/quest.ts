@@ -85,6 +85,8 @@ export interface Quest {
 
   // メタデータ
   deadline?: Timestamp;
+  /** 希望日時の候補（最大5件） */
+  preferredDates?: { date: string; timeSlot?: string }[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
   completedAt?: Timestamp;
@@ -99,4 +101,5 @@ export interface CreateQuestInput {
   category: QuestCategory;
   totalAmount: number;
   deadline?: string; // ISO 8601
+  preferredDates?: { date: string; timeSlot?: string }[];
 }

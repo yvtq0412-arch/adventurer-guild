@@ -22,13 +22,19 @@ const CreateQuestSchema = z.object({
   category: z.enum([
     'yard_work', 'cleaning', 'moving', 'repair', 'shopping',
     'pet_care', 'childcare', 'eldercare', 'cooking', 'errands',
+    'queue_waiting',
     'office_cleaning', 'warehouse', 'event_setup', 'delivery',
-    'signage', 'inventory', 'facility', 'other',
+    'signage', 'inventory', 'facility', 'sns_promotion',
+    'consultation', 'other',
   ]),
-  prefecture: z.string().min(1).max(10),
+  prefecture: z.string().min(1).max(50),
   city: z.string().min(1).max(50),
   totalAmount: z.number().int().positive(),
   deadline: z.string().optional(),
+  preferredDates: z.array(z.object({
+    date: z.string(),
+    timeSlot: z.string().optional(),
+  })).max(5).optional(),
 });
 
 /** POST: クエスト作成 */
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { title, description, questType, category, prefecture, city, totalAmount, deadline } = parsed.data;
+  const { title, description, questType, category, prefecture, city, totalAmount, deadline, preferredDates } = parsed.data;
 
   try {
     validateAmount(totalAmount);
@@ -101,6 +107,7 @@ export async function POST(request: NextRequest) {
         },
       ],
       deadline: deadline ? new Date(deadline) : null,
+      preferredDates: preferredDates || [],
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
     };

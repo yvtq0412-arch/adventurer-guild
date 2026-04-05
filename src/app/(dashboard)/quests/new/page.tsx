@@ -21,6 +21,7 @@ export default function NewQuestPage() {
   const [city, setCity] = useState('');
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [deadline, setDeadline] = useState('');
+  const [preferredDates, setPreferredDates] = useState<{ date: string; timeSlot: string }[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
@@ -56,6 +57,12 @@ export default function NewQuestPage() {
           city,
           totalAmount,
           deadline: deadline || undefined,
+          preferredDates: preferredDates.length > 0
+            ? preferredDates.map((d) => ({
+                date: d.date,
+                ...(d.timeSlot ? { timeSlot: d.timeSlot } : {}),
+              }))
+            : undefined,
         }),
       });
 
@@ -192,12 +199,65 @@ export default function NewQuestPage() {
           <PaymentBreakdown totalAmount={totalAmount} isWithholdingApplicable={isWithholdingRequired(category)} />
         )}
 
-        {/* 納期 */}
+        {/* 希望日時候補 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">希望日時（任意）</label>
-          <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm" />
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            希望日時の候補（任意・最大5件）
+          </label>
+          <p className="text-xs text-gray-400 mb-2">
+            候補を追加しておくと、チャットでの日程調整がスムーズになります
+          </p>
+
+          {preferredDates.map((pd, idx) => (
+            <div key={idx} className="flex items-center gap-2 mb-2">
+              <input
+                type="date"
+                value={pd.date}
+                onChange={(e) => {
+                  const next = [...preferredDates];
+                  next[idx] = { ...next[idx], date: e.target.value };
+                  setPreferredDates(next);
+                }}
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
+              />
+              <select
+                value={pd.timeSlot}
+                onChange={(e) => {
+                  const next = [...preferredDates];
+                  next[idx] = { ...next[idx], timeSlot: e.target.value };
+                  setPreferredDates(next);
+                }}
+                className="w-32 border border-gray-200 rounded-lg px-2 py-2 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm bg-white"
+              >
+                <option value="">時間帯</option>
+                <option value="morning">午前（9〜12時）</option>
+                <option value="afternoon">午後（12〜17時）</option>
+                <option value="evening">夕方以降（17時〜）</option>
+                <option value="anytime">終日OK</option>
+              </select>
+              <button
+                type="button"
+                onClick={() => setPreferredDates(preferredDates.filter((_, i) => i !== idx))}
+                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition text-sm"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+
+          {preferredDates.length < 5 && (
+            <button
+              type="button"
+              onClick={() => setPreferredDates([...preferredDates, { date: '', timeSlot: '' }])}
+              className="text-xs text-indigo-500 hover:text-indigo-600 font-medium flex items-center gap-1 mt-1"
+            >
+              <span className="text-base leading-none">+</span> 候補を追加
+            </button>
+          )}
         </div>
+
+        {/* 期限（旧） */}
+        <input type="hidden" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
 
         <button type="submit" disabled={loading || totalAmount < 50 || !prefecture || !city}
           className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-3 rounded-xl font-medium transition text-sm">

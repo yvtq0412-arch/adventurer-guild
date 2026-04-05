@@ -218,10 +218,11 @@ export default function GuidePage() {
 
           <StepCard step={4} title="冒険者からの応募を待つ・チャットで詳細を詰める" color="indigo">
             <p>クエストが掲示板に公開されると、興味を持った冒険者からチャットが届きます。</p>
-            <p>この段階で以下の点をすり合わせてください：</p>
+            <p>投稿時に<strong>希望日時の候補</strong>を入れておくと、日程調整がスムーズです。</p>
+            <p className="mt-1">この段階で以下の点をすり合わせてください：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>具体的な作業範囲（どこまでやるか）</li>
-              <li>希望の日時・所要時間の目安</li>
+              <li>日時の最終確定（候補から選んでもらう or チャットで調整）</li>
               <li>持ち物・道具について（依頼者が用意するか、冒険者が持参するか）</li>
               <li>駐車場・アクセス情報</li>
               <li>その他の注意点（ペットがいる、近隣に配慮が必要、等）</li>
@@ -437,6 +438,13 @@ export default function GuidePage() {
             prefecture="埼玉県"
             city="さいたま市"
           />
+          <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mt-3">
+            <p className="text-[10px] text-indigo-400 mb-1 font-medium">📅 希望日時の候補</p>
+            <div className="space-y-0.5 text-xs text-indigo-700">
+              <div className="flex justify-between"><span>4月12日（土）</span><span className="bg-white/80 px-1.5 py-0.5 rounded text-[10px]">午前</span></div>
+              <div className="flex justify-between"><span>4月13日（日）</span><span className="bg-white/80 px-1.5 py-0.5 rounded text-[10px]">午前</span></div>
+            </div>
+          </div>
         </div>
 
         {/* チャット例 */}
@@ -454,10 +462,10 @@ export default function GuidePage() {
               なるほど、それなら大丈夫です！道具は鎌とレーキを持参します。ゴミ袋と軍手はお借りできるとのことでありがたいです。駐車場はありますか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
-              駐車スペース1台分あります。日時は今週の土曜日の午前中が希望なのですが、ご都合いかがですか？
+              駐車スペース1台分あります。希望日時の候補に土曜と日曜を入れてあるんですが、どちらか都合いい日はありますか？
             </ChatBubble>
             <ChatBubble from="タケシ（冒険者）" role="adventurer">
-              土曜の9時スタートで大丈夫です！天気が雨の場合は翌日に延期でいいですか？
+              候補拝見しました！土曜の午前で大丈夫です。9時スタートでいかがですか？天気が雨の場合は日曜に延期でいいですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               はい、雨天時は日曜に変更でお願いします。それでは受注よろしくお願いします！
