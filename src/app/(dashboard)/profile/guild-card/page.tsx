@@ -27,7 +27,7 @@ const SKILL_CATEGORIES: { label: string; icon: string; skills: string[] }[] = [
   {
     label: '生活・家事',
     icon: '🏠',
-    skills: ['買い物代行', '料理・食事準備', 'ペットの世話', 'ベビーシッター', '介護補助', '洗濯・アイロン'],
+    skills: ['買い物代行', '料理・食事準備', '介護補助', '洗濯・アイロン', '話し相手', '付き添い'],
   },
   {
     label: '代行・付き添い',

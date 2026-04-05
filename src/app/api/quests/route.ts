@@ -21,7 +21,7 @@ const CreateQuestSchema = z.object({
   questType: z.enum(['personal', 'business']),
   category: z.enum([
     'yard_work', 'cleaning', 'moving', 'repair', 'shopping',
-    'pet_care', 'childcare', 'eldercare', 'cooking', 'errands',
+    'eldercare', 'cooking', 'errands',
     'queue_waiting',
     'office_cleaning', 'warehouse', 'event_setup', 'delivery',
     'signage', 'inventory', 'facility', 'sns_promotion',

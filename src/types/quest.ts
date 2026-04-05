@@ -11,8 +11,6 @@ export type QuestCategory =
   | 'moving'            // 引っ越し・運搬
   | 'repair'            // 修理・メンテナンス
   | 'shopping'          // 買い物代行
-  | 'pet_care'          // ペットの世話
-  | 'childcare'         // 子守り・送迎
   | 'eldercare'         // 高齢者サポート
   | 'cooking'           // 料理・家事
   | 'errands'           // 各種手続き代行
