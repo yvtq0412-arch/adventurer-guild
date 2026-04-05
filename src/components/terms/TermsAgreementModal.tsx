@@ -18,6 +18,7 @@ interface CheckItem {
   id: string;
   label: string;
   termsRef?: string; // 利用規約の条文番号
+  link?: { href: string; text: string }; // 詳細ページへのリンク
 }
 
 const POST_CHECKS: CheckItem[] = [
@@ -25,10 +26,10 @@ const POST_CHECKS: CheckItem[] = [
   { id: 'fee', label: '取引金額の10%（ランクにより変動）がギルド手数料として差し引かれること', termsRef: '第7条' },
   { id: 'cancel', label: '作業開始後のキャンセルは10%を差し引いた返金となること', termsRef: '第8条' },
   { id: 'direct', label: 'Guildを介さない直接取引は禁止されていること', termsRef: '第10条' },
-  { id: 'prohibited', label: '法令に違反する依頼（人の送迎、医療行為、無資格工事等）を投稿しないこと', termsRef: '第10条' },
+  { id: 'prohibited', label: '禁止依頼ガイドラインを確認し、白タク行為（人の送迎）・無資格医療行為・無資格電気工事・非弁行為（法律相談）等の法令違反依頼を投稿しないこと', termsRef: '第10条', link: { href: '/prohibited', text: '禁止依頼の詳細を確認' } },
   { id: 'labor', label: '時間拘束型の依頼（○時〜○時まで作業）は労働契約リスクがあるため、作業量・成果物で記載すること', termsRef: '第10条' },
   { id: 'license', label: '資格・免許が必要な作業については、受注者の資格確認は依頼者の責任で行うこと', termsRef: '第10条の2' },
-  { id: 'terms', label: '利用規約およびプライバシーポリシーの全文を読み、内容を理解しました' },
+  { id: 'terms', label: '利用規約・プライバシーポリシー・禁止依頼ガイドラインの全文を読み、内容を理解しました' },
 ];
 
 const ACCEPT_CHECKS: CheckItem[] = [
@@ -36,10 +37,10 @@ const ACCEPT_CHECKS: CheckItem[] = [
   { id: 'stripe', label: '報酬の受け取りにStripe Connectの設定が必要なこと', termsRef: '第7条' },
   { id: 'withholding', label: '一部カテゴリでは源泉徴収税が控除されること', termsRef: '第7条' },
   { id: 'direct', label: 'Guildを介さない直接取引は禁止されていること', termsRef: '第10条' },
-  { id: 'prohibited', label: '法令に違反する依頼と知りつつ受注しないこと（人の送迎、医療行為、無資格工事等）', termsRef: '第10条' },
+  { id: 'prohibited', label: '禁止依頼ガイドラインを確認し、法令違反の依��（白タク・無資���医療・無資格��事・非弁行為等）と知りつつ受注しないこと', termsRef: '第10条', link: { href: '/prohibited', text: '禁止依頼の詳細を確認' } },
   { id: 'license', label: '資格・免許が必要な作業について、虚偽の資格申告を行った場合は損害賠償・永久BANの対象となること', termsRef: '第10条の2' },
   { id: 'report', label: '悪質な行為に対して通報された場合、即座にアカウントが停止される可能性があること', termsRef: '第11条' },
-  { id: 'terms', label: '利用規約およびプライバシーポリシーの全文を読み、内容を理解しました' },
+  { id: 'terms', label: '利用規約・プライバシーポリシー・禁止依頼ガイドラインの全文を読み、内容を理解しました' },
 ];
 
 export function TermsAgreementModal({ mode, onAgreed, onCancel }: Props) {
@@ -133,21 +134,43 @@ export function TermsAgreementModal({ mode, onAgreed, onCancel }: Props) {
                   {item.termsRef && (
                     <span className="text-[10px] text-gray-400 ml-1">（{item.termsRef}）</span>
                   )}
+                  {item.link && (
+                    <Link
+                      href={item.link.href}
+                      target="_blank"
+                      onClick={(e) => e.stopPropagation()}
+                      className="block text-xs text-indigo-500 hover:text-indigo-600 underline mt-0.5"
+                    >
+                      {item.link.text} →
+                    </Link>
+                  )}
                 </div>
               </label>
             );
           })}
 
-          <Link
-            href="/terms"
-            target="_blank"
-            className="inline-flex items-center gap-1 text-sm text-indigo-500 hover:text-indigo-600 transition mt-2"
-          >
-            利用規約全文を読む
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </Link>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+            <Link
+              href="/terms"
+              target="_blank"
+              className="inline-flex items-center gap-1 text-sm text-indigo-500 hover:text-indigo-600 transition"
+            >
+              利用規約全文を読む
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
+            <Link
+              href="/prohibited"
+              target="_blank"
+              className="inline-flex items-center gap-1 text-sm text-red-500 hover:text-red-600 transition"
+            >
+              🚫 禁止依頼ガイドライン
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
+          </div>
 
           {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         </div>
