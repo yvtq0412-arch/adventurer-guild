@@ -8,12 +8,36 @@ import { useAuth } from '@/hooks/useAuth';
 import { PREFECTURES } from '@/constants/areas';
 import type { GuildCard } from '@/types/guild-card';
 
-const SKILL_SUGGESTIONS = [
-  '草刈り', '庭木剪定', '除草', '高圧洗浄', '清掃・掃除', '引越し補助',
-  '家具組み立て', '買い物代行', 'ペットの世話', 'ベビーシッター',
-  '介護補助', '料理・食事準備', '荷物搬入出', 'オフィス清掃',
-  '倉庫作業', 'イベントスタッフ', '看板設置', '棚卸し補助',
+const SKILL_CATEGORIES: { label: string; icon: string; skills: string[] }[] = [
+  {
+    label: '造園・外構',
+    icon: '🌿',
+    skills: ['草刈り', '庭木剪定', '除草', '植栽・植え替え', '芝刈り', '落ち葉清掃', '砂利敷き'],
+  },
+  {
+    label: '清掃・洗浄',
+    icon: '🧹',
+    skills: ['高圧洗浄', '清掃・掃除', 'オフィス清掃', 'エアコン清掃', 'ハウスクリーニング', '排水溝清掃'],
+  },
+  {
+    label: '運搬・作業',
+    icon: '📦',
+    skills: ['引越し補助', '荷物搬入出', '家具組み立て', '家具移動', '不用品回収', '倉庫作業', '棚卸し補助'],
+  },
+  {
+    label: '生活・家事',
+    icon: '🏠',
+    skills: ['買い物代行', '料理・食事準備', 'ペットの世話', 'ベビーシッター', '介護補助', '洗濯・アイロン'],
+  },
+  {
+    label: 'その他',
+    icon: '🔧',
+    skills: ['イベントスタッフ', '看板設置', 'ポスティング', '農業補助', '雪かき', '害虫駆除補助'],
+  },
 ];
+
+// フラット一覧（カスタムスキルの重複チェック用）
+const ALL_SKILL_SUGGESTIONS = SKILL_CATEGORIES.flatMap((c) => c.skills);
 
 const WORK_STYLE_OPTIONS: { value: NonNullable<GuildCard['workStyle']>[number]; label: string; icon: string; desc: string }[] = [
   { value: 'careful',        label: '丁寧・確実',    icon: '🎯', desc: '一つ一つを丁寧に、完璧な仕上がりを大切にします' },
@@ -141,6 +165,9 @@ export default function ProfileGuildCardPage() {
       setForm((p) => ({ ...p, skills: [...p.skills, s], customSkill: '' }));
     }
   };
+
+  // カスタムスキル（サジェスト一覧にないもの）
+  const customSkills = form.skills.filter((s) => !ALL_SKILL_SUGGESTIONS.includes(s));
 
   const addCustomCertification = () => {
     const s = form.customCertification.trim();
@@ -307,53 +334,85 @@ export default function ProfileGuildCardPage() {
 
             {/* スキル */}
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-2">
-                スキルタグ <span className="text-red-400">*</span>
-              </label>
-              <div className="flex flex-wrap gap-1.5 mb-3">
-                {SKILL_SUGGESTIONS.map((skill) => (
-                  <button
-                    key={skill}
-                    type="button"
-                    onClick={() => toggleSkill(skill)}
-                    className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                      form.skills.includes(skill)
-                        ? 'bg-indigo-500 border-indigo-500 text-white'
-                        : 'bg-white border-gray-200 text-gray-500 hover:border-indigo-300'
-                    }`}
-                  >
-                    {skill}
-                  </button>
+              <div className="flex items-center justify-between mb-3">
+                <label className="block text-xs font-semibold text-gray-600">
+                  スキルタグ <span className="text-red-400">*</span>
+                </label>
+                {form.skills.length > 0 && (
+                  <span className="text-xs text-indigo-500 font-medium">{form.skills.length}件選択中</span>
+                )}
+              </div>
+
+              {/* カテゴリ別グリッド */}
+              <div className="space-y-4">
+                {SKILL_CATEGORIES.map((cat) => (
+                  <div key={cat.label}>
+                    <p className="text-xs font-medium text-gray-400 mb-1.5 flex items-center gap-1">
+                      <span>{cat.icon}</span> {cat.label}
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                      {cat.skills.map((skill) => {
+                        const selected = form.skills.includes(skill);
+                        return (
+                          <button
+                            key={skill}
+                            type="button"
+                            onClick={() => toggleSkill(skill)}
+                            className={`text-xs px-3 py-2 rounded-lg border transition text-left truncate ${
+                              selected
+                                ? 'bg-indigo-500 border-indigo-500 text-white font-medium'
+                                : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:bg-indigo-50/50'
+                            }`}
+                          >
+                            {selected && <span className="mr-1">✓</span>}{skill}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 ))}
               </div>
-              {/* カスタムスキル */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={form.customSkill}
-                  onChange={(e) => setForm((p) => ({ ...p, customSkill: e.target.value }))}
-                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomSkill())}
-                  placeholder="その他のスキルを追加"
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                />
-                <button
-                  type="button"
-                  onClick={addCustomSkill}
-                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-600 transition"
-                >
-                  追加
-                </button>
-              </div>
-              {form.skills.filter((s) => !SKILL_SUGGESTIONS.includes(s)).length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  {form.skills.filter((s) => !SKILL_SUGGESTIONS.includes(s)).map((skill) => (
-                    <span key={skill} className="text-xs px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100 flex items-center gap-1">
-                      {skill}
-                      <button type="button" onClick={() => toggleSkill(skill)} className="text-indigo-300 hover:text-indigo-500">×</button>
-                    </span>
-                  ))}
+
+              {/* カスタムスキル追加 */}
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-xs font-medium text-gray-400 mb-2">✏️ 上記にないスキルを追加</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={form.customSkill}
+                    onChange={(e) => setForm((p) => ({ ...p, customSkill: e.target.value }))}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomSkill())}
+                    placeholder="例: フローリング補修、電球交換..."
+                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustomSkill}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-600 transition whitespace-nowrap"
+                  >
+                    ＋ 追加
+                  </button>
                 </div>
-              )}
+                {customSkills.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 mt-2">
+                    {customSkills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="text-xs px-3 py-2 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100 flex items-center justify-between gap-1"
+                      >
+                        <span className="truncate">{skill}</span>
+                        <button
+                          type="button"
+                          onClick={() => toggleSkill(skill)}
+                          className="text-indigo-300 hover:text-indigo-500 flex-shrink-0 text-base leading-none"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* 対応エリア */}
