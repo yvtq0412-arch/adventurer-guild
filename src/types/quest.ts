@@ -9,7 +9,7 @@ export type QuestCategory =
   | 'yard_work'         // 庭仕事・草取り
   | 'cleaning'          // 掃除・片付け
   | 'moving'            // 引っ越し・運搬
-  | 'repair'            // 修理・メンテナンス
+  | 'repair'            // 組み立て・軽作業
   | 'shopping'          // 買い物代行
   | 'eldercare'         // 高齢者サポート
   | 'cooking'           // 料理・家事
