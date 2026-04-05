@@ -22,6 +22,12 @@ export function Footer() {
               Guildについて
             </Link>
             <Link
+              href="/guide"
+              className="text-xs text-gray-400 hover:text-gray-600 transition"
+            >
+              ご利用ガイド
+            </Link>
+            <Link
               href="/terms"
               className="text-xs text-gray-400 hover:text-gray-600 transition"
             >
