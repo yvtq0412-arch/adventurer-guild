@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 text-sm font-medium px-4 py-1.5 rounded-full mb-8">
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-            手数料わずか10% - 透明な料金体系
+            手数料15%〜（ランクで最低10%） - 透明な料金体系
           </div>
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 tracking-tight leading-tight mb-6">
             スキルと依頼を
@@ -57,8 +57,8 @@ export default function HomePage() {
       <section className="max-w-4xl mx-auto px-4 pb-16">
         <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
           <div className="flex h-3 rounded-full overflow-hidden mb-6">
-            <div className="bg-emerald-500 rounded-l-full" style={{ width: '90%' }} />
-            <div className="bg-indigo-500 rounded-r-full" style={{ width: '10%' }} />
+            <div className="bg-emerald-500 rounded-l-full" style={{ width: '85%' }} />
+            <div className="bg-indigo-500 rounded-r-full" style={{ width: '15%' }} />
           </div>
           <div className="grid sm:grid-cols-3 gap-4 text-center">
             <div className="bg-white rounded-xl p-5 border border-gray-100">
@@ -67,11 +67,11 @@ export default function HomePage() {
             </div>
             <div className="bg-white rounded-xl p-5 border border-gray-100">
               <div className="text-xs text-emerald-500 uppercase tracking-wider mb-1">ワーカー報酬</div>
-              <div className="text-2xl font-bold text-emerald-600">¥90,000</div>
+              <div className="text-2xl font-bold text-emerald-600">¥85,000</div>
             </div>
             <div className="bg-white rounded-xl p-5 border border-gray-100">
               <div className="text-xs text-indigo-500 uppercase tracking-wider mb-1">プラットフォーム手数料</div>
-              <div className="text-2xl font-bold text-indigo-600">¥10,000</div>
+              <div className="text-2xl font-bold text-indigo-600">¥15,000</div>
             </div>
           </div>
         </div>
@@ -101,9 +101,9 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-base font-semibold text-gray-900 mb-2">透明な手数料10%</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-2">透明な手数料15%〜</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
-              報酬の90%がワーカーへ。隠れた追加料金やサブスクリプションはありません。
+              報酬の85%〜90%がワーカーへ。ランクが上がるほど手数料が下がります。隠れた追加料金はありません。
             </p>
           </div>
           <div className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md transition-shadow">
