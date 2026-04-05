@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       clientSecret: session.client_secret,
       sessionId: session.id,
+      url: session.url, // リダイレクト方式のフォールバック用
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : '不明なエラー';

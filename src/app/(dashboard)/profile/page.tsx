@@ -70,10 +70,17 @@ export default function ProfilePage() {
         const data = await res.json();
         throw new Error(data.error || '本人確認セッションの作成に失敗しました');
       }
-      const { clientSecret } = await res.json();
+      const { clientSecret, url } = await res.json();
 
       const stripe = await stripePromise;
-      if (!stripe) throw new Error('Stripeの読み込みに失敗しました');
+      if (!stripe || !stripe.verifyIdentity) {
+        // stripe.verifyIdentity が使えない場合はStripeのホスト画面にリダイレクト
+        if (url) {
+          window.location.href = url;
+          return;
+        }
+        throw new Error('Stripeの読み込みに失敗しました');
+      }
 
       const { error } = await stripe.verifyIdentity(clientSecret);
       if (error) {
