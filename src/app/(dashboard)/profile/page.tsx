@@ -12,6 +12,9 @@ import {
   linkWithCredential,
   unlink,
 } from 'firebase/auth';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 declare global {
   interface Window {
@@ -20,11 +23,15 @@ declare global {
 }
 
 export default function ProfilePage() {
-  const { user, member } = useAuth();
+  const { user, member, getIdToken } = useAuth();
   const [displayName, setDisplayName] = useState(member?.displayName || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
+
+  // Stripe Identity ステート
+  const [identityLoading, setIdentityLoading] = useState(false);
+  const [identityError, setIdentityError] = useState('');
 
   // SMS認証ステート
   const [phoneNumber, setPhoneNumber] = useState(member?.phoneNumber || '');
@@ -68,6 +75,37 @@ export default function ProfilePage() {
       setError('保存に失敗しました');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleStartIdentityVerification() {
+    setIdentityError('');
+    setIdentityLoading(true);
+    try {
+      const idToken = await getIdToken();
+      const res = await fetch('/api/identity/create-session', {
+        method: 'POST',
+        headers: { authorization: `Bearer ${idToken}` },
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || '本人確認セッションの作成に失敗しました');
+      }
+      const { clientSecret } = await res.json();
+
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Stripeの読み込みに失敗しました');
+
+      const { error } = await stripe.verifyIdentity(clientSecret);
+      if (error) {
+        throw new Error(error.message || '本人確認に失敗しました');
+      }
+      // verifyIdentity完了後はWebhookがidentityStatusを更新する
+      // UIにはペンディング中と表示（ページリロードで最新状態を反映）
+    } catch (err) {
+      setIdentityError(err instanceof Error ? err.message : '本人確認に失敗しました');
+    } finally {
+      setIdentityLoading(false);
     }
   }
 
@@ -208,6 +246,61 @@ export default function ProfilePage() {
             {saved && <p className="text-sm text-green-600 font-medium">✓ 保存しました</p>}
           </div>
         </form>
+      </div>
+
+      {/* 本人確認（Stripe Identity） */}
+      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">本人確認</h2>
+        <p className="text-xs text-gray-400 mb-4">
+          発注・受注には本人確認が必要です。運転免許証またはパスポートで確認します（1回のみ）。
+        </p>
+
+        {member?.identityStatus === 'verified' ? (
+          <div className="flex items-center gap-2 text-green-600">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-sm font-medium">本人確認済みです</span>
+          </div>
+        ) : member?.identityStatus === 'pending' ? (
+          <div className="flex items-center gap-2 text-yellow-600">
+            <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 8v4M4 12h4m8 0h4" />
+            </svg>
+            <span className="text-sm font-medium">審査中です（通常数分で完了します）</span>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {identityError && <p className="text-sm text-red-500">{identityError}</p>}
+            {member?.identityStatus === 'failed' && (
+              <div className="bg-red-50 border border-red-100 rounded-lg p-3 text-sm text-red-600 mb-2">
+                確認に失敗しました。書類を確認して再度お試しください。
+              </div>
+            )}
+            <button
+              onClick={handleStartIdentityVerification}
+              disabled={identityLoading}
+              className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white px-5 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2"
+            >
+              {identityLoading ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v4m0 8v4M4 12h4m8 0h4" />
+                  </svg>
+                  準備中...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                  </svg>
+                  {member?.identityStatus === 'failed' ? '再度確認する' : '本人確認を開始'}
+                </>
+              )}
+            </button>
+            <p className="text-xs text-gray-400">※ Stripeの安全な画面で処理されます（$1.5/回）</p>
+          </div>
+        )}
       </div>
 
       {/* SMS認証 */}

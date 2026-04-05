@@ -132,6 +132,44 @@ export async function handleAccountUpdated(account: Stripe.Account) {
 }
 
 /**
+ * identity.verification_session.verified
+ * 本人確認が完了した時
+ * → identityStatus を 'verified' に更新
+ */
+export async function handleIdentityVerified(
+  session: Stripe.Identity.VerificationSession
+) {
+  const userId = session.metadata?.userId;
+  if (!userId) return;
+
+  await adminDb.collection('users').doc(userId).update({
+    identityStatus: 'verified',
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  console.log(`[Identity] 本人確認完了: userId=${userId}`);
+}
+
+/**
+ * identity.verification_session.requires_input
+ * 書類不備・再提出が必要な時
+ * → identityStatus を 'failed' に更新
+ */
+export async function handleIdentityFailed(
+  session: Stripe.Identity.VerificationSession
+) {
+  const userId = session.metadata?.userId;
+  if (!userId) return;
+
+  await adminDb.collection('users').doc(userId).update({
+    identityStatus: 'failed',
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  console.log(`[Identity] 本人確認失敗: userId=${userId}`);
+}
+
+/**
  * charge.dispute.created
  * チャージバック（紛争）が発生した時
  */

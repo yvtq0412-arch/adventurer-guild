@@ -15,6 +15,8 @@ import {
   handleChargeRefunded,
   handleAccountUpdated,
   handleDisputeCreated,
+  handleIdentityVerified,
+  handleIdentityFailed,
 } from '@/lib/stripe/webhooks';
 import type Stripe from 'stripe';
 
@@ -74,6 +76,18 @@ export async function POST(request: NextRequest) {
 
       case 'charge.dispute.created':
         await handleDisputeCreated(event.data.object as Stripe.Dispute);
+        break;
+
+      case 'identity.verification_session.verified':
+        await handleIdentityVerified(
+          event.data.object as Stripe.Identity.VerificationSession
+        );
+        break;
+
+      case 'identity.verification_session.requires_input':
+        await handleIdentityFailed(
+          event.data.object as Stripe.Identity.VerificationSession
+        );
         break;
 
       default:
