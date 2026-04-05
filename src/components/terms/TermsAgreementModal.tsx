@@ -23,7 +23,7 @@ interface CheckItem {
 
 const POST_CHECKS: CheckItem[] = [
   { id: 'escrow', label: '依頼作成時に報酬全額をエスクロー（仮払い）すること', termsRef: '第5条' },
-  { id: 'fee', label: '取引金額の10%（ランクにより変動）がギルド手数料として差し引かれること', termsRef: '第7条' },
+  { id: 'fee', label: '取引金額の15%（ランクにより10%〜15%で変動）がギルド手数料として差し引かれること', termsRef: '第5条' },
   { id: 'cancel', label: '作業開始後のキャンセルは10%を差し引いた返金となること', termsRef: '第8条' },
   { id: 'direct', label: 'Guildを介さない直接取引は禁止されていること', termsRef: '第10条' },
   { id: 'prohibited', label: '禁止依頼ガイドラインを確認し、白タク行為（人の送迎）・無資格医療行為・無資格電気工事・非弁行為（法律相談）等の法令違反依頼を投稿しないこと', termsRef: '第10条', link: { href: '/prohibited', text: '禁止依頼の詳細を確認' } },

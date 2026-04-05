@@ -66,7 +66,7 @@ export const RANK_TABLE: Record<GuildRank, RankRequirement> = {
     minRankPoints: 350,
     minAverageRating: 4.0,
     description: '依頼者から信頼される中堅冒険者。',
-    perks: ['C以上限定の高額クエスト受注可', '手数料割引（9.5% → 9.0%）'],
+    perks: ['C以上限定の高額クエスト受注可', '手数料割引（15% → 13%）'],
   },
   B: {
     rank: 'B',
@@ -80,7 +80,7 @@ export const RANK_TABLE: Record<GuildRank, RankRequirement> = {
     minRankPoints: 700,
     minAverageRating: 4.2,
     description: '多くの依頼をこなしてきたベテラン冒険者。',
-    perks: ['B以上限定クエスト受注可', '手数料割引（9.0% → 8.5%）', 'ピックアップ掲載（週1回）'],
+    perks: ['B以上限定クエスト受注可', '手数料割引（13% → 12%）', 'ピックアップ掲載（週1回）'],
   },
   A: {
     rank: 'A',
@@ -94,7 +94,7 @@ export const RANK_TABLE: Record<GuildRank, RankRequirement> = {
     minRankPoints: 1500,
     minAverageRating: 4.5,
     description: 'ギルドが誇るエキスパート冒険者。',
-    perks: ['A以上限定VIPクエスト受注可', '手数料割引（8.5% → 8.0%）', 'トップページ掲載'],
+    perks: ['A以上限定VIPクエスト受注可', '手数料割引（12% → 11%）', 'トップページ掲載'],
   },
   S: {
     rank: 'S',
@@ -108,7 +108,7 @@ export const RANK_TABLE: Record<GuildRank, RankRequirement> = {
     minRankPoints: 3000,
     minAverageRating: 4.8,
     description: '伝説の冒険者。ギルドの看板を背負う存在。',
-    perks: ['全クエスト受注可', '手数料最大優遇（8.0% → 7.0%）', '「ギルドエース」称号', 'ホームページ特集掲載'],
+    perks: ['全クエスト受注可', '手数料最大優遇（11% → 10%）', '「ギルドエース」称号', 'ホームページ特集掲載'],
   },
 };
 
@@ -219,13 +219,13 @@ export function getRankInfo(rank: GuildRank): RankRequirement {
  */
 export function getGuildFeeRateByRank(rank: GuildRank): number {
   switch (rank) {
-    case 'S': return 0.07;  // 7%
-    case 'A': return 0.08;  // 8%
-    case 'B': return 0.085; // 8.5%
-    case 'C': return 0.09;  // 9%
+    case 'S': return 0.10;  // 10%
+    case 'A': return 0.11;  // 11%
+    case 'B': return 0.12;  // 12%
+    case 'C': return 0.13;  // 13%
     case 'D':
     case 'E':
     case 'F':
-    default:  return 0.10;  // 10%
+    default:  return 0.15;  // 15%
   }
 }

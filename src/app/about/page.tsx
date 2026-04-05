@@ -127,7 +127,7 @@ export default function AboutPage() {
         <div className="space-y-3 mb-8">
           {RANK_ORDER.map((rank) => {
             const info = RANK_TABLE[rank];
-            const feeMap: Record<string, string> = { S: '7%', A: '8%', B: '8.5%', C: '9%', D: '10%', E: '10%', F: '10%' };
+            const feeMap: Record<string, string> = { S: '10%', A: '11%', B: '12%', C: '13%', D: '15%', E: '15%', F: '15%' };
             return (
               <div key={rank} className={`flex gap-4 items-start p-4 rounded-xl border ${info.borderColor} ${info.bgColor}`}>
                 <div className="shrink-0 text-center w-12">
@@ -192,11 +192,11 @@ export default function AboutPage() {
               <h3 className="text-base font-semibold text-gray-900 mb-3">依頼金額 ¥100,000 の場合</h3>
               <div className="space-y-3">
                 {[
-                  { rank: 'F〜D', fee: '10%', worker: '¥90,000', color: 'text-gray-600' },
-                  { rank: 'C', fee: '9%', worker: '¥91,000', color: 'text-yellow-600' },
-                  { rank: 'B', fee: '8.5%', worker: '¥91,500', color: 'text-orange-600' },
-                  { rank: 'A', fee: '8%', worker: '¥92,000', color: 'text-purple-600' },
-                  { rank: 'S', fee: '7%', worker: '¥93,000', color: 'text-amber-600' },
+                  { rank: 'F〜D', fee: '15%', worker: '¥85,000', color: 'text-gray-600' },
+                  { rank: 'C', fee: '13%', worker: '¥87,000', color: 'text-yellow-600' },
+                  { rank: 'B', fee: '12%', worker: '¥88,000', color: 'text-orange-600' },
+                  { rank: 'A', fee: '11%', worker: '¥89,000', color: 'text-purple-600' },
+                  { rank: 'S', fee: '10%', worker: '¥90,000', color: 'text-amber-600' },
                 ].map((row) => (
                   <div key={row.rank} className="flex items-center justify-between text-sm">
                     <span className={`font-medium ${row.color}`}>{row.rank}ランク（手数料{row.fee}）</span>

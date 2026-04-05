@@ -2,8 +2,8 @@
  * ギルド経済システム - Guild Economics
  *
  * 冒険者ギルドの手数料計算・分配ロジック
- * - ギルド維持費: 10%（切り捨て）
- * - 冒険者報酬: 90%（残額）
+ * - ギルド維持費: 15%（基本、ランクにより10%〜15%で変動、切り捨て）
+ * - 冒険者報酬: 85%〜90%（残額）
  * - 全額JPY整数（小数なし）
  */
 
@@ -25,9 +25,9 @@ export class GuildEconomicsError extends Error {
 
 /** 手数料分配結果 */
 export interface GuildSplit {
-  /** ギルド維持費 (10%) */
+  /** ギルド維持費 (15%〜10%) */
   guildFee: number;
-  /** 冒険者報酬 (90%) */
+  /** 冒険者報酬 (85%〜90%) */
   adventurerReward: number;
 }
 

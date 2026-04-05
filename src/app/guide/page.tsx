@@ -243,7 +243,7 @@ export default function GuidePage() {
             <p>承認した瞬間に、以下が自動で実行されます：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>エスクローされていた報酬がキャプチャ（確定）</li>
-              <li>ギルド手数料（10%〜7%）を差し引いた金額が冒険者に送金</li>
+              <li>ギルド手数料（15%〜10%）を差し引いた金額が冒険者に送金</li>
               <li>インボイス（適格請求書）が自動生成</li>
             </ul>
             <Tip>
@@ -322,8 +322,8 @@ export default function GuidePage() {
             <div className="bg-gray-50 rounded-lg p-3 mt-2 text-xs space-y-1">
               <p className="font-medium text-gray-700">報酬の内訳例（依頼金額 ¥10,000 の場合）</p>
               <div className="flex justify-between"><span>依頼金額</span><span>¥10,000</span></div>
-              <div className="flex justify-between text-red-500"><span>ギルド手数料（10%）</span><span>-¥1,000</span></div>
-              <div className="flex justify-between font-bold text-emerald-600 border-t border-gray-200 pt-1"><span>あなたの受取額</span><span>¥9,000</span></div>
+              <div className="flex justify-between text-red-500"><span>ギルド手数料（15%）</span><span>-¥1,500</span></div>
+              <div className="flex justify-between font-bold text-emerald-600 border-t border-gray-200 pt-1"><span>あなたの受取額</span><span>¥8,500</span></div>
             </div>
           </StepCard>
 
@@ -488,7 +488,7 @@ export default function GuidePage() {
               タケシさんが作業完了報告を送信。「45L袋 × 4袋分完了しました」
             </FlowStep>
             <FlowStep emoji="🎉" title="承認・報酬分配">
-              あなたが承認ボタンを押す → タケシさんに ¥4,500（手数料10%差引後）が自動送金。
+              あなたが承認ボタンを押す → タケシさんに ¥4,250（手数料15%差引後）が自動送金。
             </FlowStep>
             <FlowStep emoji="⭐" title="相互評価" isLast>
               お互いに星評価とコメントを送信。タケシさんのランクポイントがアップ！
@@ -557,7 +557,7 @@ export default function GuidePage() {
               ミサキさんが完了報告を送信。
             </FlowStep>
             <FlowStep emoji="🎉" title="承認・報酬分配">
-              写真を確認して承認 → ミサキさんに ¥1,800 が自動送金。
+              写真を確認して承認 → ミサキさんに ¥1,700 が自動送金。
             </FlowStep>
             <FlowStep emoji="⭐" title="相互評価" isLast>
               「時間通りに並んでくれて助かりました！」★5
@@ -629,7 +629,7 @@ export default function GuidePage() {
               「30箱 / 300点の仕分け＋棚入れ完了しました」と報告。
             </FlowStep>
             <FlowStep emoji="🎉" title="承認・報酬分配">
-              企業担当者が確認・承認 → コウタさんに ¥10,800 が自動送金。
+              企業担当者が確認・承認 → コウタさんに ¥10,200 が自動送金。
             </FlowStep>
             <FlowStep emoji="⭐" title="相互評価" isLast>
               「手際よく作業してくれました。またお願いしたいです」★5
@@ -709,7 +709,7 @@ export default function GuidePage() {
               アヤカさんが完了報告を送信。
             </FlowStep>
             <FlowStep emoji="🎉" title="承認・報酬分配">
-              投稿内容を確認して承認 → アヤカさんに ¥9,000 が自動送金。
+              投稿内容を確認して承認 → アヤカさんに ¥8,500 が自動送金。
             </FlowStep>
             <FlowStep emoji="⭐" title="相互評価" isLast>
               「写真がとても綺麗で、来客数が増えました！」★5
@@ -789,7 +789,7 @@ export default function GuidePage() {
               ケンジさんが完了報告。「確定申告相談完了。追加の質問があればチャットでどうぞ」
             </FlowStep>
             <FlowStep emoji="🎉" title="承認・報酬分配">
-              承認 → ケンジさんに ¥2,700 が自動送金。
+              承認 → ケンジさんに ¥2,550 が自動送金。
             </FlowStep>
             <FlowStep emoji="⭐" title="相互評価" isLast>
               「とても分かりやすく、具体的なアドバイスでした」★5

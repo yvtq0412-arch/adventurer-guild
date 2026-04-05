@@ -3,8 +3,8 @@
  * 冒険者ギルドの運営パラメータ
  */
 
-/** ギルド維持費率 (10%) */
-export const GUILD_TAX_RATE = 0.1;
+/** ギルド維持費率 (15%) - 基本手数料率。ランクにより10%〜15%で変動。 */
+export const GUILD_TAX_RATE = 0.15;
 
 /** ギルド名 */
 export const GUILD_NAME = '冒険者ギルド';
