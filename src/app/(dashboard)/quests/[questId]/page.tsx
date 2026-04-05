@@ -56,6 +56,9 @@ export default function QuestDetailPage() {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<{ endpoint: string; body: object } | null>(null);
 
+  // 受注時の確認チェック
+  const [confirmedAccept, setConfirmedAccept] = useState(false);
+
   // 通報UI用状態
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
@@ -442,19 +445,36 @@ export default function QuestDetailPage() {
 
           {/* 受注ボタン（未ログイン・関係者以外） */}
           {!isClient && !isAdventurer && quest.status === 'ESCROWED' && (
-            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-6 text-center">
-              <p className="text-indigo-700 font-medium mb-1">この依頼を受注しますか？</p>
-              <p className="text-sm text-indigo-500 mb-4">受諾すると作業エリアでの対応が必要です</p>
+            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-6">
+              <p className="text-indigo-700 font-medium mb-1 text-center">この依頼を受注しますか？</p>
+              <p className="text-sm text-indigo-500 mb-4 text-center">受諾すると作業エリアでの対応が必要です</p>
               {user ? (
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  {/* 禁止依頼確認チェック */}
+                  <label className="flex items-start gap-3 p-3 bg-white rounded-lg border border-indigo-200 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={confirmedAccept}
+                      onChange={(e) => setConfirmedAccept(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-indigo-500 shrink-0"
+                    />
+                    <span className="text-xs text-gray-700 leading-relaxed">
+                      この依頼が
+                      <a href="/prohibited" target="_blank" className="text-indigo-500 underline font-medium">
+                        禁止依頼ガイドライン
+                      </a>
+                      に該当しないことを確認しました。法令違反の依頼と知りつつ受注した場合、アカウント停止の対象となります。
+                    </span>
+                  </label>
+
                   <button
                     onClick={() => handleAcceptWithTermsCheck(`/api/quests/${questId}/accept`)}
-                    disabled={actionLoading}
-                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition disabled:opacity-50"
+                    disabled={actionLoading || !confirmedAccept}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition disabled:opacity-50 disabled:bg-gray-300"
                   >
                     ⚔️ 受注する
                   </button>
-                  <p className="text-xs text-indigo-400">
+                  <p className="text-xs text-indigo-400 text-center">
                     ※ 受注には
                     <Link href="/guild-card/apply" className="underline hover:text-indigo-600">
                       ギルドカード

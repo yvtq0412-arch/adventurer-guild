@@ -25,6 +25,7 @@ export default function NewQuestPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [confirmedProhibited, setConfirmedProhibited] = useState(false);
 
   const categories = getCategoriesByType(questType);
 
@@ -259,7 +260,26 @@ export default function NewQuestPage() {
         {/* 期限（旧） */}
         <input type="hidden" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
 
-        <button type="submit" disabled={loading || totalAmount < 50 || !prefecture || !city}
+        {/* 毎回の禁止依頼確認 */}
+        <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={confirmedProhibited}
+              onChange={(e) => setConfirmedProhibited(e.target.checked)}
+              className="mt-0.5 w-4 h-4 accent-red-500 shrink-0"
+            />
+            <div className="text-sm text-red-700 leading-relaxed">
+              この依頼は
+              <a href="/prohibited" target="_blank" className="underline font-medium hover:text-red-800">
+                禁止依頼ガイドライン
+              </a>
+              に該当しないことを確認しました。（白タク行為・無資格医療・無資格工事・非弁行為・時間拘束型の労働契約等を含まないこと）
+            </div>
+          </label>
+        </div>
+
+        <button type="submit" disabled={loading || totalAmount < 50 || !prefecture || !city || !confirmedProhibited}
           className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-3 rounded-xl font-medium transition text-sm">
           {loading ? '作成中...' : '依頼を登録する'}
         </button>
