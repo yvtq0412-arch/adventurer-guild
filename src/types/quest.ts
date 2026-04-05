@@ -16,6 +16,7 @@ export type QuestCategory =
   | 'eldercare'         // 高齢者サポート
   | 'cooking'           // 料理・家事
   | 'errands'           // 各種手続き代行
+  | 'queue_waiting'     // 行列・順番待ち代行
   // 企業向け
   | 'office_cleaning'   // オフィス・店舗清掃
   | 'warehouse'         // 倉庫整理・棚卸し

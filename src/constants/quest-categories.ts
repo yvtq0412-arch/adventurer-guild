@@ -22,6 +22,7 @@ export const PERSONAL_CATEGORIES: QuestCategoryInfo[] = [
   { id: 'eldercare', label: '高齢者サポート', description: '話し相手、通院の付き添い、日常のお手伝いなど', icon: '🤝', type: 'personal', withholdingRequired: false },
   { id: 'cooking', label: '料理・家事', description: '食事の準備、作り置き、洗濯など', icon: '🍳', type: 'personal', withholdingRequired: false },
   { id: 'errands', label: '手続き代行', description: '役所への届出、書類の受け取りなど', icon: '📝', type: 'personal', withholdingRequired: false },
+  { id: 'queue_waiting', label: '行列・順番待ち代行', description: '人気店・チケット・役所など、代わりに並びます', icon: '🪑', type: 'personal', withholdingRequired: false },
 ];
 
 /** 企業向けカテゴリ */
