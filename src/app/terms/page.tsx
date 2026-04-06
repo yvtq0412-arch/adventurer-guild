@@ -7,7 +7,7 @@ export const metadata = {
 
 const LAST_UPDATED = '2025年1月1日';
 const SERVICE_NAME = 'Guild（冒険者ギルド）';
-const SUPPORT_EMAIL = 'support@guild-platform.jp';
+const SUPPORT_EMAIL = 'yvtq0412@gmail.com';
 
 export default function TermsPage() {
   return (

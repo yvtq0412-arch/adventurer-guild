@@ -46,7 +46,7 @@ export function Footer() {
               プライバシーポリシー
             </Link>
             <a
-              href="mailto:support@guild-platform.jp"
+              href="mailto:yvtq0412@gmail.com"
               className="text-xs text-gray-400 hover:text-gray-600 transition"
             >
               お問い合わせ
