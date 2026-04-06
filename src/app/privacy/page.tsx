@@ -143,7 +143,7 @@ export default function PrivacyPage() {
             <li><strong>利用停止請求</strong>：目的外利用の停止</li>
             <li><strong>退会・アカウント削除</strong>：マイページから申請可能</li>
           </ul>
-          <p>各種請求は <a href={`mailto:${COMPANY_EMAIL}`} className="text-indigo-600 hover:underline">{COMPANY_EMAIL}</a> までご連絡ください。合理的な期間内に対応します。</p>
+          <p>各種請求は <Link href="/contact" className="text-indigo-600 hover:underline">お問い合わせフォーム</Link> よりご連絡ください。合理的な期間内に対応します。</p>
           <p className="text-gray-400 text-xs mt-2">※ 法令上の保存義務がある情報は、請求に応じられない場合があります。</p>
         </Section>
 
@@ -159,7 +159,7 @@ export default function PrivacyPage() {
           <p>本ポリシーに関するご質問・苦情・ご相談は以下の窓口までご連絡ください。</p>
           <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mt-3 space-y-1">
             <p><strong>Guild 個人情報取り扱い窓口</strong></p>
-            <p>メール：<a href={`mailto:${COMPANY_EMAIL}`} className="text-indigo-600 hover:underline">{COMPANY_EMAIL}</a></p>
+            <p><Link href="/contact" className="text-indigo-600 hover:underline">お問い合わせフォームはこちら</Link></p>
             <p className="text-gray-400 text-xs mt-2">受付時間：平日10:00〜18:00（土日祝・年末年始を除く）</p>
           </div>
         </Section>

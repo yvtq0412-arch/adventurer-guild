@@ -281,7 +281,7 @@ export default function TermsPage() {
           <p>本規約に関するご質問・ご相談は以下の窓口までご連絡ください。</p>
           <div className="bg-gray-50 border border-gray-100 rounded-xl p-5 mt-3 space-y-1">
             <p><strong>Guild サポート窓口</strong></p>
-            <p>メール：<a href={`mailto:${SUPPORT_EMAIL}`} className="text-indigo-600 hover:underline">{SUPPORT_EMAIL}</a></p>
+            <p><Link href="/contact" className="text-indigo-600 hover:underline">お問い合わせフォームはこちら</Link></p>
             <p className="text-gray-400 text-xs mt-2">受付時間：平日10:00〜18:00（土日祝・年末年始を除く）</p>
           </div>
         </Section>

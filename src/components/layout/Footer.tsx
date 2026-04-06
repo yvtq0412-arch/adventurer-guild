@@ -45,12 +45,12 @@ export function Footer() {
             >
               プライバシーポリシー
             </Link>
-            <a
-              href="mailto:yvtq0412@gmail.com"
+            <Link
+              href="/contact"
               className="text-xs text-gray-400 hover:text-gray-600 transition"
             >
               お問い合わせ
-            </a>
+            </Link>
           </div>
 
           {/* コピーライト */}
