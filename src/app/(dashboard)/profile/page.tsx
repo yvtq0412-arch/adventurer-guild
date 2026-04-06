@@ -26,6 +26,25 @@ export default function ProfilePage() {
   const [identityLoading, setIdentityLoading] = useState(false);
   const [identityError, setIdentityError] = useState('');
 
+  // ページ表示時にStripeとFirestoreの本人確認ステータスを同期
+  useEffect(() => {
+    async function syncIdentityStatus() {
+      if (!member || member.identityStatus === 'verified' || member.identityStatus === 'unverified') return;
+      try {
+        const token = await getIdToken();
+        if (!token) return;
+        await fetch('/api/identity/sync-status', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } catch {
+        // 同期失敗は無視（次回表示時にリトライ）
+      }
+    }
+    syncIdentityStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member?.identityStatus]);
+
   const avatarUrl = user?.photoURL || member?.avatarUrl;
 
   const identityStatus = member?.identityStatus ?? 'unverified';
