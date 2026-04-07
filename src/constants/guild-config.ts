@@ -13,7 +13,23 @@ export const GUILD_NAME = '冒険者ギルド';
 export const MIN_QUEST_AMOUNT = 50;
 
 /** 最大依頼金額（JPY） */
-export const MAX_QUEST_AMOUNT = 99_999_999;
+export const MAX_QUEST_AMOUNT = 100_000;
+
+/**
+ * 取引制限（不正利用防止・マネーロンダリング対策）
+ */
+export const TRANSACTION_LIMITS = {
+  /** 初回ユーザーの1回あたりの上限（JPY） */
+  firstTimeMaxAmount: 50_000,
+  /** 実績ありユーザーの1回あたりの上限（JPY） */
+  defaultMaxAmount: 100_000,
+  /** 「実績あり」と判定される完了クエスト数 */
+  experiencedThreshold: 3,
+  /** 同一ユーザー間の月間取引回数上限 */
+  sameUserMonthlyLimit: 3,
+  /** 同一ユーザー間の月間取引額上限（JPY） */
+  sameUserMonthlyAmountLimit: 150_000,
+} as const;
 
 /** 通貨 */
 export const CURRENCY = 'jpy' as const;

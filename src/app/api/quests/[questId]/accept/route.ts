@@ -11,6 +11,7 @@ import { adminDb } from '@/lib/firebase/admin';
 import { executeTransition } from '@/lib/quest-state-machine';
 import { canAccept } from '@/types/user';
 import { FieldValue } from 'firebase-admin/firestore';
+import { TRANSACTION_LIMITS } from '@/constants/guild-config';
 import type { GuildMember } from '@/types/user';
 
 export async function POST(
@@ -59,6 +60,43 @@ export async function POST(
             redirectTo: '/profile',
           },
           { status: 403 }
+        );
+      }
+
+      // --- 同一ユーザー間の反復取引制限 ---
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const recentSameUserQuests = await adminDb.collection('quests')
+        .where('clientId', '==', quest.clientId)
+        .where('adventurerId', '==', user.uid)
+        .where('createdAt', '>=', thirtyDaysAgo)
+        .get();
+
+      const sameUserCount = recentSameUserQuests.size;
+      const sameUserTotalAmount = recentSameUserQuests.docs.reduce(
+        (sum, doc) => sum + (doc.data().totalAmount || 0), 0
+      );
+
+      if (sameUserCount >= TRANSACTION_LIMITS.sameUserMonthlyLimit) {
+        return NextResponse.json(
+          {
+            error: `同一の依頼者との取引は月${TRANSACTION_LIMITS.sameUserMonthlyLimit}回までです（不正利用防止のため）`,
+            currentCount: sameUserCount,
+            limit: TRANSACTION_LIMITS.sameUserMonthlyLimit,
+          },
+          { status: 400 }
+        );
+      }
+
+      if (sameUserTotalAmount + quest.totalAmount > TRANSACTION_LIMITS.sameUserMonthlyAmountLimit) {
+        return NextResponse.json(
+          {
+            error: `同一の依頼者との月間取引額が上限（${TRANSACTION_LIMITS.sameUserMonthlyAmountLimit.toLocaleString()}円）を超えます（不正利用防止のため）`,
+            currentTotal: sameUserTotalAmount,
+            limit: TRANSACTION_LIMITS.sameUserMonthlyAmountLimit,
+          },
+          { status: 400 }
         );
       }
 

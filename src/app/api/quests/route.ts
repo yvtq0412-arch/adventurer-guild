@@ -12,6 +12,7 @@ import { calculateGuildSplit, validateAmount } from '@/lib/guild-economics';
 import { calculateWithholdingForQuest } from '@/lib/withholding-tax';
 import { canPost } from '@/types/user';
 import { FieldValue } from 'firebase-admin/firestore';
+import { TRANSACTION_LIMITS } from '@/constants/guild-config';
 import type { QuestCategory } from '@/types/quest';
 import type { GuildMember } from '@/types/user';
 
@@ -72,6 +73,35 @@ export async function POST(request: NextRequest) {
 
   try {
     validateAmount(totalAmount);
+
+    // --- 取引制限チェック（不正利用防止） ---
+
+    // ① 完了済みクエスト数を取得して金額上限を判定
+    const completedQuests = await adminDb.collection('quests')
+      .where('clientId', '==', user.uid)
+      .where('status', '==', 'DISTRIBUTED')
+      .count()
+      .get();
+    const completedCount = completedQuests.data().count;
+
+    const maxAllowed = completedCount >= TRANSACTION_LIMITS.experiencedThreshold
+      ? TRANSACTION_LIMITS.defaultMaxAmount
+      : TRANSACTION_LIMITS.firstTimeMaxAmount;
+
+    if (totalAmount > maxAllowed) {
+      return NextResponse.json(
+        {
+          error: completedCount < TRANSACTION_LIMITS.experiencedThreshold
+            ? `取引実績が${TRANSACTION_LIMITS.experiencedThreshold}件未満のため、1回あたり${(TRANSACTION_LIMITS.firstTimeMaxAmount).toLocaleString()}円が上限です（現在${completedCount}件完了）`
+            : `1回あたりの依頼金額は${TRANSACTION_LIMITS.defaultMaxAmount.toLocaleString()}円が上限です`,
+          maxAllowed,
+          completedCount,
+        },
+        { status: 400 }
+      );
+    }
+
+    // --- 取引制限チェック完了 ---
 
     const { guildFee, adventurerReward } = calculateGuildSplit(totalAmount);
 

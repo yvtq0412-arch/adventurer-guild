@@ -190,7 +190,7 @@ export default function NewQuestPage() {
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">¥</span>
             <input type="number" value={totalAmount || ''} onChange={(e) => setTotalAmount(parseInt(e.target.value) || 0)}
-              required min={50} max={99999999}
+              required min={50} max={100000}
               className="w-full border border-gray-200 rounded-lg pl-8 pr-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
               placeholder="5,000" />
           </div>
