@@ -34,6 +34,12 @@ export function Footer() {
               利用規約
             </Link>
             <Link
+              href="/law"
+              className="text-xs text-gray-400 hover:text-gray-600 transition"
+            >
+              特定商取引法に基づく表記
+            </Link>
+            <Link
               href="/prohibited"
               className="text-xs text-gray-400 hover:text-gray-600 transition"
             >
