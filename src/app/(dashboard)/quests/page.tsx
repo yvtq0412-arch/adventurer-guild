@@ -22,6 +22,7 @@ export default function QuestBoardPage() {
   const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedPrefecture, setSelectedPrefecture] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+  const [selectedTown, setSelectedTown] = useState('');
   const [selectedTab, setSelectedTab] = useState<'all' | QuestType>('all');
 
   useEffect(() => {
@@ -79,8 +80,15 @@ export default function QuestBoardPage() {
     if (selectedCity) {
       result = result.filter((q) => q.city?.includes(selectedCity));
     }
+    if (selectedTown) {
+      const townLower = selectedTown.toLowerCase();
+      result = result.filter((q) =>
+        q.city?.toLowerCase().includes(townLower) ||
+        q.description?.toLowerCase().includes(townLower)
+      );
+    }
     return result;
-  }, [quests, selectedCategory, selectedRegion, selectedPrefecture, selectedCity, selectedTab]);
+  }, [quests, selectedCategory, selectedRegion, selectedPrefecture, selectedCity, selectedTown, selectedTab]);
 
   // タブに応じたカテゴリ一覧
   const displayCategories: QuestCategoryInfo[] = useMemo(() => {
@@ -170,7 +178,7 @@ export default function QuestBoardPage() {
         )}
       </div>
 
-      {/* エリアフィルター（3段階） */}
+      {/* エリアフィルター（4段階） */}
       <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6">
         <div className="flex items-center gap-2 mb-3">
           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,18 +186,18 @@ export default function QuestBoardPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <span className="text-sm font-medium text-gray-700">エリアで絞り込み</span>
-          {(selectedRegion || selectedPrefecture || selectedCity) && (
-            <button onClick={() => { setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); }}
+          {(selectedRegion || selectedPrefecture || selectedCity || selectedTown) && (
+            <button onClick={() => { setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTown(''); }}
               className="text-xs text-indigo-500 hover:text-indigo-600 ml-auto">
               クリア
             </button>
           )}
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          {/* 地方 */}
+        {/* 1段目: 地方 → 都道府県 → 市区町村 */}
+        <div className="grid grid-cols-3 gap-2 mb-2">
           <select
             value={selectedRegion}
-            onChange={(e) => { setSelectedRegion(e.target.value); setSelectedPrefecture(''); setSelectedCity(''); }}
+            onChange={(e) => { setSelectedRegion(e.target.value); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTown(''); }}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none"
           >
             <option value="">全国</option>
@@ -198,10 +206,9 @@ export default function QuestBoardPage() {
             ))}
           </select>
 
-          {/* 都道府県 */}
           <select
             value={selectedPrefecture}
-            onChange={(e) => { setSelectedPrefecture(e.target.value); setSelectedCity(''); }}
+            onChange={(e) => { setSelectedPrefecture(e.target.value); setSelectedCity(''); setSelectedTown(''); }}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none"
           >
             <option value="">都道府県</option>
@@ -216,10 +223,9 @@ export default function QuestBoardPage() {
             ))}
           </select>
 
-          {/* 市区町村 */}
           <select
             value={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
+            onChange={(e) => { setSelectedCity(e.target.value); setSelectedTown(''); }}
             disabled={!selectedPrefecture}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400"
           >
@@ -229,6 +235,15 @@ export default function QuestBoardPage() {
             ))}
           </select>
         </div>
+        {/* 2段目: 町名・番地（テキスト入力） */}
+        <input
+          type="text"
+          value={selectedTown}
+          onChange={(e) => setSelectedTown(e.target.value)}
+          disabled={!selectedCity}
+          placeholder={selectedCity ? `${selectedCity}内の町名・地域名で検索（例: 芝中田、本町）` : '市区町村を選択すると町名で検索できます'}
+          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:placeholder:text-gray-300"
+        />
       </div>
 
       {/* 結果件数 */}
@@ -259,9 +274,9 @@ export default function QuestBoardPage() {
           </p>
           <p className="text-sm text-gray-400 mb-4">最初の依頼を投稿してみませんか？</p>
           <div className="flex flex-wrap justify-center gap-2">
-            {(selectedCategory !== 'all' || selectedRegion || selectedPrefecture || selectedCity) && (
+            {(selectedCategory !== 'all' || selectedRegion || selectedPrefecture || selectedCity || selectedTown) && (
               <button
-                onClick={() => { setSelectedCategory('all'); setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTab('all'); }}
+                onClick={() => { setSelectedCategory('all'); setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTown(''); setSelectedTab('all'); }}
                 className="text-indigo-500 hover:text-indigo-600 text-sm font-medium border border-indigo-200 px-4 py-2 rounded-lg"
               >
                 絞り込みを解除

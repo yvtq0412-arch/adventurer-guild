@@ -30,6 +30,7 @@ const CreateQuestSchema = z.object({
   ]),
   prefecture: z.string().min(1).max(50),
   city: z.string().min(1).max(50),
+  town: z.string().max(100).optional(),
   totalAmount: z.number().int().positive(),
   deadline: z.string().optional(),
   preferredDates: z.array(z.object({
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { title, description, questType, category, prefecture, city, totalAmount, deadline, preferredDates } = parsed.data;
+  const { title, description, questType, category, prefecture, city, town, totalAmount, deadline, preferredDates } = parsed.data;
 
   try {
     validateAmount(totalAmount);
@@ -120,6 +121,7 @@ export async function POST(request: NextRequest) {
       category,
       prefecture,
       city,
+      town: town || '',
       clientId: user.uid,
       adventurerId: null,
       totalAmount,

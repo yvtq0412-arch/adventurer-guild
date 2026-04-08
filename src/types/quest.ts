@@ -60,6 +60,7 @@ export interface Quest {
   // 作業場所
   prefecture: string;
   city: string;
+  town?: string; // 町名・番地（詳細な場所）
 
   // 参加者
   clientId: string;

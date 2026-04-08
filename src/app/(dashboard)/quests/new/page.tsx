@@ -20,6 +20,7 @@ export default function NewQuestPage() {
   const [category, setCategory] = useState<QuestCategory>('yard_work');
   const [prefecture, setPrefecture] = useState('');
   const [city, setCity] = useState('');
+  const [town, setTown] = useState('');
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [deadline, setDeadline] = useState('');
   const [preferredDates, setPreferredDates] = useState<{ date: string; timeSlot: string }[]>([]);
@@ -57,6 +58,7 @@ export default function NewQuestPage() {
           category,
           prefecture,
           city,
+          town: town || undefined,
           totalAmount,
           deadline: deadline || undefined,
           preferredDates: preferredDates.length > 0
@@ -147,6 +149,14 @@ export default function NewQuestPage() {
               <option value="__other">その他（一覧にない場合）</option>
             </select>
           </div>
+          <input
+            type="text"
+            value={town}
+            onChange={(e) => setTown(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm mt-2"
+            placeholder="町名・番地（例: 芝中田2丁目、本町3-5-1）任意"
+          />
+          <p className="text-xs text-gray-400 mt-1">💡 町名まで入力すると、近くの受注者（冒険者）に見つけてもらいやすくなります</p>
         </div>
 
         {/* カテゴリ */}
