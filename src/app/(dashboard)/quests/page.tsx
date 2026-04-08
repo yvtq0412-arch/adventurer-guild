@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase/client';
 import { QuestCard } from '@/components/quest/QuestCard';
 import { PERSONAL_CATEGORIES, BUSINESS_CATEGORIES, QUEST_CATEGORIES } from '@/constants/quest-categories';
 import { PREFECTURES } from '@/constants/areas';
+import { REGIONS, getCities } from '@/constants/cities';
 import { useAuth } from '@/hooks/useAuth';
 import type { Quest, QuestCategory, QuestType } from '@/types/quest';
 import type { QuestCategoryInfo } from '@/constants/quest-categories';
@@ -18,6 +19,7 @@ export default function QuestBoardPage() {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<QuestCategory | 'all'>('all');
+  const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedPrefecture, setSelectedPrefecture] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedTab, setSelectedTab] = useState<'all' | QuestType>('all');
@@ -65,6 +67,12 @@ export default function QuestBoardPage() {
     if (selectedCategory !== 'all') {
       result = result.filter((q) => q.category === selectedCategory);
     }
+    if (selectedRegion && !selectedPrefecture) {
+      const region = REGIONS.find((r) => r.name === selectedRegion);
+      if (region) {
+        result = result.filter((q) => region.prefectures.includes(q.prefecture));
+      }
+    }
     if (selectedPrefecture) {
       result = result.filter((q) => q.prefecture === selectedPrefecture);
     }
@@ -72,7 +80,7 @@ export default function QuestBoardPage() {
       result = result.filter((q) => q.city?.includes(selectedCity));
     }
     return result;
-  }, [quests, selectedCategory, selectedPrefecture, selectedCity, selectedTab]);
+  }, [quests, selectedCategory, selectedRegion, selectedPrefecture, selectedCity, selectedTab]);
 
   // タブに応じたカテゴリ一覧
   const displayCategories: QuestCategoryInfo[] = useMemo(() => {
@@ -162,34 +170,64 @@ export default function QuestBoardPage() {
         )}
       </div>
 
-      {/* エリアフィルター */}
+      {/* エリアフィルター（3段階） */}
       <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 mb-6">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-3">
           <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <span className="text-sm font-medium text-gray-700">エリアで絞り込み</span>
-          {(selectedPrefecture || selectedCity) && (
-            <button onClick={() => { setSelectedPrefecture(''); setSelectedCity(''); }}
+          {(selectedRegion || selectedPrefecture || selectedCity) && (
+            <button onClick={() => { setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); }}
               className="text-xs text-indigo-500 hover:text-indigo-600 ml-auto">
               クリア
             </button>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <select value={selectedPrefecture}
-            onChange={(e) => { setSelectedPrefecture(e.target.value); setSelectedCity(''); }}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none">
+        <div className="grid grid-cols-3 gap-2">
+          {/* 地方 */}
+          <select
+            value={selectedRegion}
+            onChange={(e) => { setSelectedRegion(e.target.value); setSelectedPrefecture(''); setSelectedCity(''); }}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none"
+          >
             <option value="">全国</option>
-            {PREFECTURES.map((p) => (
+            {REGIONS.map((r) => (
+              <option key={r.name} value={r.name}>{r.name}</option>
+            ))}
+          </select>
+
+          {/* 都道府県 */}
+          <select
+            value={selectedPrefecture}
+            onChange={(e) => { setSelectedPrefecture(e.target.value); setSelectedCity(''); }}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none"
+          >
+            <option value="">都道府県</option>
+            {(selectedRegion
+              ? PREFECTURES.filter((p) => {
+                  const region = REGIONS.find((r) => r.name === selectedRegion);
+                  return region?.prefectures.includes(p.name);
+                })
+              : PREFECTURES
+            ).map((p) => (
               <option key={p.code} value={p.name}>{p.name}</option>
             ))}
           </select>
-          <input type="text" value={selectedCity}
+
+          {/* 市区町村 */}
+          <select
+            value={selectedCity}
             onChange={(e) => setSelectedCity(e.target.value)}
-            placeholder="市区町村で検索"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none" />
+            disabled={!selectedPrefecture}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white focus:border-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400"
+          >
+            <option value="">市区町村</option>
+            {selectedPrefecture && getCities(selectedPrefecture).map((city) => (
+              <option key={city} value={city}>{city}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -221,9 +259,9 @@ export default function QuestBoardPage() {
           </p>
           <p className="text-sm text-gray-400 mb-4">最初の依頼を投稿してみませんか？</p>
           <div className="flex flex-wrap justify-center gap-2">
-            {(selectedCategory !== 'all' || selectedPrefecture || selectedCity) && (
+            {(selectedCategory !== 'all' || selectedRegion || selectedPrefecture || selectedCity) && (
               <button
-                onClick={() => { setSelectedCategory('all'); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTab('all'); }}
+                onClick={() => { setSelectedCategory('all'); setSelectedRegion(''); setSelectedPrefecture(''); setSelectedCity(''); setSelectedTab('all'); }}
                 className="text-indigo-500 hover:text-indigo-600 text-sm font-medium border border-indigo-200 px-4 py-2 rounded-lg"
               >
                 絞り込みを解除

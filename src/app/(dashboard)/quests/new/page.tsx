@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getCategoriesByType, isWithholdingRequired } from '@/constants/quest-categories';
 import { PREFECTURES } from '@/constants/areas';
+import { getCities } from '@/constants/cities';
 import { PaymentBreakdown } from '@/components/payment/PaymentBreakdown';
 import { TermsAgreementModal } from '@/components/terms/TermsAgreementModal';
 import type { QuestCategory, QuestType } from '@/types/quest';
@@ -136,9 +137,15 @@ export default function NewQuestPage() {
                 <option key={p.code} value={p.name}>{p.name}</option>
               ))}
             </select>
-            <input type="text" value={city} onChange={(e) => setCity(e.target.value)} required
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
-              placeholder="市区町村（例: 渋谷区）" />
+            <select value={city} onChange={(e) => setCity(e.target.value)} required
+              disabled={!prefecture}
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm bg-white disabled:bg-gray-100 disabled:text-gray-400">
+              <option value="">市区町村を選択</option>
+              {prefecture && getCities(prefecture).map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+              <option value="__other">その他（一覧にない場合）</option>
+            </select>
           </div>
         </div>
 
