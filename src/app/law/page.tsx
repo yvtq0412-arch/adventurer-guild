@@ -18,28 +18,33 @@ export default function LawPage() {
           <span className="text-gray-600">特定商取引法に基づく表記</span>
         </nav>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">特定商取引法に基づく表記</h1>
+        <p className="text-sm text-gray-400 mt-3">最終更新日: 2025年6月</p>
       </div>
 
       <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
         <table className="w-full text-sm">
           <tbody className="divide-y divide-gray-100">
             <tr>
-              <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 w-1/3 align-top">事業者名（サービス名）</td>
+              <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 w-1/3 align-top">事業者名（屋号）</td>
               <td className="px-6 py-4 text-gray-600">{SERVICE_NAME}</td>
             </tr>
             <tr>
-              <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">運営責任者</td>
-              <td className="px-6 py-4 text-gray-600">請求があった場合に遅滞なく開示いたします</td>
+              <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">代表者名（運営責任者）</td>
+              <td className="px-6 py-4 text-gray-600">堀内 雄太</td>
             </tr>
             <tr>
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">所在地</td>
-              <td className="px-6 py-4 text-gray-600">請求があった場合に遅滞なく開示いたします</td>
+              <td className="px-6 py-4 text-gray-600">〒160-0023 東京都新宿区西新宿3丁目3番13号 西新宿水間ビル2F</td>
             </tr>
             <tr>
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">連絡先</td>
               <td className="px-6 py-4 text-gray-600">
-                <Link href="/contact" className="text-indigo-500 hover:text-indigo-600 underline">お問い合わせフォーム</Link>よりご連絡ください
-                <p className="text-xs text-gray-400 mt-1">受付時間：平日10:00〜18:00（土日祝・年末年始を除く）</p>
+                <p>メール：veltiq.info@proton.me</p>
+                <p className="mt-1">
+                  <Link href="/contact" className="text-indigo-500 hover:text-indigo-600 underline">お問い合わせフォーム</Link>
+                  もご利用いただけます
+                </p>
+                <p className="text-xs text-gray-400 mt-1">※ お問い合わせには原則3日以内に返信いたします</p>
               </td>
             </tr>
             <tr>
