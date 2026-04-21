@@ -64,7 +64,13 @@ export interface QuestTemplate {
 /**
  * 作業テンプレート一覧
  *
- * 現状は「草むしり（個人）」「敷地の草むしり（企業）」のみ。
+ * 現状のラインナップ:
+ * - 庭仕事・草取り（個人）: 草むしり
+ * - 掃除・片付け（個人）: 屋外・共用部の掃除 / 不用品の分別・ゴミ出し
+ * - 施設メンテナンス（企業）: 敷地の草むしり
+ *
+ * 盗難・プライバシーリスクを避けるため、室内への立ち入りや
+ * 物の物色が伴う作業はテンプレート化しない方針。
  * カテゴリ分けした後、1つずつ追加していく予定。
  */
 export const QUEST_TEMPLATES: QuestTemplate[] = [
@@ -123,6 +129,129 @@ export const QUEST_TEMPLATES: QuestTemplate[] = [
         ``,
         `※ 作業時間は冒険者の判断に委ねます（作業量ベースの依頼）。`,
         `※ 電気工事・ガス工事・水道工事・農薬散布など資格が必要な作業は含まれません。`,
+      ].join('\n');
+    },
+  },
+
+  // ===== 掃除・片付け（個人向け・屋外/共用部のみ） =====
+  {
+    id: 'cleaning_outdoor',
+    category: 'cleaning',
+    name: '屋外・共用部の掃除',
+    icon: '🧹',
+    summary: '玄関外・ベランダ・廊下・階段など、家の中に入らない範囲の掃除',
+    params: [
+      {
+        id: 'site',
+        label: '掃除する場所',
+        required: true,
+        options: [
+          { value: 'entrance', label: '玄関まわり（外側）' },
+          { value: 'balcony', label: 'ベランダ' },
+          { value: 'corridor', label: '廊下・階段（共用部）' },
+          { value: 'window_outside', label: '窓の外側（手の届く範囲）', hint: '2階以上の高所は不可' },
+        ],
+      },
+      {
+        id: 'size',
+        label: '広さ',
+        required: true,
+        options: [
+          { value: 's', label: '〜5㎡（狭め）' },
+          { value: 'm', label: '5〜10㎡（普通）' },
+          { value: 'l', label: '10〜20㎡（広め）' },
+        ],
+      },
+      {
+        id: 'dirtiness',
+        label: '汚れの度合い',
+        required: true,
+        options: [
+          { value: 'light', label: '軽い（普段のお掃除）' },
+          { value: 'medium', label: '中くらい（少し溜まっている）' },
+          { value: 'heavy', label: 'しっかりめ（念入りに）' },
+        ],
+      },
+    ],
+    buildTitle: (v) => {
+      const site = cleaningOutdoorSiteShort(v.site);
+      const size = cleaningOutdoorSizeLabel(v.size);
+      return `屋外・共用部の掃除（${site}・${size}）`;
+    },
+    buildDescription: (v) => {
+      const site = cleaningOutdoorSiteDetail(v.site);
+      const size = cleaningOutdoorSizeDetail(v.size);
+      const dirtiness = cleaningDirtinessDetail(v.dirtiness);
+      return [
+        `【作業内容】屋外・共用部の掃除（家の中には入らない作業）`,
+        `【場所】${site}`,
+        `【広さ】${size}`,
+        `【汚れの度合い】${dirtiness}`,
+        ``,
+        `※ 作業時間は冒険者の判断に委ねます（作業量ベースの依頼）。`,
+        `※ 室内への立ち入りは行いません。貴重品・プライベート空間に触れる作業は含まれません。`,
+        `※ ハウスクリーニング業相当の専門薬剤使用、エアコン・換気扇の分解清掃は対象外です（資格が必要なため）。`,
+        `※ 2階以上の高所作業・脚立を使った作業は対象外です（安全のため）。`,
+      ].join('\n');
+    },
+  },
+
+  // ===== 掃除・片付け（個人向け・不用品の分別とゴミ出し） =====
+  {
+    id: 'cleaning_garbage',
+    category: 'cleaning',
+    name: '不用品の分別・ゴミ出し',
+    icon: '🗑️',
+    summary: '一般ゴミ・資源ゴミの分別と、指定場所までの運搬',
+    params: [
+      {
+        id: 'volume',
+        label: '量',
+        required: true,
+        options: [
+          { value: 's', label: '45ℓ袋×1〜3袋' },
+          { value: 'm', label: '45ℓ袋×4〜10袋' },
+          { value: 'l', label: '45ℓ袋×11〜20袋' },
+        ],
+      },
+      {
+        id: 'content',
+        label: '内容',
+        required: true,
+        options: [
+          { value: 'general', label: '一般ゴミの仕分け' },
+          { value: 'recycle', label: '資源ゴミ（缶・ビン・ペットボトル等）の分別' },
+          { value: 'both', label: '両方' },
+        ],
+      },
+      {
+        id: 'carry',
+        label: '運搬',
+        required: true,
+        options: [
+          { value: 'sort_only', label: '分別のみ（回収日に依頼者が出す）' },
+          { value: 'carry_to_collection', label: '指定のゴミ集積所まで運ぶ' },
+        ],
+      },
+    ],
+    buildTitle: (v) => {
+      const volume = cleaningGarbageVolumeLabel(v.volume);
+      return `不用品の分別・ゴミ出し（${volume}）`;
+    },
+    buildDescription: (v) => {
+      const volume = cleaningGarbageVolumeDetail(v.volume);
+      const content = cleaningGarbageContentDetail(v.content);
+      const carry = cleaningGarbageCarryDetail(v.carry);
+      return [
+        `【作業内容】不用品の分別とゴミ出し`,
+        `【量】${volume}`,
+        `【内容】${content}`,
+        `【運搬】${carry}`,
+        ``,
+        `※ 作業時間は冒険者の判断に委ねます（作業量ベースの依頼）。`,
+        `※ ゴミ袋は依頼者側でご用意ください。自治体の分別ルールに従って仕分けします。`,
+        `※ 不用品の買取・引き取り（古物商業務）や、産業廃棄物・家電リサイクル法対象品（テレビ・冷蔵庫・洗濯機・エアコン・PC等）の運搬は対象外です。`,
+        `※ 一般家庭ゴミの集積所までの運搬のみ可能です。処分場まで運ぶ等の業者作業は対象外です（一般廃棄物収集運搬業許可が必要なため）。`,
       ].join('\n');
     },
   },
@@ -233,6 +362,83 @@ function weedingDisposalDetail(value: string): string {
   switch (value) {
     case 'client': return '依頼者側で処分';
     case 'leave_bagged': return '45ℓ袋にまとめて現地に置いておく';
+    default: return '';
+  }
+}
+
+// ---- 屋外・共用部の掃除用ヘルパー ----
+function cleaningOutdoorSiteShort(value: string): string {
+  switch (value) {
+    case 'entrance': return '玄関まわり';
+    case 'balcony': return 'ベランダ';
+    case 'corridor': return '廊下・階段';
+    case 'window_outside': return '窓の外側';
+    default: return '';
+  }
+}
+function cleaningOutdoorSiteDetail(value: string): string {
+  switch (value) {
+    case 'entrance': return '玄関まわり（外側）';
+    case 'balcony': return 'ベランダ';
+    case 'corridor': return '廊下・階段（共用部）';
+    case 'window_outside': return '窓の外側（手の届く範囲、2階以上の高所は不可）';
+    default: return '';
+  }
+}
+function cleaningOutdoorSizeLabel(value: string): string {
+  switch (value) {
+    case 's': return '〜5㎡';
+    case 'm': return '5〜10㎡';
+    case 'l': return '10〜20㎡';
+    default: return '';
+  }
+}
+function cleaningOutdoorSizeDetail(value: string): string {
+  switch (value) {
+    case 's': return '〜5㎡（狭め）';
+    case 'm': return '5〜10㎡（普通）';
+    case 'l': return '10〜20㎡（広め）';
+    default: return '';
+  }
+}
+function cleaningDirtinessDetail(value: string): string {
+  switch (value) {
+    case 'light': return '軽い（普段のお掃除レベル）';
+    case 'medium': return '中くらい（少し溜まっている）';
+    case 'heavy': return 'しっかりめ（念入りに）';
+    default: return '';
+  }
+}
+
+// ---- 不用品の分別・ゴミ出し用ヘルパー ----
+function cleaningGarbageVolumeLabel(value: string): string {
+  switch (value) {
+    case 's': return '45ℓ袋×1〜3袋';
+    case 'm': return '45ℓ袋×4〜10袋';
+    case 'l': return '45ℓ袋×11〜20袋';
+    default: return '';
+  }
+}
+function cleaningGarbageVolumeDetail(value: string): string {
+  switch (value) {
+    case 's': return '45ℓ袋×1〜3袋（少量）';
+    case 'm': return '45ℓ袋×4〜10袋（中量）';
+    case 'l': return '45ℓ袋×11〜20袋（多量）';
+    default: return '';
+  }
+}
+function cleaningGarbageContentDetail(value: string): string {
+  switch (value) {
+    case 'general': return '一般ゴミの仕分け';
+    case 'recycle': return '資源ゴミ（缶・ビン・ペットボトル等）の分別';
+    case 'both': return '一般ゴミ・資源ゴミの両方の分別';
+    default: return '';
+  }
+}
+function cleaningGarbageCarryDetail(value: string): string {
+  switch (value) {
+    case 'sort_only': return '分別のみ（ゴミ出しは依頼者側で実施）';
+    case 'carry_to_collection': return '分別後、指定のゴミ集積所まで運搬';
     default: return '';
   }
 }
