@@ -13,6 +13,7 @@ import { calculateWithholdingForQuest } from '@/lib/withholding-tax';
 import { canPost } from '@/types/user';
 import { FieldValue } from 'firebase-admin/firestore';
 import { TRANSACTION_LIMITS } from '@/constants/guild-config';
+import { getTemplateById, validateTemplateParams } from '@/constants/quest-templates';
 import type { QuestCategory } from '@/types/quest';
 import type { GuildMember } from '@/types/user';
 
@@ -28,6 +29,10 @@ const CreateQuestSchema = z.object({
     'signage', 'inventory', 'facility', 'sns_promotion',
     'consultation', 'other',
   ]),
+  // 運営が事前承認した作業テンプレートID
+  templateId: z.string().min(1).max(64).optional(),
+  // テンプレートの作業量パラメータ（値は固定選択肢の文字列）
+  templateParams: z.record(z.string(), z.string().max(64)).optional(),
   prefecture: z.string().min(1).max(50),
   city: z.string().min(1).max(50),
   town: z.string().max(100).optional(),
@@ -70,7 +75,44 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { title, description, questType, category, prefecture, city, town, totalAmount, deadline, preferredDates } = parsed.data;
+  const {
+    title: inputTitle,
+    description: inputDescription,
+    questType,
+    category,
+    templateId,
+    templateParams,
+    prefecture,
+    city,
+    town,
+    totalAmount,
+    deadline,
+    preferredDates,
+  } = parsed.data;
+
+  // テンプレート検証: templateIdが指定されていれば、カテゴリ一致・パラメータ完備を確認し、
+  // タイトル・説明文はサーバー側で自動生成（クライアント値は信用しない）
+  let title = inputTitle;
+  let description = inputDescription;
+  if (templateId) {
+    const template = getTemplateById(templateId);
+    if (!template) {
+      return NextResponse.json({ error: '指定された作業テンプレートが見つかりません' }, { status: 400 });
+    }
+    if (template.category !== category) {
+      return NextResponse.json({ error: 'カテゴリとテンプレートが一致しません' }, { status: 400 });
+    }
+    const paramErrors = validateTemplateParams(templateId, templateParams || {});
+    if (paramErrors.length > 0) {
+      return NextResponse.json(
+        { error: '作業量パラメータが不足または不正です', details: paramErrors },
+        { status: 400 }
+      );
+    }
+    // サーバー側で自動生成（改ざん防止）
+    title = template.buildTitle(templateParams || {});
+    description = template.buildDescription(templateParams || {});
+  }
 
   try {
     validateAmount(totalAmount);
@@ -119,6 +161,9 @@ export async function POST(request: NextRequest) {
       description,
       questType,
       category,
+      // テンプレート経由の作成情報（後方互換のためオプショナル）
+      templateId: templateId || null,
+      templateParams: templateParams || null,
       prefecture,
       city,
       town: town || '',

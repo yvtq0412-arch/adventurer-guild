@@ -1,11 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getCategoriesByType, isWithholdingRequired } from '@/constants/quest-categories';
 import { PREFECTURES } from '@/constants/areas';
 import { getCities } from '@/constants/cities';
+import {
+  getTemplatesByCategory,
+  getTemplateById,
+  isCategoryTemplated,
+} from '@/constants/quest-templates';
 import { PaymentBreakdown } from '@/components/payment/PaymentBreakdown';
 import { TermsAgreementModal } from '@/components/terms/TermsAgreementModal';
 import type { QuestCategory, QuestType } from '@/types/quest';
@@ -18,6 +23,8 @@ export default function NewQuestPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<QuestCategory>('yard_work');
+  const [templateId, setTemplateId] = useState<string>('');
+  const [templateParams, setTemplateParams] = useState<Record<string, string>>({});
   const [prefecture, setPrefecture] = useState('');
   const [city, setCity] = useState('');
   const [town, setTown] = useState('');
@@ -30,11 +37,48 @@ export default function NewQuestPage() {
   const [confirmedProhibited, setConfirmedProhibited] = useState(false);
 
   const categories = getCategoriesByType(questType);
+  const templatesForCategory = useMemo(() => getTemplatesByCategory(category), [category]);
+  const categoryHasTemplates = templatesForCategory.length > 0;
+  const selectedTemplate = templateId ? getTemplateById(templateId) : undefined;
+
+  // テンプレートのパラメータがすべて埋まっているか
+  const templateParamsComplete =
+    selectedTemplate
+      ? selectedTemplate.params.every((p) => !p.required || templateParams[p.id])
+      : false;
+
+  // プレビュー用の自動生成タイトル・説明文（サーバー側と同ロジック）
+  const previewTitle = selectedTemplate && templateParamsComplete
+    ? selectedTemplate.buildTitle(templateParams)
+    : '';
+  const previewDescription = selectedTemplate && templateParamsComplete
+    ? selectedTemplate.buildDescription(templateParams)
+    : '';
 
   function handleTypeChange(type: QuestType) {
     setQuestType(type);
     const firstCat = getCategoriesByType(type)[0];
-    if (firstCat) setCategory(firstCat.id);
+    if (firstCat) {
+      setCategory(firstCat.id);
+      setTemplateId('');
+      setTemplateParams({});
+    }
+  }
+
+  function handleCategoryChange(newCategory: QuestCategory) {
+    setCategory(newCategory);
+    setTemplateId('');
+    setTemplateParams({});
+    // テンプレート使用時は title/description はサーバー自動生成なのでクリア
+    setTitle('');
+    setDescription('');
+  }
+
+  function handleTemplateSelect(id: string) {
+    setTemplateId(id);
+    setTemplateParams({});
+    setTitle('');
+    setDescription('');
   }
 
   async function doSubmit() {
@@ -45,6 +89,11 @@ export default function NewQuestPage() {
       const token = await getIdToken();
       if (!token) throw new Error('認証が必要です');
 
+      // テンプレート経由の場合、title/descriptionはサーバー側で自動生成される
+      // （プレビューで見せる文字列を参考値として送るが、サーバーは上書きする）
+      const payloadTitle = selectedTemplate ? previewTitle : title;
+      const payloadDescription = selectedTemplate ? previewDescription : description;
+
       const res = await fetch('/api/quests', {
         method: 'POST',
         headers: {
@@ -52,10 +101,13 @@ export default function NewQuestPage() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          title,
-          description,
+          title: payloadTitle,
+          description: payloadDescription,
           questType,
           category,
+          ...(selectedTemplate
+            ? { templateId: selectedTemplate.id, templateParams }
+            : {}),
           prefecture,
           city,
           town: town || undefined,
@@ -118,13 +170,15 @@ export default function NewQuestPage() {
           </div>
         </div>
 
-        {/* タイトル */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">依頼タイトル</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={100}
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
-            placeholder={questType === 'personal' ? '例: 庭の草取りをお願いしたい' : '例: 倉庫の棚卸し作業スタッフ募集'} />
-        </div>
+        {/* タイトル（テンプレート未使用のカテゴリのみ自由入力） */}
+        {!categoryHasTemplates && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">依頼タイトル</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={100}
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm"
+              placeholder={questType === 'personal' ? '例: 庭の草取りをお願いしたい' : '例: 倉庫の棚卸し作業スタッフ募集'} />
+          </div>
+        )}
 
         {/* 作業場所 */}
         <div>
@@ -163,43 +217,130 @@ export default function NewQuestPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">カテゴリ</label>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-            {categories.map((cat) => (
-              <button key={cat.id} type="button" onClick={() => setCategory(cat.id)}
-                className={`p-2.5 rounded-lg border text-center transition ${category === cat.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}>
-                <div className="text-lg">{cat.icon}</div>
-                <div className="text-xs mt-1 leading-tight">{cat.label}</div>
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const templated = isCategoryTemplated(cat.id);
+              return (
+                <button key={cat.id} type="button" onClick={() => handleCategoryChange(cat.id)}
+                  className={`relative p-2.5 rounded-lg border text-center transition ${category === cat.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}>
+                  <div className="text-lg">{cat.icon}</div>
+                  <div className="text-xs mt-1 leading-tight">{cat.label}</div>
+                  {templated && (
+                    <span className="absolute top-1 right-1 text-[9px] px-1 py-0.5 rounded bg-emerald-100 text-emerald-700 font-semibold leading-none">
+                      NEW
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
           {isWithholdingRequired(category) && (
             <p className="text-xs text-orange-500 mt-2">※ このカテゴリは源泉徴収の対象です</p>
           )}
         </div>
 
-        {/* 説明 */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">依頼内容</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required rows={5} maxLength={5000}
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm resize-none"
-            placeholder={questType === 'personal'
-              ? '例: 庭の草取りと落ち葉の袋詰め（45ℓ袋×3袋分）をお願いします'
-              : '例: 倉庫内の商品をカテゴリ別に仕分け・棚入れ（約200点）をお願いします'} />
-          {/* 時間指定キーワード検出警告 */}
-          {/\d+\s*時(間|〜|から|まで)|終日|丸\d+日|〜\d+時|\d+時〜/.test(description) && (
-            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex gap-2">
-              <span className="text-amber-500 text-base flex-shrink-0">⚠️</span>
-              <div className="text-xs text-amber-700 leading-relaxed">
-                <span className="font-semibold">時間指定の表現が含まれています。</span>
-                「○時から○時まで作業」のような記載は、労働基準法上の<span className="font-semibold">雇用契約と見なされる恐れ</span>があります。
-                作業内容・量（例：「草取り 45ℓ袋×2袋分」「棚入れ 約200点」）で記載するようにしてください。
-              </div>
+        {/* 作業テンプレート選択（カテゴリがテンプレート対応済みの場合のみ） */}
+        {categoryHasTemplates && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              作業内容を選択 <span className="text-red-500">*</span>
+            </label>
+            <p className="text-xs text-gray-400 mb-3">
+              💡 あらかじめ用意された作業内容からお選びください。作業量を指定すれば、タイトルと依頼内容が自動で作成されます。
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {templatesForCategory.map((tpl) => (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => handleTemplateSelect(tpl.id)}
+                  className={`text-left p-3 rounded-lg border transition ${templateId === tpl.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{tpl.icon}</span>
+                    <span className={`text-sm font-semibold ${templateId === tpl.id ? 'text-indigo-700' : 'text-gray-800'}`}>
+                      {tpl.name}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{tpl.summary}</p>
+                </button>
+              ))}
             </div>
-          )}
-          {/* 常時表示の注意書き */}
-          <p className="text-xs text-gray-400 mt-1.5">
-            💡 依頼内容は<span className="font-medium">作業の内容・量</span>で記載してください。「○時から○時まで」のような時間指定のみの記載はお避けください。
-          </p>
-        </div>
+          </div>
+        )}
+
+        {/* テンプレートのパラメータ入力 */}
+        {selectedTemplate && (
+          <div className="space-y-4 bg-gray-50 border border-gray-100 rounded-xl p-4">
+            <p className="text-sm font-medium text-gray-700">作業量を指定してください</p>
+            {selectedTemplate.params.map((param) => (
+              <div key={param.id}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {param.label}
+                  {param.required && <span className="text-red-500 ml-1">*</span>}
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {param.options.map((opt) => {
+                    const selected = templateParams[param.id] === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() =>
+                          setTemplateParams((prev) => ({ ...prev, [param.id]: opt.value }))
+                        }
+                        className={`text-left p-3 rounded-lg border transition ${selected ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                      >
+                        <div className={`text-sm font-medium ${selected ? 'text-indigo-700' : 'text-gray-800'}`}>
+                          {opt.label}
+                        </div>
+                        {opt.hint && (
+                          <div className="text-xs text-gray-500 mt-0.5">{opt.hint}</div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            {/* プレビュー */}
+            {templateParamsComplete && (
+              <div className="bg-white border border-indigo-100 rounded-lg p-3 mt-3">
+                <p className="text-xs font-semibold text-indigo-600 mb-1">自動生成される依頼</p>
+                <p className="text-sm font-semibold text-gray-800">{previewTitle}</p>
+                <pre className="text-xs text-gray-600 mt-1 whitespace-pre-wrap font-sans leading-relaxed">
+                  {previewDescription}
+                </pre>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 説明（テンプレート未使用のカテゴリのみ自由入力） */}
+        {!categoryHasTemplates && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">依頼内容</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} required rows={5} maxLength={5000}
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-gray-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none transition text-sm resize-none"
+              placeholder={questType === 'personal'
+                ? '例: 庭の草取りと落ち葉の袋詰め（45ℓ袋×3袋分）をお願いします'
+                : '例: 倉庫内の商品をカテゴリ別に仕分け・棚入れ（約200点）をお願いします'} />
+            {/* 時間指定キーワード検出警告 */}
+            {/\d+\s*時(間|〜|から|まで)|終日|丸\d+日|〜\d+時|\d+時〜/.test(description) && (
+              <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex gap-2">
+                <span className="text-amber-500 text-base flex-shrink-0">⚠️</span>
+                <div className="text-xs text-amber-700 leading-relaxed">
+                  <span className="font-semibold">時間指定の表現が含まれています。</span>
+                  「○時から○時まで作業」のような記載は、労働基準法上の<span className="font-semibold">雇用契約と見なされる恐れ</span>があります。
+                  作業内容・量（例：「草取り 45ℓ袋×2袋分」「棚入れ 約200点」）で記載するようにしてください。
+                </div>
+              </div>
+            )}
+            <p className="text-xs text-gray-400 mt-1.5">
+              💡 依頼内容は<span className="font-medium">作業の内容・量</span>で記載してください。「○時から○時まで」のような時間指定のみの記載はお避けください。
+            </p>
+          </div>
+        )}
 
         {/* 金額 */}
         <div>
@@ -296,8 +437,23 @@ export default function NewQuestPage() {
           </label>
         </div>
 
-        <button type="submit" disabled={loading || totalAmount < 50 || !prefecture || !city || !confirmedProhibited}
-          className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-3 rounded-xl font-medium transition text-sm">
+        {/* 送信前バリデーション:
+            - テンプレート対応カテゴリ: templateId + 必須パラメータが全て埋まっている
+            - それ以外: タイトル・説明が自由入力されている */}
+        <button
+          type="submit"
+          disabled={
+            loading ||
+            totalAmount < 50 ||
+            !prefecture ||
+            !city ||
+            !confirmedProhibited ||
+            (categoryHasTemplates
+              ? !selectedTemplate || !templateParamsComplete
+              : !title || !description)
+          }
+          className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-3 rounded-xl font-medium transition text-sm"
+        >
           {loading ? '作成中...' : '依頼を登録する'}
         </button>
       </form>

@@ -57,6 +57,18 @@ export interface Quest {
   questType: QuestType;
   category: QuestCategory;
 
+  /**
+   * 作業テンプレートID（運営が事前承認した業務内容から選択）
+   * テンプレート経由で作成されたクエストは必須。
+   * 既存クエスト互換のためオプショナル。
+   */
+  templateId?: string;
+  /**
+   * テンプレートの作業量パラメータ（例: { area: 'm', grassHeight: 'medium' }）
+   * タイトル・説明文はこの値から自動生成される。
+   */
+  templateParams?: Record<string, string>;
+
   // 作業場所
   prefecture: string;
   city: string;
@@ -98,6 +110,10 @@ export interface CreateQuestInput {
   description: string;
   questType: QuestType;
   category: QuestCategory;
+  /** 作業テンプレートID（テンプレート経由の作成時に必須） */
+  templateId?: string;
+  /** テンプレートの作業量パラメータ */
+  templateParams?: Record<string, string>;
   totalAmount: number;
   deadline?: string; // ISO 8601
   preferredDates?: { date: string; timeSlot?: string }[];
