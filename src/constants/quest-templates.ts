@@ -64,10 +64,11 @@ export interface QuestTemplate {
 /**
  * 作業テンプレート一覧
  *
- * 現在は「草むしり」のみ。カテゴリ分けした後、1つずつ追加していく予定。
+ * 現状は「草むしり（個人）」「敷地の草むしり（企業）」のみ。
+ * カテゴリ分けした後、1つずつ追加していく予定。
  */
 export const QUEST_TEMPLATES: QuestTemplate[] = [
-  // ===== 庭仕事・草取り =====
+  // ===== 庭仕事・草取り（個人向け） =====
   {
     id: 'yard_weeding',
     category: 'yard_work',
@@ -107,13 +108,13 @@ export const QUEST_TEMPLATES: QuestTemplate[] = [
       },
     ],
     buildTitle: (v) => {
-      const areaLabel = yardWeedingAreaLabel(v.area);
+      const areaLabel = weedingAreaLabel(v.area);
       return `草むしり（${areaLabel}）`;
     },
     buildDescription: (v) => {
-      const area = yardWeedingAreaDetail(v.area);
-      const height = yardWeedingHeightDetail(v.grassHeight);
-      const disposal = yardWeedingDisposalDetail(v.disposal);
+      const area = weedingAreaDetail(v.area);
+      const height = weedingHeightDetail(v.grassHeight);
+      const disposal = weedingDisposalDetail(v.disposal);
       return [
         `【作業内容】庭の草むしり`,
         `【面積】${area}`,
@@ -125,10 +126,84 @@ export const QUEST_TEMPLATES: QuestTemplate[] = [
       ].join('\n');
     },
   },
+
+  // ===== 施設メンテナンス（企業向け・敷地の草むしり） =====
+  {
+    id: 'facility_weeding',
+    category: 'facility',
+    name: '敷地の草むしり',
+    icon: '🌿',
+    summary: '店舗・オフィス・駐車場など敷地内の雑草除去',
+    params: [
+      {
+        id: 'site',
+        label: '場所',
+        required: true,
+        options: [
+          { value: 'shopfront', label: '店舗・オフィス前' },
+          { value: 'parking', label: '駐車場' },
+          { value: 'perimeter', label: '建物の外周' },
+          { value: 'vacant_lot', label: '空き地・遊休地' },
+        ],
+      },
+      {
+        id: 'area',
+        label: '面積',
+        required: true,
+        options: [
+          { value: 'xs', label: '〜10㎡', hint: '駐車場1台分くらい' },
+          { value: 's', label: '10〜30㎡', hint: '小規模な敷地' },
+          { value: 'm', label: '30〜50㎡', hint: '一般的な敷地' },
+          { value: 'l', label: '50〜100㎡', hint: '広めの敷地' },
+        ],
+      },
+      {
+        id: 'grassHeight',
+        label: '草の高さ',
+        required: true,
+        options: [
+          { value: 'short', label: '短い（〜10cm）' },
+          { value: 'medium', label: '中くらい（10〜30cm）' },
+          { value: 'tall', label: '長い（30cm〜）' },
+        ],
+      },
+      {
+        id: 'disposal',
+        label: '刈った草の処分',
+        required: true,
+        options: [
+          { value: 'client', label: '依頼者側で処分する' },
+          { value: 'leave_bagged', label: '袋にまとめて置いておく（45ℓ袋まで）' },
+        ],
+      },
+    ],
+    buildTitle: (v) => {
+      const site = facilityWeedingSiteShort(v.site);
+      const area = weedingAreaLabel(v.area);
+      return `敷地の草むしり（${site}・${area}）`;
+    },
+    buildDescription: (v) => {
+      const site = facilityWeedingSiteDetail(v.site);
+      const area = weedingAreaDetail(v.area);
+      const height = weedingHeightDetail(v.grassHeight);
+      const disposal = weedingDisposalDetail(v.disposal);
+      return [
+        `【作業内容】事業用敷地内の草むしり`,
+        `【場所】${site}`,
+        `【面積】${area}`,
+        `【草の高さ】${height}`,
+        `【刈った草の処分】${disposal}`,
+        ``,
+        `※ 作業時間は冒険者の判断に委ねます（作業量ベースの依頼）。`,
+        `※ 電気工事・ガス工事・水道工事・農薬散布など資格が必要な作業は含まれません。`,
+        `※ 建設工事・高所作業は含まれません。`,
+      ].join('\n');
+    },
+  },
 ];
 
-// ---- 草むしり用ヘルパー ----
-function yardWeedingAreaLabel(value: string): string {
+// ---- 草むしり共通ヘルパー（個人・企業で共用） ----
+function weedingAreaLabel(value: string): string {
   switch (value) {
     case 'xs': return '〜10㎡';
     case 's': return '10〜30㎡';
@@ -137,16 +212,16 @@ function yardWeedingAreaLabel(value: string): string {
     default: return '';
   }
 }
-function yardWeedingAreaDetail(value: string): string {
+function weedingAreaDetail(value: string): string {
   switch (value) {
     case 'xs': return '〜10㎡（駐車場1台分程度）';
-    case 's': return '10〜30㎡（小さな庭）';
-    case 'm': return '30〜50㎡（一般的な庭）';
-    case 'l': return '50〜100㎡（大きな庭）';
+    case 's': return '10〜30㎡（小規模）';
+    case 'm': return '30〜50㎡（一般的）';
+    case 'l': return '50〜100㎡（広め）';
     default: return '';
   }
 }
-function yardWeedingHeightDetail(value: string): string {
+function weedingHeightDetail(value: string): string {
   switch (value) {
     case 'short': return '短い（〜10cm）';
     case 'medium': return '中くらい（10〜30cm）';
@@ -154,10 +229,30 @@ function yardWeedingHeightDetail(value: string): string {
     default: return '';
   }
 }
-function yardWeedingDisposalDetail(value: string): string {
+function weedingDisposalDetail(value: string): string {
   switch (value) {
     case 'client': return '依頼者側で処分';
     case 'leave_bagged': return '45ℓ袋にまとめて現地に置いておく';
+    default: return '';
+  }
+}
+
+// ---- 企業向け敷地の草むしり用ヘルパー ----
+function facilityWeedingSiteShort(value: string): string {
+  switch (value) {
+    case 'shopfront': return '店舗前';
+    case 'parking': return '駐車場';
+    case 'perimeter': return '建物外周';
+    case 'vacant_lot': return '空き地';
+    default: return '';
+  }
+}
+function facilityWeedingSiteDetail(value: string): string {
+  switch (value) {
+    case 'shopfront': return '店舗・オフィスの前面';
+    case 'parking': return '駐車場';
+    case 'perimeter': return '建物の外周';
+    case 'vacant_lot': return '空き地・遊休地';
     default: return '';
   }
 }
