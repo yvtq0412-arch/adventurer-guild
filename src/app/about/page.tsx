@@ -14,7 +14,7 @@ export default function AboutPage() {
           Guild について
         </h1>
         <p className="text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          できることを出品し、必要な人が安心して購入できる
+          できることを掲載し、必要な人が安心して依頼できる
           スキルマッチングプラットフォームです。
         </p>
       </div>
@@ -22,34 +22,34 @@ export default function AboutPage() {
       {/* サービスの仕組み */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">サービスの仕組み</h2>
-        <p className="text-sm text-gray-500 mb-6">出品する側と購入する側、どちらの立場からも使えます。</p>
+        <p className="text-sm text-gray-500 mb-6">掲載する側と依頼する側、どちらの立場からも使えます。</p>
         <div className="bg-gray-50 rounded-2xl border border-gray-100 p-8">
           <div className="grid sm:grid-cols-2 gap-8">
             <div>
               <h3 className="text-base font-semibold text-emerald-600 mb-4 flex items-center gap-2">
                 <span className="w-7 h-7 bg-emerald-100 rounded-lg flex items-center justify-center text-sm">✨</span>
-                出品する側
+                掲載する側
               </h3>
               <ol className="space-y-4 text-sm text-gray-600">
                 <li className="flex gap-3">
                   <span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
                   <div>
-                    <span className="font-medium text-gray-800">サービスを出品</span>
+                    <span className="font-medium text-gray-800">サービスを掲載</span>
                     <p className="text-gray-500 mt-0.5">対応できるサービス種別・料金プラン・対応エリアを設定して公開します。</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
                   <div>
-                    <span className="font-medium text-gray-800">購入を受けて作業</span>
-                    <p className="text-gray-500 mt-0.5">購入者と日程を調整し、現地で作業を行います。</p>
+                    <span className="font-medium text-gray-800">依頼を受けて作業</span>
+                    <p className="text-gray-500 mt-0.5">依頼者と日程を調整し、現地で作業を行います。</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</span>
                   <div>
                     <span className="font-medium text-gray-800">承認後に売上を受取</span>
-                    <p className="text-gray-500 mt-0.5">購入者の承認後、自動的にStripe経由で売上が振り込まれます。</p>
+                    <p className="text-gray-500 mt-0.5">依頼者の承認後、自動的にStripe経由で売上が振り込まれます。</p>
                   </div>
                 </li>
               </ol>
@@ -57,21 +57,21 @@ export default function AboutPage() {
             <div>
               <h3 className="text-base font-semibold text-indigo-600 mb-4 flex items-center gap-2">
                 <span className="w-7 h-7 bg-indigo-100 rounded-lg flex items-center justify-center text-sm">🛒</span>
-                購入する側
+                依頼する側
               </h3>
               <ol className="space-y-4 text-sm text-gray-600">
                 <li className="flex gap-3">
                   <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">1</span>
                   <div>
                     <span className="font-medium text-gray-800">サービスを探す</span>
-                    <p className="text-gray-500 mt-0.5">出品されているサービスから依頼したい出品者・プランを選びます。</p>
+                    <p className="text-gray-500 mt-0.5">掲載されているサービスから依頼したいワーカー・プランを選びます。</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</span>
                   <div>
                     <span className="font-medium text-gray-800">注文・仮払い（エスクロー）</span>
-                    <p className="text-gray-500 mt-0.5">購入金額をGuildが一時預かり。出品者への送金は承認後なので安心。</p>
+                    <p className="text-gray-500 mt-0.5">取引金額をGuildが一時預かり。ワーカーへの送金は承認後なので安心。</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
@@ -95,10 +95,10 @@ export default function AboutPage() {
           <div className="absolute left-4 top-4 bottom-4 w-px bg-gray-200 sm:left-[1.875rem]" />
           <div className="space-y-6">
             {[
-              { step: '1', title: '注文・仮払い', desc: '購入者がサービスを注文し、購入金額全額をGuildに預けます。カードへの課金はこの時点で行われますが、出品者への送金はまだ行われません。', color: 'bg-blue-500', icon: '📝' },
-              { step: '2', title: '出品者が受注・作業開始', desc: '出品者が注文を受け、購入者と日程調整のうえで作業を開始します。購入金額はGuildのエスクロー口座で安全に保管されています。', color: 'bg-purple-500', icon: '🛠️' },
-              { step: '3', title: '作業完了・完了報告', desc: '出品者が作業を完了し、完了報告を送信します。購入者に通知が届き、納品物の確認を依頼します。', color: 'bg-cyan-500', icon: '✅' },
-              { step: '4', title: '承認・送金', desc: '購入者が納品物を承認すると、エスクロー口座から自動的に出品者へ送金されます。', color: 'bg-emerald-500', icon: '💰' },
+              { step: '1', title: '注文・仮払い', desc: '依頼者がサービスを注文し、取引金額全額をGuildに預けます。カードへの課金はこの時点で行われますが、ワーカーへの送金はまだ行われません。', color: 'bg-blue-500', icon: '📝' },
+              { step: '2', title: 'ワーカーが受注・作業開始', desc: 'ワーカーが注文を受け、依頼者と日程調整のうえで作業を開始します。取引金額はGuildのエスクロー口座で安全に保管されています。', color: 'bg-purple-500', icon: '🛠️' },
+              { step: '3', title: '作業完了・完了報告', desc: 'ワーカーが作業を完了し、完了報告を送信します。依頼者に通知が届き、納品物の確認を依頼します。', color: 'bg-cyan-500', icon: '✅' },
+              { step: '4', title: '承認・送金', desc: '依頼者が納品物を承認すると、エスクロー口座から自動的にワーカーへ送金されます。', color: 'bg-emerald-500', icon: '💰' },
             ].map((item) => (
               <div key={item.step} className="flex gap-5 items-start">
                 <div className={`w-8 h-8 ${item.color} text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0 z-10`}>
@@ -119,8 +119,8 @@ export default function AboutPage() {
 
       {/* 信頼スコア（旧ランク） */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">出品者の信頼スコア</h2>
-        <p className="text-sm text-gray-500 mb-6">取引数や評価に応じて出品者のスコアが上がり、購入者から見つけてもらいやすくなります。</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">ワーカーの信頼スコア</h2>
+        <p className="text-sm text-gray-500 mb-6">取引数や評価に応じてワーカーのスコアが上がり、依頼者から見つけてもらいやすくなります。</p>
 
         <div className="space-y-3 mb-8">
           {RANK_ORDER.map((rank) => {
@@ -166,7 +166,7 @@ export default function AboutPage() {
             <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
               <div className="text-2xl mb-2">⭐</div>
               <div className="text-lg font-bold text-gray-900">評価点 × 5pt</div>
-              <div className="text-xs text-gray-500 mt-1">購入者からの評価<br />（最大25pt）</div>
+              <div className="text-xs text-gray-500 mt-1">依頼者からの評価<br />（最大25pt）</div>
             </div>
             <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
               <div className="text-2xl mb-2">💴</div>
@@ -180,18 +180,18 @@ export default function AboutPage() {
       {/* 手数料 */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">手数料について</h2>
-        <p className="text-sm text-gray-500 mb-6">サービス利用料は購入金額の15%。月額費用・サブスクはありません。</p>
+        <p className="text-sm text-gray-500 mb-6">サービス利用料は取引金額の15%。月額費用・サブスクはありません。</p>
         <div className="bg-gray-50 rounded-2xl border border-gray-100 p-8">
           <div className="grid sm:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-base font-semibold text-gray-900 mb-3">購入金額 ¥10,000 の場合</h3>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">取引金額 ¥10,000 の場合</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">購入者が支払う金額</span>
+                  <span className="text-gray-600">依頼者が支払う金額</span>
                   <span className="text-gray-900 font-semibold">¥10,000</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-emerald-600">出品者の取り分（85%）</span>
+                  <span className="text-emerald-600">ワーカーの取り分（85%）</span>
                   <span className="text-emerald-600 font-semibold">¥8,500</span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -228,14 +228,14 @@ export default function AboutPage() {
       {/* 安全性 */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">安全性・信頼性</h2>
-        <p className="text-sm text-gray-500 mb-6">出品者・購入者の双方を守る仕組みを用意しています。</p>
+        <p className="text-sm text-gray-500 mb-6">ワーカー・依頼者の双方を守る仕組みを用意しています。</p>
         <div className="grid sm:grid-cols-2 gap-4">
           {[
             { icon: '🔒', title: 'Stripe決済基盤', desc: '世界最大級の決済プラットフォームStripeを採用。PCI DSS準拠でカード情報を安全に処理します。' },
-            { icon: '🛡️', title: 'エスクロー保護', desc: '購入金額は作業完了・承認まで安全に保管。未完了の場合は全額返金されます。' },
-            { icon: '↩️', title: 'キャンセル保護', desc: '作業開始前のキャンセルは全額返金。作業開始後も購入金額の90%が返金されます。' },
+            { icon: '🛡️', title: 'エスクロー保護', desc: '取引金額は作業完了・承認まで安全に保管。未完了の場合は全額返金されます。' },
+            { icon: '↩️', title: 'キャンセル保護', desc: '作業開始前のキャンセルは全額返金。作業開始後も取引金額の90%が返金されます。' },
             { icon: '⚖️', title: '紛争解決', desc: '納品物に問題がある場合は紛争申立てが可能。公正な解決をサポートします。' },
-            { icon: '🪪', title: '本人確認（KYC）', desc: '出品・購入にはStripe Identityを使った本人確認が必要。なりすましを防ぎます。' },
+            { icon: '🪪', title: '本人確認（KYC）', desc: '掲載・依頼にはStripe Identityを使った本人確認が必要。なりすましを防ぎます。' },
             { icon: '📜', title: 'インボイス自動生成', desc: '取引完了後、法定記載事項を満たした適格請求書を自動生成。確定申告・経理処理に対応。' },
           ].map((item) => (
             <div key={item.title} className="bg-white border border-gray-100 rounded-xl p-5">
@@ -256,10 +256,10 @@ export default function AboutPage() {
           {[
             { q: '登録は無料ですか？', a: 'はい、アカウント登録は完全無料です。サービス利用料は実際に取引が成立した場合のみ発生します。' },
             { q: 'どのような支払い方法に対応していますか？', a: 'Visa、Mastercard、American Express、JCBなど主要なクレジットカードに対応しています。' },
-            { q: '売上はいつ受け取れますか？', a: '購入者の承認後、自動的にStripeアカウントに送金されます。Stripeからの銀行振込は通常2〜3営業日です。' },
-            { q: 'キャンセルした場合はどうなりますか？', a: '出品者が受注する前のキャンセルは全額返金です。作業開始後のキャンセルは、購入金額の90%が返金され、10%がキャンセル手数料として徴収されます。' },
-            { q: '出品するための条件はありますか？', a: '本人確認（Stripe Identity）と、売上受取用のStripe Connectアカウントの登録が必要です。どちらも無料で完了できます。' },
-            { q: '出品者プロフィールとは何ですか？', a: '出品者の取引実績・信頼スコア・評価をまとめたプロフィールです。購入者から信頼されやすくなり、選ばれる確率が上がります。' },
+            { q: '売上はいつ受け取れますか？', a: '依頼者の承認後、自動的にStripeアカウントに送金されます。Stripeからの銀行振込は通常2〜3営業日です。' },
+            { q: 'キャンセルした場合はどうなりますか？', a: 'ワーカーが受注する前のキャンセルは全額返金です。作業開始後のキャンセルは、取引金額の90%が返金され、10%がキャンセル手数料として徴収されます。' },
+            { q: '掲載するための条件はありますか？', a: '本人確認（Stripe Identity）と、売上受取用のStripe Connectアカウントの登録が必要です。どちらも無料で完了できます。' },
+            { q: 'ワーカープロフィールとは何ですか？', a: 'ワーカーの取引実績・信頼スコア・評価をまとめたプロフィールです。依頼者から信頼されやすくなり、選ばれる確率が上がります。' },
             { q: '海外の取引にも対応していますか？', a: '現在は日本国内（JPY）の取引のみ対応しています。今後、対応通貨を拡大予定です。' },
           ].map((item) => (
             <details key={item.q} className="group border border-gray-100 rounded-xl overflow-hidden">
@@ -280,7 +280,7 @@ export default function AboutPage() {
       {/* CTA */}
       <section className="text-center py-12 border-t border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900 mb-3">さっそく始めてみませんか？</h2>
-        <p className="text-gray-500 mb-8">登録は無料。本人確認を完了するとすぐにサービスの出品・購入ができます。</p>
+        <p className="text-gray-500 mb-8">登録は無料。本人確認を完了するとすぐにサービスの掲載・依頼ができます。</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/register" className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3 rounded-xl text-sm font-medium transition">
             無料で登録する

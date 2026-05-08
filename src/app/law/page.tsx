@@ -51,7 +51,7 @@ export default function LawPage() {
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">サービスの内容</td>
               <td className="px-6 py-4 text-gray-600">
                 リアルな軽作業（草刈り、掃除、運搬、倉庫作業等）の依頼者（発注者）と
-                出品者をマッチングするプラットフォームの提供
+                ワーカーをマッチングするプラットフォームの提供
               </td>
             </tr>
             <tr>
@@ -65,7 +65,7 @@ export default function LawPage() {
                   <li>Aランク：11%</li>
                   <li>Sランク：10%</li>
                 </ul>
-                <p className="text-xs text-gray-400 mt-2">※ 手数料は受注者（出品者）の報酬から差し引かれます。依頼者が支払う金額に追加料金はありません。</p>
+                <p className="text-xs text-gray-400 mt-2">※ 手数料は受注者（ワーカー）の報酬から差し引かれます。依頼者が支払う金額に追加料金はありません。</p>
               </td>
             </tr>
             <tr>

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       accountId,
       onboardingUrl,
-      message: '出品者ウォレット（Stripe Express アカウント）を作成しました',
+      message: 'ワーカーウォレット（Stripe Express アカウント）を作成しました',
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

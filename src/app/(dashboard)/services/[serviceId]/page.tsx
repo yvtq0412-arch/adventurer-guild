@@ -105,7 +105,7 @@ export default function ServiceDetailPage() {
       // 既存のクエスト詳細ページへ（決済へ進む）
       router.push(`/quests/${data.questId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '購入に失敗しました');
+      setError(err instanceof Error ? err.message : '依頼に失敗しました');
     } finally {
       setPurchasing(false);
     }
@@ -118,7 +118,7 @@ export default function ServiceDetailPage() {
   if (!service) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-        <p className="text-sm text-gray-500">出品が見つかりません</p>
+        <p className="text-sm text-gray-500">サービスが見つかりません</p>
         <Link href="/services" className="text-indigo-500 hover:underline text-sm mt-3 inline-block">
           ← 一覧に戻る
         </Link>
@@ -206,7 +206,7 @@ export default function ServiceDetailPage() {
         </div>
       </div>
 
-      {/* 購入フォーム（自分の出品でなく、プラン選択済みのとき） */}
+      {/* 依頼フォーム（自分の掲載でなく、プラン選択済みのとき） */}
       {!isOwner && selectedPackage && (
         <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-6 space-y-5">
           <h2 className="text-sm font-semibold text-gray-800">作業場所と希望日時</h2>
@@ -319,7 +319,7 @@ export default function ServiceDetailPage() {
           {/* 発注資格未充足の警告 */}
           {member && (member.identityStatus !== 'verified' || !member.stripeCustomerId) && (
             <div className="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-700">
-              ⚠️ 購入には本人確認とStripe決済登録が必要です。
+              ⚠️ 依頼には本人確認とStripe決済登録が必要です。
               <Link href="/profile" className="underline font-medium ml-1">
                 プロフィールから設定
               </Link>
@@ -342,7 +342,7 @@ export default function ServiceDetailPage() {
 
       {isOwner && (
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-xs text-blue-700">
-          ℹ️ あなたが出品したサービスです。自分自身では購入できません。
+          ℹ️ あなたが掲載したサービスです。自分自身では依頼できません。
         </div>
       )}
     </div>

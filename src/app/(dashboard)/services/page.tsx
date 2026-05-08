@@ -50,14 +50,14 @@ export default function ServicesListPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">サービスを探す</h1>
           <p className="text-sm text-gray-500 mt-1">
-            出品されているサービスから依頼したい人を選んで購入できます。
+            掲載されているサービスから依頼したい人を選んで依頼できます。
           </p>
         </div>
         <Link
           href="/services/new"
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition"
         >
-          + サービスを出品する
+          + サービスを掲載する
         </Link>
       </div>
 
@@ -122,7 +122,7 @@ export default function ServicesListPage() {
         <div className="py-16 text-center text-sm text-gray-400">読み込み中...</div>
       ) : filtered.length === 0 ? (
         <div className="py-16 text-center text-sm text-gray-400">
-          該当する出品はまだありません
+          該当する掲載はまだありません
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

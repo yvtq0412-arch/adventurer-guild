@@ -386,7 +386,7 @@ export default function QuestDetailPage() {
                 ⭐ 評価
               </h2>
               <p className="text-xs text-gray-400 mb-4">
-                {isClient ? '出品者の仕事ぶりを評価してください' : '依頼者を評価してください'}
+                {isClient ? 'ワーカーの仕事ぶりを評価してください' : '依頼者を評価してください'}
               </p>
 
               {hasReviewed ? (
@@ -395,7 +395,7 @@ export default function QuestDetailPage() {
                   <p className="text-sm font-medium text-green-700">評価済みです</p>
                   {!counterpartHasReviewed && (
                     <p className="text-xs text-gray-400 mt-1">
-                      {isClient ? '出品者' : '依頼者'}からの評価を待っています
+                      {isClient ? 'ワーカー' : '依頼者'}からの評価を待っています
                     </p>
                   )}
                   {counterpartHasReviewed && (
@@ -435,7 +435,7 @@ export default function QuestDetailPage() {
                   </button>
                   {counterpartHasReviewed && (
                     <p className="text-xs text-indigo-500 text-center">
-                      {isClient ? '出品者' : '依頼者'}はすでに評価を送信しています
+                      {isClient ? 'ワーカー' : '依頼者'}はすでに評価を送信しています
                     </p>
                   )}
                 </div>
@@ -477,7 +477,7 @@ export default function QuestDetailPage() {
                   <p className="text-xs text-indigo-400 text-center">
                     ※ 受注には
                     <Link href="/guild-card/apply" className="underline hover:text-indigo-600">
-                      出品者プロフィール
+                      ワーカープロフィール
                     </Link>
                     が必要です
                   </p>
@@ -576,7 +576,7 @@ export default function QuestDetailPage() {
               🔒 エスクロー保護
             </div>
             <p className="text-xs text-indigo-500 leading-relaxed">
-              報酬はGuildが安全に預かります。作業完了後に確認・承認してから出品者に支払われます。
+              報酬はGuildが安全に預かります。作業完了後に確認・承認してからワーカーに支払われます。
             </p>
           </div>
 

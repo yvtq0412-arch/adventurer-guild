@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Guild - スキルマッチングプラットフォーム",
-  description: "エスクロー決済で安心。手数料15%〜のスキルマッチングプラットフォーム。草取り・除雪などの軽作業を出品・購入できます。",
+  description: "エスクロー決済で安心。手数料15%〜のスキルマッチングプラットフォーム。草取り・除雪などの軽作業を掲載・依頼できます。",
 };
 
 export default function RootLayout({

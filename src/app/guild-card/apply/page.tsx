@@ -50,7 +50,7 @@ function StatusBanner({ status, rejectedReason }: { status: GuildCardStatus; rej
       bg: 'bg-green-50 border-green-200',
       text: 'text-green-700',
       icon: '✅',
-      message: '出品者プロフィールが承認されました！取引を受注できます。',
+      message: 'ワーカープロフィールが承認されました！取引を受注できます。',
     },
     SUSPENDED: {
       bg: 'bg-red-50 border-red-200',
@@ -80,7 +80,7 @@ function StatusBanner({ status, rejectedReason }: { status: GuildCardStatus; rej
       <p className={`${c.text} font-medium`}>{c.icon} {c.message}</p>
       {status === 'APPROVED' && (
         <Link href={`/guild-card/${''}`} className="text-green-600 text-sm underline mt-1 block">
-          出品者プロフィールを見る →
+          ワーカープロフィールを見る →
         </Link>
       )}
     </div>
@@ -114,7 +114,7 @@ export default function GuildCardApplyPage() {
     agreedToTerms: false,
   });
 
-  // 既存の出品者プロフィールを取得
+  // 既存のワーカープロフィールを取得
   useEffect(() => {
     if (!user || loading) return;
 
@@ -166,7 +166,7 @@ export default function GuildCardApplyPage() {
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-gray-500 mb-4">出品者プロフィールの申請にはログインが必要です</p>
+        <p className="text-gray-500 mb-4">ワーカープロフィールの申請にはログインが必要です</p>
         <Link href="/login" className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition">
           ログインする
         </Link>
@@ -271,14 +271,14 @@ export default function GuildCardApplyPage() {
       <nav className="text-sm text-gray-400 mb-6">
         <Link href="/" className="hover:text-indigo-500 transition">TOP</Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-600">出品者プロフィール申請</span>
+        <span className="text-gray-600">ワーカープロフィール申請</span>
       </nav>
 
       {/* タイトル */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">⚔️ 出品者プロフィール申請</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">⚔️ ワーカープロフィール申請</h1>
         <p className="text-sm text-gray-500">
-          取引を受注するには出品者プロフィールが必要です。審査通過後、依頼者にプロフィールが公開されます。
+          取引を受注するにはワーカープロフィールが必要です。審査通過後、依頼者にプロフィールが公開されます。
         </p>
       </div>
 
@@ -329,12 +329,12 @@ export default function GuildCardApplyPage() {
       {existingCard?.status === 'APPROVED' && (
         <div className="text-center py-8">
           <p className="text-2xl mb-3">✅</p>
-          <p className="text-gray-600 font-medium mb-4">出品者プロフィールは承認済みです</p>
+          <p className="text-gray-600 font-medium mb-4">ワーカープロフィールは承認済みです</p>
           <Link
             href={`/guild-card/${user.uid}`}
             className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition inline-block"
           >
-            出品者プロフィールを見る
+            ワーカープロフィールを見る
           </Link>
         </div>
       )}
@@ -357,7 +357,7 @@ export default function GuildCardApplyPage() {
                 type="text"
                 value={form.displayName}
                 onChange={(e) => setForm((p) => ({ ...p, displayName: e.target.value }))}
-                placeholder="出品者の名前（例: やまだ太郎）"
+                placeholder="ワーカーの名前（例: やまだ太郎）"
                 required
                 disabled={!isEditable}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:bg-gray-50 disabled:text-gray-400"
@@ -585,7 +585,7 @@ export default function GuildCardApplyPage() {
                 <Link href="/terms" className="text-indigo-500 hover:underline" target="_blank">利用規約</Link>
                 および
                 <Link href="/privacy" className="text-indigo-500 hover:underline" target="_blank">プライバシーポリシー</Link>
-                に同意します。提供した情報は出品者プロフィール審査のみに使用されます。
+                に同意します。提供した情報はワーカープロフィール審査のみに使用されます。
               </span>
             </label>
           )}
@@ -597,7 +597,7 @@ export default function GuildCardApplyPage() {
               disabled={submitting}
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-3.5 rounded-xl font-semibold text-sm transition disabled:opacity-50"
             >
-              {submitting ? '申請中...' : existingCard?.status === 'REJECTED' ? '⚔️ 再申請する' : '⚔️ 出品者プロフィールを申請する'}
+              {submitting ? '申請中...' : existingCard?.status === 'REJECTED' ? '⚔️ 再申請する' : '⚔️ ワーカープロフィールを申請する'}
             </button>
           )}
         </form>

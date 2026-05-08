@@ -1,7 +1,7 @@
 /**
- * Service（出品サービス）CRUD API
- * POST /api/services - 出品作成
- * GET  /api/services - 出品一覧（公開中のみ、フィルタ可）
+ * Service（掲載サービス）CRUD API
+ * POST /api/services - 掲載作成
+ * GET  /api/services - 掲載一覧（公開中のみ、フィルタ可）
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -43,12 +43,12 @@ const CreateServiceSchema = z.object({
   publish: z.boolean(),
 });
 
-/** POST: 出品作成 */
+/** POST: 掲載作成 */
 export async function POST(request: NextRequest) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
 
-  // 出品資格チェック（本人確認 + Stripe Connect 登録済み）
+  // 掲載資格チェック（本人確認 + Stripe Connect 登録済み）
   const userDoc = await adminDb.collection('users').doc(user.uid).get();
   if (!userDoc.exists) {
     return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
   if (!canAccept(memberData)) {
     return NextResponse.json(
       {
-        error: '出品するには本人確認とStripe Connectのオンボーディングが必要です',
+        error: '掲載するには本人確認とStripe Connectのオンボーディングが必要です',
         identityStatus: memberData.identityStatus,
         stripeOnboardingComplete: memberData.stripeOnboardingComplete,
       },
@@ -136,19 +136,19 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ...serviceData,
-      message: publish ? '出品を公開しました' : '下書きを保存しました',
+      message: publish ? '掲載を公開しました' : '下書きを保存しました',
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error(`[create-service] エラー: ${message}`);
     return NextResponse.json(
-      { error: `出品の登録に失敗しました: ${message}` },
+      { error: `掲載の登録に失敗しました: ${message}` },
       { status: 500 }
     );
   }
 }
 
-/** GET: 出品一覧（公開中のみ） */
+/** GET: 掲載一覧（公開中のみ） */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const serviceType = searchParams.get('serviceType');
@@ -190,7 +190,7 @@ export async function GET(request: NextRequest) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error(`[list-services] エラー: ${message}`);
     return NextResponse.json(
-      { error: `出品一覧の取得に失敗しました: ${message}` },
+      { error: `掲載一覧の取得に失敗しました: ${message}` },
       { status: 500 }
     );
   }

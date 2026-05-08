@@ -1,8 +1,8 @@
 /**
  * Service 個別取得・更新・削除API
- * GET    /api/services/[serviceId] - 出品詳細
- * PATCH  /api/services/[serviceId] - 出品更新（出品者本人のみ）
- * DELETE /api/services/[serviceId] - 出品削除（出品者本人のみ）
+ * GET    /api/services/[serviceId] - 掲載詳細
+ * PATCH  /api/services/[serviceId] - 掲載更新（ワーカー本人のみ）
+ * DELETE /api/services/[serviceId] - 掲載削除（ワーカー本人のみ）
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -43,7 +43,7 @@ const UpdateServiceSchema = z.object({
   status: z.enum(['draft', 'published', 'paused']).optional(),
 });
 
-/** GET: 出品詳細（公開中 or 自分の出品のみ閲覧可） */
+/** GET: 掲載詳細（公開中 or 自分のサービスのみ閲覧可） */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ serviceId: string }> }
@@ -53,7 +53,7 @@ export async function GET(
   try {
     const doc = await adminDb.collection('services').doc(serviceId).get();
     if (!doc.exists) {
-      return NextResponse.json({ error: '出品が見つかりません' }, { status: 404 });
+      return NextResponse.json({ error: 'サービスが見つかりません' }, { status: 404 });
     }
     const data = doc.data()!;
 
@@ -61,7 +61,7 @@ export async function GET(
     if (data.status !== 'published') {
       const user = await verifyAuth(request);
       if (!user || user.uid !== data.ownerId) {
-        return NextResponse.json({ error: '出品が見つかりません' }, { status: 404 });
+        return NextResponse.json({ error: 'サービスが見つかりません' }, { status: 404 });
       }
     }
 
@@ -69,13 +69,13 @@ export async function GET(
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json(
-      { error: `出品詳細の取得に失敗しました: ${message}` },
+      { error: `掲載詳細の取得に失敗しました: ${message}` },
       { status: 500 }
     );
   }
 }
 
-/** PATCH: 出品更新（所有者のみ） */
+/** PATCH: 掲載更新（所有者のみ） */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ serviceId: string }> }
@@ -97,7 +97,7 @@ export async function PATCH(
   const ref = adminDb.collection('services').doc(serviceId);
   const doc = await ref.get();
   if (!doc.exists) {
-    return NextResponse.json({ error: '出品が見つかりません' }, { status: 404 });
+    return NextResponse.json({ error: 'サービスが見つかりません' }, { status: 404 });
   }
   const current = doc.data()!;
   if (current.ownerId !== user.uid) {
@@ -155,7 +155,7 @@ export async function PATCH(
   return NextResponse.json({ service: { ...updated.data(), serviceId } });
 }
 
-/** DELETE: 出品削除（所有者のみ・進行中の注文がない場合のみ） */
+/** DELETE: 掲載削除（所有者のみ・進行中の注文がない場合のみ） */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ serviceId: string }> }
@@ -167,7 +167,7 @@ export async function DELETE(
   const ref = adminDb.collection('services').doc(serviceId);
   const doc = await ref.get();
   if (!doc.exists) {
-    return NextResponse.json({ error: '出品が見つかりません' }, { status: 404 });
+    return NextResponse.json({ error: 'サービスが見つかりません' }, { status: 404 });
   }
   const current = doc.data()!;
   if (current.ownerId !== user.uid) {
@@ -191,7 +191,7 @@ export async function DELETE(
   // 物理削除ではなくステータスを 'banned' にして残す（取引履歴の参照のため）
   await ref.update({
     status: 'banned',
-    bannedReason: '出品者により削除',
+    bannedReason: 'ワーカーにより削除',
     updatedAt: FieldValue.serverTimestamp(),
   });
 

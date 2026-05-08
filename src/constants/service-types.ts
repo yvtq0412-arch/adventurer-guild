@@ -1,7 +1,7 @@
 /**
  * サービス種別（テンプレート）定義
  *
- * 出品者は運営が定義したサービス種別（草取り・除雪など）から選び、
+ * ワーカーは運営が定義したサービス種別（草取り・除雪など）から選び、
  * パッケージごとに「作業量パラメータ + 価格」を設定する。
  *
  * パラメータの値は固定選択肢（運営承認済み）に限定されるため、
@@ -38,11 +38,11 @@ export interface ServiceTypeDef {
   icon: string;
   /** 短い説明 */
   summary: string;
-  /** 詳細説明（出品ページ・サービス詳細ページに表示） */
+  /** 詳細説明（掲載ページ・サービス詳細ページに表示） */
   description: string;
   /** パッケージごとに必要なパラメータ */
   params: ServiceTypeParam[];
-  /** パッケージ名の自動生成（出品者向け参考） */
+  /** パッケージ名の自動生成（ワーカー向け参考） */
   buildPackageName: (values: Record<string, string>) => string;
   /** 注文時の説明文の自動生成 */
   buildOrderDescription: (values: Record<string, string>) => string;
@@ -96,7 +96,7 @@ export const SERVICE_TYPES: ServiceTypeDef[] = [
         `【面積】${area}`,
         `【刈った草の処分】${disposal}`,
         ``,
-        `※ 作業時間は出品者の判断に委ねます（作業量ベース）。`,
+        `※ 作業時間はワーカーの判断に委ねます（作業量ベース）。`,
         `※ 電気・ガス・水道工事、農薬散布など資格が必要な作業は含まれません。`,
       ].join('\n');
     },
@@ -158,7 +158,7 @@ export const SERVICE_TYPES: ServiceTypeDef[] = [
         `【広さ】${area}`,
         `【積雪の量】${depth}`,
         ``,
-        `※ 作業時間は出品者の判断に委ねます（作業量ベース）。`,
+        `※ 作業時間はワーカーの判断に委ねます（作業量ベース）。`,
         `※ 屋根の雪下ろし・高所作業・骨雪の除去は対象外です（安全のため）。`,
       ].join('\n');
     },

@@ -150,7 +150,7 @@ export default function NewServicePage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || '出品の登録に失敗しました');
+      if (!res.ok) throw new Error(data.error || '掲載の登録に失敗しました');
       router.push(`/services/${data.serviceId}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : '登録に失敗しました');
@@ -161,9 +161,9 @@ export default function NewServicePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">サービスを出品する</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">サービスを掲載する</h1>
       <p className="text-sm text-gray-500 mb-8">
-        できる作業と料金を登録して、依頼者からの購入を待ちましょう。
+        できる作業と料金を登録して、依頼者からの依頼を待ちましょう。
       </p>
 
       {error && (
@@ -466,7 +466,7 @@ export default function NewServicePage() {
                 disabled={loading}
                 className="flex-1 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-3 rounded-xl font-medium transition text-sm"
               >
-                {loading ? '登録中...' : '出品を公開する'}
+                {loading ? '登録中...' : '掲載を公開する'}
               </button>
             </div>
           </>

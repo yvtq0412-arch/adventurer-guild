@@ -9,13 +9,13 @@ interface GuildCardDisplayProps {
   card: GuildCard;
   /** 自分のカードを表示している場合（進捗バーを表示） */
   isOwn?: boolean;
-  /** コンパクト表示（取引一覧での出品者表示など） */
+  /** コンパクト表示（取引一覧でのワーカー表示など） */
   compact?: boolean;
 }
 
 /**
- * 出品者プロフィール表示コンポーネント
- * 依頼者が出品者のプロフィールを確認するためのカード
+ * ワーカープロフィール表示コンポーネント
+ * 依頼者がワーカーのプロフィールを確認するためのカード
  */
 export function GuildCardDisplay({ card, isOwn = false, compact = false }: GuildCardDisplayProps) {
   const rankInfo = getRankInfo(card.rank);
