@@ -136,7 +136,7 @@ export default function MyAdventuresPage() {
           <div className="text-4xl mb-4">⚔️</div>
           <p className="text-gray-400 mb-4">まだ受注した依頼がありません</p>
           <Link href="/quests" className="text-indigo-500 hover:text-indigo-600 text-sm font-medium">
-            依頼掲示板で探す →
+            依頼サービス一覧で探す →
           </Link>
         </div>
       ) : (

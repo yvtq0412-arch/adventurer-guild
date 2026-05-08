@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: '禁止依頼ガイドライン | Guild',
+  title: '禁止サービスガイドライン | Guild',
   description: 'Guildで投稿が禁止されている依頼の一覧です。法令違反となる依頼や、プラットフォームのルールに反する行為を確認してください。',
 };
 
@@ -48,7 +48,7 @@ export default function ProhibitedPage() {
       {/* ヘッダー */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 bg-red-50 text-red-600 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-          <span>🚫</span> 禁止依頼ガイドライン
+          <span>🚫</span> 禁止サービスガイドライン
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-3">
           投稿が禁止されている依頼

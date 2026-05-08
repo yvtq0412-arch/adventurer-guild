@@ -9,13 +9,13 @@ interface GuildCardDisplayProps {
   card: GuildCard;
   /** 自分のカードを表示している場合（進捗バーを表示） */
   isOwn?: boolean;
-  /** コンパクト表示（クエスト一覧での冒険者表示など） */
+  /** コンパクト表示（取引一覧での出品者表示など） */
   compact?: boolean;
 }
 
 /**
- * ギルドカード表示コンポーネント
- * 依頼者が冒険者のプロフィールを確認するためのカード
+ * 出品者プロフィール表示コンポーネント
+ * 依頼者が出品者のプロフィールを確認するためのカード
  */
 export function GuildCardDisplay({ card, isOwn = false, compact = false }: GuildCardDisplayProps) {
   const rankInfo = getRankInfo(card.rank);
@@ -320,7 +320,7 @@ export function GuildCardDisplay({ card, isOwn = false, compact = false }: Guild
             {/* 詳細進捗 */}
             <div className="space-y-1.5">
               <ProgressItem
-                label="完了クエスト"
+                label="完了取引"
                 current={nextProgress.questsProgress.current}
                 required={nextProgress.questsProgress.required}
                 suffix="件"

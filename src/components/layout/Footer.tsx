@@ -43,7 +43,7 @@ export function Footer() {
               href="/prohibited"
               className="text-xs text-gray-400 hover:text-gray-600 transition"
             >
-              禁止依頼ガイドライン
+              禁止サービスガイドライン
             </Link>
             <Link
               href="/privacy"

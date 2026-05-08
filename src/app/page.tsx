@@ -13,16 +13,16 @@ export default function HomePage() {
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 text-sm font-medium px-4 py-1.5 rounded-full mb-8">
             <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
-            手数料15%〜（ランクで最低10%） - 透明な料金体系
+            手数料15%〜 - 透明な料金体系
           </div>
           <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 tracking-tight leading-tight mb-6">
-            スキルと依頼を
+            できることを出品、
             <br />
-            <span className="text-indigo-500">安全につなぐ</span>
+            <span className="text-indigo-500">安心して購入</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-            エスクロー決済で双方が安心。報酬は作業完了後に自動分配。
-            インボイス対応で個人も企業も安心して取引できます。
+            草取り・除雪などの軽作業を出品して購入できるマーケットプレイス。
+            エスクロー決済で双方が安心。インボイス対応で個人も企業も安心して取引できます。
           </p>
 
           {!loading && !user && (
@@ -43,12 +43,20 @@ export default function HomePage() {
           )}
 
           {!loading && user && (
-            <Link
-              href="/quests"
-              className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-xl text-base font-medium transition shadow-sm"
-            >
-              依頼掲示板を見る
-            </Link>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/services"
+                className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3.5 rounded-xl text-base font-medium transition shadow-sm"
+              >
+                サービスを探す
+              </Link>
+              <Link
+                href="/services/new"
+                className="inline-block bg-white hover:bg-gray-50 text-gray-700 px-8 py-3.5 rounded-xl text-base font-medium transition border border-gray-200"
+              >
+                サービスを出品する
+              </Link>
+            </div>
           )}
         </div>
       </section>
@@ -62,15 +70,15 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-4 text-center">
             <div className="bg-white rounded-xl p-5 border border-gray-100">
-              <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">依頼金額</div>
+              <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">購入金額</div>
               <div className="text-2xl font-bold text-gray-900">¥100,000</div>
             </div>
             <div className="bg-white rounded-xl p-5 border border-gray-100">
-              <div className="text-xs text-emerald-500 uppercase tracking-wider mb-1">ワーカー報酬</div>
+              <div className="text-xs text-emerald-500 uppercase tracking-wider mb-1">出品者の取り分</div>
               <div className="text-2xl font-bold text-emerald-600">¥85,000</div>
             </div>
             <div className="bg-white rounded-xl p-5 border border-gray-100">
-              <div className="text-xs text-indigo-500 uppercase tracking-wider mb-1">プラットフォーム手数料</div>
+              <div className="text-xs text-indigo-500 uppercase tracking-wider mb-1">サービス利用料</div>
               <div className="text-2xl font-bold text-indigo-600">¥15,000</div>
             </div>
           </div>
@@ -92,7 +100,7 @@ export default function HomePage() {
             </div>
             <h3 className="text-base font-semibold text-gray-900 mb-2">エスクロー決済</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
-              依頼金額をプラットフォームが一時預かり。作業完了・承認後に報酬を自動分配します。
+              購入金額をプラットフォームが一時預かり。作業完了・承認後に出品者へ自動送金します。
             </p>
           </div>
           <div className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md transition-shadow">
@@ -101,9 +109,9 @@ export default function HomePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-base font-semibold text-gray-900 mb-2">透明な手数料15%〜</h3>
+            <h3 className="text-base font-semibold text-gray-900 mb-2">透明な手数料</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
-              報酬の85%〜90%がワーカーへ。ランクが上がるほど手数料が下がります。隠れた追加料金はありません。
+              購入金額の85%が出品者の取り分です。隠れた追加料金はありません。
             </p>
           </div>
           <div className="bg-white border border-gray-100 rounded-2xl p-7 hover:shadow-md transition-shadow">
@@ -127,10 +135,10 @@ export default function HomePage() {
         </div>
         <div className="grid sm:grid-cols-4 gap-6">
           {[
-            { step: '1', title: '依頼を作成', desc: '金額とカテゴリを設定' },
+            { step: '1', title: 'サービスを選ぶ', desc: '出品者・プランを選択' },
             { step: '2', title: '仮払い', desc: 'エスクローで安全に預託' },
-            { step: '3', title: '作業・納品', desc: 'ワーカーが対応' },
-            { step: '4', title: '承認・分配', desc: '報酬を自動送金' },
+            { step: '3', title: '作業・納品', desc: '出品者が対応' },
+            { step: '4', title: '承認・送金', desc: '完了承認で自動送金' },
           ].map((item) => (
             <div key={item.step} className="text-center">
               <div className="w-10 h-10 bg-indigo-500 text-white rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-3">
@@ -160,7 +168,7 @@ export default function HomePage() {
           <div className="text-sm text-gray-400">Guild - エスクロー決済プラットフォーム</div>
           <div className="flex gap-6 text-sm">
             <Link href="/about" className="text-gray-400 hover:text-gray-600 transition">Guildについて</Link>
-            <Link href="/quests" className="text-gray-400 hover:text-gray-600 transition">依頼掲示板</Link>
+            <Link href="/services" className="text-gray-400 hover:text-gray-600 transition">サービス一覧</Link>
             <Link href="/register" className="text-gray-400 hover:text-gray-600 transition">無料登録</Link>
           </div>
         </div>

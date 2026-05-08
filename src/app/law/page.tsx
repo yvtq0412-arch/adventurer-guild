@@ -5,7 +5,7 @@ export const metadata = {
   description: 'Guildの特定商取引法に基づく表記です。',
 };
 
-const SERVICE_NAME = 'Guild（冒険者ギルド）';
+const SERVICE_NAME = 'Guild';
 
 export default function LawPage() {
   return (
@@ -51,13 +51,13 @@ export default function LawPage() {
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">サービスの内容</td>
               <td className="px-6 py-4 text-gray-600">
                 リアルな軽作業（草刈り、掃除、運搬、倉庫作業等）の依頼者（発注者）と
-                冒険者（受注者）をマッチングするプラットフォームの提供
+                出品者をマッチングするプラットフォームの提供
               </td>
             </tr>
             <tr>
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">サービスの対価（手数料）</td>
               <td className="px-6 py-4 text-gray-600">
-                <p>取引金額に対して以下のサービス利用料（ギルド手数料）を徴収します。</p>
+                <p>取引金額に対して以下のサービス利用料（サービス利用料）を徴収します。</p>
                 <ul className="mt-2 space-y-1 text-xs text-gray-500">
                   <li>F〜Dランク：15%</li>
                   <li>Cランク：13%</li>
@@ -65,7 +65,7 @@ export default function LawPage() {
                   <li>Aランク：11%</li>
                   <li>Sランク：10%</li>
                 </ul>
-                <p className="text-xs text-gray-400 mt-2">※ 手数料は受注者（冒険者）の報酬から差し引かれます。依頼者が支払う金額に追加料金はありません。</p>
+                <p className="text-xs text-gray-400 mt-2">※ 手数料は受注者（出品者）の報酬から差し引かれます。依頼者が支払う金額に追加料金はありません。</p>
               </td>
             </tr>
             <tr>
@@ -78,7 +78,7 @@ export default function LawPage() {
             <tr>
               <td className="px-6 py-4 bg-gray-50 font-medium text-gray-700 align-top">支払時期</td>
               <td className="px-6 py-4 text-gray-600">
-                依頼（クエスト）作成時に全額をエスクロー（仮払い）します。
+                取引（注文）作成時に全額をエスクロー（仮払い）します。
                 作業完了後、依頼者が承認した時点で決済が確定し、受注者に報酬が分配されます。
               </td>
             </tr>
@@ -125,7 +125,7 @@ export default function LawPage() {
                   <li>・サービスの利用にはGoogleアカウントによるユーザー登録が必要です</li>
                   <li>・依頼の投稿および受注には本人確認（KYC）が必要です</li>
                   <li>・受注者は決済サービス（Stripe Connect）の設定が必要です</li>
-                  <li>・法令に違反する依頼の投稿は禁止されています（<Link href="/prohibited" className="text-indigo-500 underline">禁止依頼ガイドライン</Link>）</li>
+                  <li>・法令に違反する依頼の投稿は禁止されています（<Link href="/prohibited" className="text-indigo-500 underline">禁止サービスガイドライン</Link>）</li>
                 </ul>
               </td>
             </tr>
@@ -139,7 +139,7 @@ export default function LawPage() {
           <span className="text-gray-300">|</span>
           <Link href="/privacy" className="text-sm text-indigo-500 hover:text-indigo-600 underline">プライバシーポリシー</Link>
           <span className="text-gray-300">|</span>
-          <Link href="/prohibited" className="text-sm text-indigo-500 hover:text-indigo-600 underline">禁止依頼ガイドライン</Link>
+          <Link href="/prohibited" className="text-sm text-indigo-500 hover:text-indigo-600 underline">禁止サービスガイドライン</Link>
         </div>
       </div>
     </div>

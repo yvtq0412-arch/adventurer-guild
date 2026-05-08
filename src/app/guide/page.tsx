@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'ご利用ガイド | Guild',
-  description: '依頼の出し方から報酬受取まで、冒険者ギルドの使い方をステップごとに詳しく解説します。',
+  description: '依頼の出し方から報酬受取まで、Guildの使い方をステップごとに詳しく解説します。',
 };
 
 /* ───────────── 共通パーツ ───────────── */
@@ -173,7 +173,7 @@ export default function GuidePage() {
           依頼から報酬受取までの流れ
         </h1>
         <p className="text-gray-500 max-w-xl mx-auto leading-relaxed">
-          初めての方でも安心。依頼者・冒険者それぞれの目線で、
+          初めての方でも安心。購入者・出品者それぞれの目線で、
           ステップごとに詳しく解説します。
         </p>
       </div>
@@ -192,7 +192,7 @@ export default function GuidePage() {
             <p>本人確認が済むと、クレジットカードでの仮払い（エスクロー）が可能になります。</p>
           </StepCard>
 
-          <StepCard step={2} title="クエスト（依頼）を作成する" color="indigo">
+          <StepCard step={2} title="サービスを作成する" color="indigo">
             <p><strong>依頼タイプ</strong>（個人/企業）、<strong>カテゴリ</strong>、<strong>作業場所</strong>を選択し、依頼内容と報酬金額を入力します。</p>
             <p>依頼内容は<strong>「何を」「どのくらい」</strong>で記載してください。</p>
             <div className="bg-gray-50 rounded-lg p-3 mt-2 space-y-1 text-xs">
@@ -209,21 +209,21 @@ export default function GuidePage() {
           </StepCard>
 
           <StepCard step={3} title="報酬を仮払い（エスクロー）する" color="indigo">
-            <p>クエスト登録と同時に、報酬全額をGuildに預けます（クレジットカードでのオーソリゼーション）。</p>
-            <p>この時点では冒険者への送金は行われません。Guildが安全に預かります。</p>
+            <p>取引登録と同時に、報酬全額をGuildに預けます（クレジットカードでのオーソリゼーション）。</p>
+            <p>この時点では出品者への送金は行われません。Guildが安全に預かります。</p>
             <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-3 mt-2 text-xs text-indigo-700">
-              🔒 報酬はGuildのエスクロー口座で保管されます。作業が完了し、あなたが「承認」するまで冒険者には支払われません。
+              🔒 報酬はGuildのエスクロー口座で保管されます。作業が完了し、あなたが「承認」するまで出品者には支払われません。
             </div>
           </StepCard>
 
-          <StepCard step={4} title="冒険者（受注者）からの応募を待つ・チャットで詳細を詰める" color="indigo">
-            <p>クエストが掲示板に公開されると、興味を持った冒険者からチャットが届きます。</p>
+          <StepCard step={4} title="出品者からの応募を待つ・チャットで詳細を詰める" color="indigo">
+            <p>取引がサービス一覧に公開されると、興味を持った出品者からチャットが届きます。</p>
             <p>投稿時に<strong>希望日時の候補</strong>を入れておくと、日程調整がスムーズです。</p>
             <p className="mt-1">この段階で以下の点をすり合わせてください：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>具体的な作業範囲（どこまでやるか）</li>
               <li>日時の最終確定（候補から選んでもらう or チャットで調整）</li>
-              <li>持ち物・道具について（依頼者が用意するか、冒険者が持参するか）</li>
+              <li>持ち物・道具について（依頼者が用意するか、出品者が持参するか）</li>
               <li>駐車場・アクセス情報</li>
               <li>その他の注意点（ペットがいる、近隣に配慮が必要、等）</li>
             </ul>
@@ -233,17 +233,17 @@ export default function GuidePage() {
             </Tip>
           </StepCard>
 
-          <StepCard step={5} title="冒険者（受注者）が受注 → 作業開始" color="indigo">
-            <p>冒険者が「受注する」ボタンを押すと、正式に契約成立（業務委託契約）となります。</p>
+          <StepCard step={5} title="出品者が受注 → 作業開始" color="indigo">
+            <p>出品者が「受注する」ボタンを押すと、正式に契約成立（業務委託契約）となります。</p>
             <p>作業中もチャットでやり取りできるので、進捗確認や追加の質問があれば気軽に連絡できます。</p>
           </StepCard>
 
           <StepCard step={6} title="完了報告を確認 → 承認する" color="indigo">
-            <p>冒険者が作業を完了すると「完了報告」が届きます。内容を確認し、問題なければ「承認」してください。</p>
+            <p>出品者が作業を完了すると「完了報告」が届きます。内容を確認し、問題なければ「承認」してください。</p>
             <p>承認した瞬間に、以下が自動で実行されます：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>エスクローされていた報酬がキャプチャ（確定）</li>
-              <li>ギルド手数料（15%〜10%）を差し引いた金額が冒険者に送金</li>
+              <li>サービス利用料（15%〜10%）を差し引いた金額が出品者に送金</li>
               <li>インボイス（適格請求書）が自動生成</li>
             </ul>
             <Tip>
@@ -253,24 +253,24 @@ export default function GuidePage() {
 
           <StepCard step={7} title="相互評価する" color="indigo">
             <p>報酬分配が完了すると、お互いに<strong>星1〜5の評価</strong>を送ることができます。</p>
-            <p>冒険者への評価は、冒険者のランクアップに直結します。正直な評価をお願いします。</p>
+            <p>出品者への評価は、出品者のランクアップに直結します。正直な評価をお願いします。</p>
             <p>依頼者への評価も公開されるため、良い依頼者であることが次の受注のしやすさにつながります。</p>
           </StepCard>
         </div>
       </section>
 
-      {/* ========== 冒険者パート ========== */}
+      {/* ========== 出品者パート ========== */}
       <section className="mb-20">
         <SectionHeading
           icon="⚔️"
-          title="冒険者（受注者）としての使い方"
+          title="出品者としての使い方"
           sub="スキルを活かして報酬を得る流れ"
         />
 
         <div className="space-y-8">
-          <StepCard step={1} title="アカウント登録・ギルドカード申請" color="emerald">
-            <p>アカウント登録後、<strong>ギルドカード</strong>を申請してください。</p>
-            <p>ギルドカードは冒険者の身分証明書のようなもので、以下の情報を登録します：</p>
+          <StepCard step={1} title="アカウント登録・出品者プロフィール申請" color="emerald">
+            <p>アカウント登録後、<strong>出品者プロフィール</strong>を申請してください。</p>
+            <p>出品者プロフィールは出品者の身分証明書のようなもので、以下の情報を登録します：</p>
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>表示名・キャッチフレーズ・自己紹介文</li>
               <li>スキルタグ（草刈り、引越し補助、倉庫作業 など）</li>
@@ -288,10 +288,10 @@ export default function GuidePage() {
             </div>
           </StepCard>
 
-          <StepCard step={3} title="クエスト（依頼）掲示板から依頼を探す" color="emerald">
-            <p>掲示板で自分のスキル・エリアに合ったクエストを探します。</p>
+          <StepCard step={3} title="サービス一覧から依頼を探す" color="emerald">
+            <p>サービス一覧で自分のスキル・エリアに合ったサービスを探します。</p>
             <p>カテゴリ・エリア・報酬金額で絞り込めます。</p>
-            <p>気になるクエストを見つけたら、まず<strong>依頼者にチャットで連絡</strong>しましょう。</p>
+            <p>気になる取引を見つけたら、まず<strong>依頼者にチャットで連絡</strong>しましょう。</p>
           </StepCard>
 
           <StepCard step={4} title="チャットで依頼者と詳細を詰める" color="emerald">
@@ -322,7 +322,7 @@ export default function GuidePage() {
             <div className="bg-gray-50 rounded-lg p-3 mt-2 text-xs space-y-1">
               <p className="font-medium text-gray-700">報酬の内訳例（依頼金額 ¥10,000 の場合）</p>
               <div className="flex justify-between"><span>依頼金額</span><span>¥10,000</span></div>
-              <div className="flex justify-between text-red-500"><span>ギルド手数料（15%）</span><span>-¥1,500</span></div>
+              <div className="flex justify-between text-red-500"><span>サービス利用料（15%）</span><span>-¥1,500</span></div>
               <div className="flex justify-between font-bold text-emerald-600 border-t border-gray-200 pt-1"><span>あなたの受取額</span><span>¥8,500</span></div>
             </div>
           </StepCard>
@@ -333,8 +333,8 @@ export default function GuidePage() {
             <ul className="list-disc pl-5 space-y-1 mt-2 text-xs">
               <li>ランクが上がる（F → E → D → C → B → A → S）</li>
               <li>手数料が下がる（15% → 最低10%）</li>
-              <li>上位ランク限定クエストが受注可能に</li>
-              <li>掲示板での検索優先度がアップ</li>
+              <li>上位ランク限定取引が受注可能に</li>
+              <li>サービス一覧での検索優先度がアップ</li>
             </ul>
           </StepCard>
         </div>
@@ -350,12 +350,12 @@ export default function GuidePage() {
 
         <div className="space-y-4">
           <div className="bg-white border border-gray-100 rounded-xl p-5">
-            <h3 className="text-sm font-bold text-gray-900 mb-2">冒険者受諾前のキャンセル</h3>
+            <h3 className="text-sm font-bold text-gray-900 mb-2">出品者受諾前のキャンセル</h3>
             <p className="text-sm text-gray-500">依頼者が自由にキャンセルでき、<strong className="text-emerald-600">全額返金</strong>されます。</p>
           </div>
           <div className="bg-white border border-gray-100 rounded-xl p-5">
             <h3 className="text-sm font-bold text-gray-900 mb-2">作業中のキャンセル</h3>
-            <p className="text-sm text-gray-500">依頼者がキャンセルした場合、<strong className="text-emerald-600">報酬の90%が返金</strong>されます。残り10%はギルド維持費として徴収されます。</p>
+            <p className="text-sm text-gray-500">依頼者がキャンセルした場合、<strong className="text-emerald-600">報酬の90%が返金</strong>されます。残り10%はサービス利用料として徴収されます。</p>
           </div>
           <div className="bg-white border border-gray-100 rounded-xl p-5">
             <h3 className="text-sm font-bold text-gray-900 mb-2">紛争（DISPUTE）の申立て</h3>
@@ -382,7 +382,7 @@ export default function GuidePage() {
               <h3 className="text-sm font-bold text-gray-700 mb-3">依頼者が確認すること</h3>
               <ul className="space-y-2">
                 {[
-                  '冒険者のギルドカード・スキル・評価を確認した',
+                  '出品者の出品者プロフィール・スキル・評価を確認した',
                   '作業範囲を具体的に伝えた',
                   '希望日時・所要時間の目安を伝えた',
                   '道具・持ち物について取り決めた',
@@ -397,7 +397,7 @@ export default function GuidePage() {
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-700 mb-3">冒険者（受注者）が確認すること</h3>
+              <h3 className="text-sm font-bold text-gray-700 mb-3">出品者が確認すること</h3>
               <ul className="space-y-2">
                 {[
                   '作業範囲を正確に理解した',
@@ -451,26 +451,26 @@ export default function GuidePage() {
         <div className="mb-6">
           <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-            <ChatSystem>冒険者「タケシ」さんがチャットを開始しました</ChatSystem>
-            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+            <ChatSystem>出品者「タケシ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="タケシ（出品者）" role="adventurer">
               はじめまして！草刈りの依頼を拝見しました。20平米で45L袋3〜4袋とのことですが、草の高さはどのくらいですか？膝丈くらいまで伸びてる場合は少し時間がかかるかもしれません。
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               こんにちは！膝丈まではいかないです。足首〜すね位です。前回の草取りから2ヶ月くらい放置してしまいました。
             </ChatBubble>
-            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+            <ChatBubble from="タケシ（出品者）" role="adventurer">
               なるほど、それなら大丈夫です！道具は鎌とレーキを持参します。ゴミ袋と軍手はお借りできるとのことでありがたいです。駐車場はありますか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               駐車スペース1台分あります。希望日時の候補に土曜と日曜を入れてあるんですが、どちらか都合いい日はありますか？
             </ChatBubble>
-            <ChatBubble from="タケシ（冒険者）" role="adventurer">
+            <ChatBubble from="タケシ（出品者）" role="adventurer">
               候補拝見しました！土曜の午前で大丈夫です。9時スタートでいかがですか？天気が雨の場合は日曜に延期でいいですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               はい、雨天時は日曜に変更でお願いします。それでは受注よろしくお願いします！
             </ChatBubble>
-            <ChatSystem>タケシさんがクエストを受注しました ⚔️</ChatSystem>
+            <ChatSystem>タケシさんが取引を受注しました ⚔️</ChatSystem>
           </div>
         </div>
 
@@ -521,23 +521,23 @@ export default function GuidePage() {
         <div className="mb-6">
           <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-            <ChatSystem>冒険者「ミサキ」さんがチャットを開始しました</ChatSystem>
-            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+            <ChatSystem>出品者「ミサキ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="ミサキ（出品者）" role="adventurer">
               行列代行の依頼を見ました！渋谷なら対応できます。整理券は番号制ですか？それとも先着順で席に案内されるタイプですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               番号の書いてある紙を渡されるタイプです。開店前に並んで、配布されたら写真を送ってもらえれば大丈夫です。
             </ChatBubble>
-            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+            <ChatBubble from="ミサキ（出品者）" role="adventurer">
               了解です！10:30に店の前にいればOKですね？万が一、配布が遅れたりして長引いた場合はどうしましょう？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               11:30までに整理券がもらえなかったら、その時点で終了で大丈夫です。報酬はお支払いします。
             </ChatBubble>
-            <ChatBubble from="ミサキ（冒険者）" role="adventurer">
+            <ChatBubble from="ミサキ（出品者）" role="adventurer">
               ありがとうございます！では受注させていただきます。
             </ChatBubble>
-            <ChatSystem>ミサキさんがクエストを受注しました ⚔️</ChatSystem>
+            <ChatSystem>ミサキさんが取引を受注しました ⚔️</ChatSystem>
           </div>
         </div>
 
@@ -590,29 +590,29 @@ export default function GuidePage() {
         <div className="mb-6">
           <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-            <ChatSystem>冒険者「コウタ」さんがチャットを開始しました</ChatSystem>
-            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+            <ChatSystem>出品者「コウタ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="コウタ（出品者）" role="adventurer">
               倉庫作業の依頼を拝見しました。段ボール30箱で300点とのことですが、1箱あたり10点くらいの計算ですね。商品の重量はどのくらいですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               1箱5〜8kgくらいです。中身は日用品なので特別重いものはありません。仕分け先は棚がA〜Dの4エリアに分かれていて、ルール表を見ながら振り分けてもらう形です。
             </ChatBubble>
-            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+            <ChatBubble from="コウタ（出品者）" role="adventurer">
               了解です。安全靴は持っています。台車は倉庫にありますか？あとフォークリフトの作業はなしですよね？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               台車は2台あります。フォークリフトの操作は不要です。手作業の仕分けと棚入れだけです。日時は来週の水曜、9時に倉庫入口集合でお願いできますか？
             </ChatBubble>
-            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+            <ChatBubble from="コウタ（出品者）" role="adventurer">
               水曜9時で大丈夫です。駐車場はありますか？あと、お昼休憩はどうしましょう？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               駐車場あります。お昼は近くにコンビニがあるのでそちらで。作業量的に午前中で終わりそうなら休憩なしでも構いません。終わった時点で完了で大丈夫です。
             </ChatBubble>
-            <ChatBubble from="コウタ（冒険者）" role="adventurer">
+            <ChatBubble from="コウタ（出品者）" role="adventurer">
               了解しました！では受注します。よろしくお願いします。
             </ChatBubble>
-            <ChatSystem>コウタさんがクエストを受注しました ⚔️</ChatSystem>
+            <ChatSystem>コウタさんが取引を受注しました ⚔️</ChatSystem>
           </div>
         </div>
 
@@ -665,7 +665,7 @@ export default function GuidePage() {
             <div className="text-xs text-purple-700 leading-relaxed">
               <span className="font-semibold">ポイント：</span>
               「フォロワー3万人以上限定」のような条件は依頼内容に明記しましょう。
-              冒険者（受注者）が受注前に自分が条件を満たしているか確認できます。
+              出品者が受注前に自分が条件を満たしているか確認できます。
             </div>
           </div>
         </div>
@@ -673,23 +673,23 @@ export default function GuidePage() {
         <div className="mb-6">
           <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-            <ChatSystem>冒険者「アヤカ」さんがチャットを開始しました</ChatSystem>
-            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+            <ChatSystem>出品者「アヤカ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="アヤカ（出品者）" role="adventurer">
               SNS投稿の依頼を拝見しました！Instagramフォロワー4.2万人です。グルメ系の投稿がメインなのでちょうど合うと思います。アカウントはこちらです → @ayaka_gourmet
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               アカウント拝見しました！雰囲気ぴったりです。来店はいつ頃ご都合いいですか？ランチタイム（11:30〜14:00）だと一番映えるメニューをお出しできます。
             </ChatBubble>
-            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+            <ChatBubble from="アヤカ（出品者）" role="adventurer">
               今週金曜の12時頃伺えます！投稿内容に何かNGワードやハッシュタグの指定はありますか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               ハッシュタグは #渋谷ランチ #ハンバーガー を入れていただけると助かります。NGは特にないですが、競合店の名前は避けてください。あと位置情報タグを忘れずにお願いします！
             </ChatBubble>
-            <ChatBubble from="アヤカ（冒険者）" role="adventurer">
+            <ChatBubble from="アヤカ（出品者）" role="adventurer">
               了解です！金曜に伺って、翌日までに投稿しますね。それでは受注させていただきます。
             </ChatBubble>
-            <ChatSystem>アヤカさんがクエストを受注しました ⚔️</ChatSystem>
+            <ChatSystem>アヤカさんが取引を受注しました ⚔️</ChatSystem>
           </div>
         </div>
 
@@ -753,23 +753,23 @@ export default function GuidePage() {
         <div className="mb-6">
           <p className="text-xs font-bold text-gray-600 mb-2">チャットでのやり取り例</p>
           <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
-            <ChatSystem>冒険者「ケンジ」さんがチャットを開始しました</ChatSystem>
-            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+            <ChatSystem>出品者「ケンジ」さんがチャットを開始しました</ChatSystem>
+            <ChatBubble from="ケンジ（出品者）" role="adventurer">
               確定申告の相談依頼を拝見しました。自分はフリーランスエンジニア7年目で、青色申告を毎年やっています。副業の種類はどのようなものですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               ウーバーイーツの配達と、知人から頼まれたWebサイト制作です。年間の副業収入は80万円くらいです。
             </ChatBubble>
-            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+            <ChatBubble from="ケンジ（出品者）" role="adventurer">
               なるほど、2種類の副業ですね。それぞれ経費の考え方が少し違うので、その辺りもお話しできます。Zoomで30〜40分くらいあれば一通り解説できると思いますが、いつ頃がいいですか？
             </ChatBubble>
             <ChatBubble from="あなた（依頼者）" role="client">
               今週の木曜の20時以降ならOKです。事前に聞きたいことリストを送っても大丈夫ですか？
             </ChatBubble>
-            <ChatBubble from="ケンジ（冒険者）" role="adventurer">
+            <ChatBubble from="ケンジ（出品者）" role="adventurer">
               もちろんです！事前にリストをもらえると準備ができるのでありがたいです。では受注しますね。ZoomのURLは前日にチャットで送ります。
             </ChatBubble>
-            <ChatSystem>ケンジさんがクエストを受注しました ⚔️</ChatSystem>
+            <ChatSystem>ケンジさんが取引を受注しました ⚔️</ChatSystem>
           </div>
         </div>
 
@@ -801,10 +801,10 @@ export default function GuidePage() {
       {/* CTA */}
       <section className="text-center py-12 border-t border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-3">準備はできましたか？</h2>
-        <p className="text-gray-500 mb-8 text-sm">まずは掲示板を覗いてみましょう。</p>
+        <p className="text-gray-500 mb-8 text-sm">まずはサービス一覧を覗いてみましょう。</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/quests" className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-3 rounded-xl text-sm font-medium transition">
-            依頼掲示板を見る
+            サービス一覧を見る
           </Link>
           <Link href="/register" className="bg-white hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-xl text-sm font-medium transition border border-gray-200">
             無料で登録する

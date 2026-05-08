@@ -94,7 +94,7 @@ function UserAvatar() {
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
               </svg>
-              ギルドカード
+              出品者プロフィール
             </Link>
           </div>
 
@@ -159,7 +159,7 @@ export function Navbar() {
                     isActive('/services/new') ? 'bg-emerald-500 text-white shadow-sm' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
                   }`}>✨ 出品する</Link>
                   <NavLink href="/my-adventures">取引一覧</NavLink>
-                  <NavLink href="/wallet">金庫</NavLink>
+                  <NavLink href="/wallet">ウォレット</NavLink>
                   <NavLink href="/invoices">請求書</NavLink>
                   <div className="ml-1 pl-1 border-l border-gray-200 flex items-center gap-1">
                     <NavLink href="/guide">📖 ガイド</NavLink>
@@ -254,10 +254,10 @@ export function Navbar() {
                   {[
                     { href: '/', label: 'TOP', icon: '🏠' },
                     { href: '/my-adventures', label: '取引一覧', icon: '📜' },
-                    { href: '/wallet', label: '金庫', icon: '💰' },
+                    { href: '/wallet', label: 'ウォレット', icon: '💰' },
                     { href: '/invoices', label: '請求書', icon: '📄' },
                     { href: '/profile', label: 'アカウント設定', icon: '⚙️' },
-                    { href: '/guild-card/apply', label: 'ギルドカード', icon: '🪪' },
+                    { href: '/guild-card/apply', label: '出品者プロフィール', icon: '🪪' },
                   ].map((item) => (
                     <Link key={item.href} href={item.href} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
                       isActive(item.href) ? 'bg-indigo-50 text-indigo-600 font-medium' : 'text-gray-700 hover:bg-gray-50'
@@ -272,7 +272,7 @@ export function Navbar() {
                   {[
                     { href: '/guide', label: 'ご利用ガイド', icon: '📖' },
                     { href: '/about', label: 'Guildについて', icon: 'ℹ️' },
-                    { href: '/prohibited', label: '禁止依頼ガイドライン', icon: '🚫' },
+                    { href: '/prohibited', label: '禁止サービスガイドライン', icon: '🚫' },
                   ].map((item) => (
                     <Link key={item.href} href={item.href} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
                       isActive(item.href) ? 'bg-indigo-50 text-indigo-600 font-medium' : 'text-gray-500 hover:bg-gray-50'

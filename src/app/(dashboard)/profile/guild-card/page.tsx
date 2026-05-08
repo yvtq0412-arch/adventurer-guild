@@ -254,15 +254,15 @@ export default function ProfileGuildCardPage() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <p className="text-4xl mb-4">⚔️</p>
-        <p className="text-gray-600 font-medium mb-2">ギルドカードがありません</p>
+        <p className="text-gray-600 font-medium mb-2">出品者プロフィールがありません</p>
         <p className="text-sm text-gray-400 mb-6">
-          プロフィール詳細を設定するには、まずギルドカードを申請してください。
+          プロフィール詳細を設定するには、まず出品者プロフィールを申請してください。
         </p>
         <Link
           href="/guild-card/apply"
           className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium text-sm transition"
         >
-          ギルドカードを申請する
+          出品者プロフィールを申請する
         </Link>
       </div>
     );
@@ -274,11 +274,11 @@ export default function ProfileGuildCardPage() {
       <nav className="text-sm text-gray-400 mb-6 flex items-center gap-2">
         <Link href="/profile" className="hover:text-indigo-500 transition">アカウント設定</Link>
         <span>/</span>
-        <span className="text-gray-600">ギルドカード編集</span>
+        <span className="text-gray-600">出品者プロフィール編集</span>
       </nav>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">ギルドカードを編集</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">出品者プロフィールを編集</h1>
         <p className="text-sm text-gray-500">
           依頼者があなたを選ぶ判断材料になります。できるだけ詳しく記入してください。
         </p>
@@ -288,7 +288,7 @@ export default function ProfileGuildCardPage() {
       {card.status === 'APPROVED' && (
         <div className="bg-green-50 border border-green-100 rounded-xl p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-green-600 text-sm font-medium">✅ ギルドカード承認済み</span>
+            <span className="text-green-600 text-sm font-medium">✅ 出品者プロフィール承認済み</span>
           </div>
           <Link href={`/guild-card/${user?.uid}`} className="text-green-600 text-xs underline hover:text-green-700">
             公開ページを見る →

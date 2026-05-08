@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 const LAST_UPDATED = '2025年1月1日';
-const SERVICE_NAME = 'Guild（冒険者ギルド）';
+const SERVICE_NAME = 'Guild';
 const COMPANY_EMAIL = 'yvtq0412@gmail.com';
 
 export default function PrivacyPage() {
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
               <li>氏名・表示名</li>
               <li>メールアドレス</li>
               <li>パスワード（暗号化して保存）</li>
-              <li>役割区分（依頼者・冒険者・両方）</li>
+              <li>役割区分（購入者・出品者・両方）</li>
               <li>適格請求書発行事業者登録番号（任意）</li>
               <li>住所（請求書発行時のみ、任意）</li>
             </ul>

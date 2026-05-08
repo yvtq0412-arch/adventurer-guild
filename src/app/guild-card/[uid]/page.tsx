@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (cardDoc.exists()) {
       const card = cardDoc.data() as GuildCard;
       return {
-        title: `${card.displayName} のギルドカード | Guild`,
+        title: `${card.displayName} の出品者プロフィール | Guild`,
         description: card.catchphrase,
       };
     }
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // エラーは無視
   }
   return {
-    title: 'ギルドカード | Guild',
+    title: '出品者プロフィール | Guild',
   };
 }
 
@@ -46,9 +46,9 @@ export default async function GuildCardPublicPage({ params }: PageProps) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <div className="text-4xl mb-4">🃏</div>
-        <p className="text-gray-500">ギルドカードが見つかりません</p>
+        <p className="text-gray-500">出品者プロフィールが見つかりません</p>
         <Link href="/quests" className="text-indigo-500 hover:text-indigo-600 text-sm mt-4 inline-block">
-          ← クエスト一覧に戻る
+          ← 取引一覧に戻る
         </Link>
       </div>
     );
@@ -59,9 +59,9 @@ export default async function GuildCardPublicPage({ params }: PageProps) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
         <div className="text-4xl mb-4">⏳</div>
-        <p className="text-gray-500">このギルドカードは現在審査中または非公開です</p>
+        <p className="text-gray-500">この出品者プロフィールは現在審査中または非公開です</p>
         <Link href="/quests" className="text-indigo-500 hover:text-indigo-600 text-sm mt-4 inline-block">
-          ← クエスト一覧に戻る
+          ← 取引一覧に戻る
         </Link>
       </div>
     );
@@ -73,12 +73,12 @@ export default async function GuildCardPublicPage({ params }: PageProps) {
     <div className="max-w-2xl mx-auto px-4 py-10">
       {/* パンくず */}
       <nav className="text-sm text-gray-400 mb-6">
-        <Link href="/quests" className="hover:text-indigo-500 transition">クエスト一覧</Link>
+        <Link href="/quests" className="hover:text-indigo-500 transition">取引一覧</Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-600">ギルドカード</span>
+        <span className="text-gray-600">出品者プロフィール</span>
       </nav>
 
-      {/* ギルドカード本体 */}
+      {/* 出品者プロフィール本体 */}
       <GuildCardDisplay card={card} isOwn={false} />
 
       {/* ランク詳細 */}
@@ -99,7 +99,7 @@ export default async function GuildCardPublicPage({ params }: PageProps) {
 
         {/* 実績数値 */}
         <div className="grid grid-cols-3 gap-3">
-          <StatBox label="完了クエスト" value={`${card.completedQuestsCount}件`} />
+          <StatBox label="完了取引" value={`${card.completedQuestsCount}件`} />
           <StatBox
             label="平均評価"
             value={card.ratingCount > 0 ? `${card.averageRating.toFixed(1)}` : '-'}
@@ -114,9 +114,9 @@ export default async function GuildCardPublicPage({ params }: PageProps) {
 
       {/* 信頼バッジ */}
       <div className="mt-4 bg-green-50 border border-green-100 rounded-xl p-4">
-        <p className="text-xs font-medium text-green-700 mb-2">✅ ギルド認定冒険者</p>
+        <p className="text-xs font-medium text-green-700 mb-2">✅ ギルド認定出品者</p>
         <p className="text-xs text-green-600">
-          このプロフィールはGuildの審査を通過した冒険者です。本人確認・身分証の提出が完了しています。
+          このプロフィールはGuildの審査を通過した出品者です。本人確認・身分証の提出が完了しています。
         </p>
       </div>
     </div>

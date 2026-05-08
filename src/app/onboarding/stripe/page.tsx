@@ -24,7 +24,7 @@ function OnboardingContent() {
             href="/wallet"
             className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold transition"
           >
-            金庫ページに戻る
+            ウォレットに戻る
           </Link>
         </div>
       </div>

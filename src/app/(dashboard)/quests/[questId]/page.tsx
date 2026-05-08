@@ -79,7 +79,7 @@ export default function QuestDetailPage() {
         setQuest(questDoc.data() as Quest);
       }
     } catch (err) {
-      console.error('クエスト取得エラー:', err);
+      console.error('取引取得エラー:', err);
     } finally {
       setLoading(false);
     }
@@ -211,7 +211,7 @@ export default function QuestDetailPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="text-4xl mb-4">❌</div>
-        <p className="text-gray-500">クエストが見つかりません</p>
+        <p className="text-gray-500">取引が見つかりません</p>
         <Link href="/quests" className="text-indigo-500 hover:text-indigo-600 text-sm mt-4 inline-block">
           ← 一覧に戻る
         </Link>
@@ -386,7 +386,7 @@ export default function QuestDetailPage() {
                 ⭐ 評価
               </h2>
               <p className="text-xs text-gray-400 mb-4">
-                {isClient ? '冒険者の仕事ぶりを評価してください' : '依頼者を評価してください'}
+                {isClient ? '出品者の仕事ぶりを評価してください' : '依頼者を評価してください'}
               </p>
 
               {hasReviewed ? (
@@ -395,7 +395,7 @@ export default function QuestDetailPage() {
                   <p className="text-sm font-medium text-green-700">評価済みです</p>
                   {!counterpartHasReviewed && (
                     <p className="text-xs text-gray-400 mt-1">
-                      {isClient ? '冒険者' : '依頼者'}からの評価を待っています
+                      {isClient ? '出品者' : '依頼者'}からの評価を待っています
                     </p>
                   )}
                   {counterpartHasReviewed && (
@@ -435,7 +435,7 @@ export default function QuestDetailPage() {
                   </button>
                   {counterpartHasReviewed && (
                     <p className="text-xs text-indigo-500 text-center">
-                      {isClient ? '冒険者' : '依頼者'}はすでに評価を送信しています
+                      {isClient ? '出品者' : '依頼者'}はすでに評価を送信しています
                     </p>
                   )}
                 </div>
@@ -461,7 +461,7 @@ export default function QuestDetailPage() {
                     <span className="text-xs text-gray-700 leading-relaxed">
                       この依頼が
                       <a href="/prohibited" target="_blank" className="text-indigo-500 underline font-medium">
-                        禁止依頼ガイドライン
+                        禁止サービスガイドライン
                       </a>
                       に該当しないことを確認しました。法令違反の依頼と知りつつ受注した場合、アカウント停止の対象となります。
                     </span>
@@ -477,7 +477,7 @@ export default function QuestDetailPage() {
                   <p className="text-xs text-indigo-400 text-center">
                     ※ 受注には
                     <Link href="/guild-card/apply" className="underline hover:text-indigo-600">
-                      ギルドカード
+                      出品者プロフィール
                     </Link>
                     が必要です
                   </p>
@@ -576,7 +576,7 @@ export default function QuestDetailPage() {
               🔒 エスクロー保護
             </div>
             <p className="text-xs text-indigo-500 leading-relaxed">
-              報酬はギルドが安全に預かります。作業完了後に確認・承認してから冒険者に支払われます。
+              報酬はGuildが安全に預かります。作業完了後に確認・承認してから出品者に支払われます。
             </p>
           </div>
 

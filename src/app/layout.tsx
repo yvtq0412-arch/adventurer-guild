@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "冒険者ギルド - Adventurer's Guild",
-  description: "エスクロー決済で安心。手数料15%〜（ランクで最低10%）のフリーランスプラットフォーム",
+  title: "Guild - スキルマッチングプラットフォーム",
+  description: "エスクロー決済で安心。手数料15%〜のスキルマッチングプラットフォーム。草取り・除雪などの軽作業を出品・購入できます。",
 };
 
 export default function RootLayout({

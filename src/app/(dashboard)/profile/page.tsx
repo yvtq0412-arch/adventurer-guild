@@ -269,7 +269,7 @@ export default function ProfilePage() {
         </dl>
       </div>
 
-      {/* ギルドカードプロフィール編集 */}
+      {/* 出品者プロフィールプロフィール編集 */}
       <Link
         href="/profile/guild-card"
         className="block bg-white border border-gray-200 rounded-xl p-6 hover:border-indigo-300 hover:bg-indigo-50/30 transition group"
@@ -280,7 +280,7 @@ export default function ProfilePage() {
               <span className="text-xl">⚔️</span>
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-gray-900">ギルドカード・プロフィール詳細</h2>
+              <h2 className="text-sm font-semibold text-gray-900">出品者プロフィール・プロフィール詳細</h2>
               <p className="text-xs text-gray-400 mt-0.5">
                 実績・資格・稼働情報・作業スタイルなどを設定
               </p>
