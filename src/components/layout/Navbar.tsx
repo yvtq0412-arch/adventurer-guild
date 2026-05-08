@@ -152,13 +152,13 @@ export function Navbar() {
                   <Link href="/" className={`px-3 py-2 rounded-lg text-sm transition ${
                     pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                   }`}>TOP</Link>
-                  <Link href="/my-quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                    isActive('/my-quests') ? 'bg-orange-500 text-white shadow-sm' : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
-                  }`}>📋 依頼する</Link>
-                  <Link href="/quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                    isActive('/quests') ? 'bg-emerald-500 text-white shadow-sm' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                  }`}>⚔️ 受注する</Link>
-                  <NavLink href="/my-adventures">受注一覧</NavLink>
+                  <Link href="/services" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                    isActive('/services') && !pathname.startsWith('/services/new') ? 'bg-orange-500 text-white shadow-sm' : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
+                  }`}>🛒 サービスを探す</Link>
+                  <Link href="/services/new" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                    isActive('/services/new') ? 'bg-emerald-500 text-white shadow-sm' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
+                  }`}>✨ 出品する</Link>
+                  <NavLink href="/my-adventures">取引一覧</NavLink>
                   <NavLink href="/wallet">金庫</NavLink>
                   <NavLink href="/invoices">請求書</NavLink>
                   <div className="ml-1 pl-1 border-l border-gray-200 flex items-center gap-1">
@@ -175,12 +175,9 @@ export function Navbar() {
                     <Link href="/" className={`px-3 py-2 rounded-lg text-sm transition ${
                       pathname === '/' ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                     }`}>TOP</Link>
-                    <Link href="/my-quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                      isActive('/my-quests') ? 'bg-orange-500 text-white shadow-sm' : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
-                    }`}>📋 依頼する</Link>
-                    <Link href="/quests" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                      isActive('/quests') ? 'bg-emerald-500 text-white shadow-sm' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'
-                    }`}>⚔️ 受注する</Link>
+                    <Link href="/services" className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                      isActive('/services') ? 'bg-orange-500 text-white shadow-sm' : 'bg-orange-50 text-orange-600 hover:bg-orange-100'
+                    }`}>🛒 サービスを探す</Link>
                     <Link href="/guide" className={`px-3 py-2 rounded-lg text-sm transition ${
                       isActive('/guide') ? 'text-indigo-600 bg-indigo-50 font-medium' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
                     }`}>📖 ご利用ガイド</Link>
@@ -228,12 +225,12 @@ export function Navbar() {
 
               {/* メインアクション */}
               <div className="grid grid-cols-2 gap-2 mb-3">
-                <Link href="/my-quests" className={`py-3 rounded-xl text-center text-sm font-semibold transition ${
-                  isActive('/my-quests') ? 'bg-orange-500 text-white' : 'bg-orange-50 text-orange-600'
-                }`}>📋 依頼する</Link>
-                <Link href="/quests" className={`py-3 rounded-xl text-center text-sm font-semibold transition ${
-                  isActive('/quests') ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'
-                }`}>⚔️ 受注する</Link>
+                <Link href="/services" className={`py-3 rounded-xl text-center text-sm font-semibold transition ${
+                  isActive('/services') && !pathname.startsWith('/services/new') ? 'bg-orange-500 text-white' : 'bg-orange-50 text-orange-600'
+                }`}>🛒 サービスを探す</Link>
+                <Link href="/services/new" className={`py-3 rounded-xl text-center text-sm font-semibold transition ${
+                  isActive('/services/new') ? 'bg-emerald-500 text-white' : 'bg-emerald-50 text-emerald-600'
+                }`}>✨ 出品する</Link>
               </div>
 
               {user ? (
@@ -256,7 +253,7 @@ export function Navbar() {
                   {/* ナビリンク */}
                   {[
                     { href: '/', label: 'TOP', icon: '🏠' },
-                    { href: '/my-adventures', label: '受注一覧', icon: '📜' },
+                    { href: '/my-adventures', label: '取引一覧', icon: '📜' },
                     { href: '/wallet', label: '金庫', icon: '💰' },
                     { href: '/invoices', label: '請求書', icon: '📄' },
                     { href: '/profile', label: 'アカウント設定', icon: '⚙️' },

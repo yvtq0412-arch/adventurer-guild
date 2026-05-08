@@ -69,6 +69,14 @@ export interface Quest {
    */
   templateParams?: Record<string, string>;
 
+  /**
+   * 紐付くサービス出品ID（ココナラ型・出品 → 購入フローの場合）
+   * 出品から購入された注文は必須。レガシークエスト互換のためオプショナル。
+   */
+  serviceId?: string;
+  /** 選択されたパッケージID */
+  packageId?: string;
+
   // 作業場所
   prefecture: string;
   city: string;
